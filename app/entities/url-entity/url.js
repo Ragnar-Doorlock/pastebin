@@ -1,10 +1,10 @@
 class Url {
     constructor(data) {
-        this.hash = data.hash;
+        this._hash = data.hash;
     }
 
-    async getHash() {
-        return this.hash;
+    getHash() {
+        return this._hash;
     }
     
 }

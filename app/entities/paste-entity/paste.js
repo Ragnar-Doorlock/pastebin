@@ -1,30 +1,37 @@
+const visibility = require('./visibility');
+
 class Paste {
-    constructor (data) {
+    constructor ({data, visibility}) {
         this._id = data.id;
         this._name = data.name;
-        this.text = data.text;
-        this.expiration = data.expiration;
-        this.visibility = data.visibility;
+        this._text = data.text;
+        this._expiresAfter = data.expiresAfter;
+        this._visibility = visibility;
+        this._authorId = authorId;
     }
 
-    async getId() {
+    getId() {
         return this._id;
     }
 
-    async getName() {
+    getName() {
         return this._name;
     }
 
-    async getText() {
-        return this.text;
+    getText() {
+        return this._text;
     }
 
-    async getExpiration() {
-        return this.expiration;
+    getExpiration() {
+        return this._expiresAfter;
     }
 
-    async getVisibility() {
-        return this.visibility;
+    getVisibility() {
+        return this._visibility;
+    }
+
+    getAuthorId() {
+        return this._authorId;
     }
 
 }
