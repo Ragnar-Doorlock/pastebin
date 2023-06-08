@@ -1,5 +1,3 @@
-const visibility = require('./visibility');
-
 class Paste {
     constructor ({data, visibility}) {
         this._id = data.id;
