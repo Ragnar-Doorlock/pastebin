@@ -5,7 +5,10 @@ class Paste {
         this._text = data.text;
         this._expiresAfter = data.expiresAfter;
         this._visibility = visibility;
-        this._authorId = authorId;
+        this._authorId = data.authorId;
+        this._createdAt = data.createdAt;
+        this._updatedAt = data.updatedAt;
+        this._deletedAt = data.deletedAt;
     }
 
     getId() {
