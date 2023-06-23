@@ -6,4 +6,6 @@ exports.up = async ({context: sequelize}) => {await sequelize.query(`CREATE TABL
 )`)};
 
 /** @type {import('umzug').MigrationFn<any>} */
-exports.down = async ({context: sequelize}) => {await sequelize.query(`DROP TABLE url`)};
+exports.down = async ({context: sequelize}) => {
+    await sequelize.query(`DROP TABLE url CASCADE`);
+};

@@ -7,5 +7,5 @@ exports.up = async ({context: sequelize}) => { await sequelize.query(
 
 /** @type {import('umzug').MigrationFn<any>} */
 exports.down = async ({context: sequelize}) => {
-    await sequelize.query(`DROP TABLE users`)
+    await sequelize.query(`DROP TABLE users CASCADE`);
 };

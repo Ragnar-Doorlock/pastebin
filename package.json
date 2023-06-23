@@ -10,7 +10,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "migrateup": "cd e:/pastebin/db/migrations && node migrate up",
+    "migratedown": "cd e:/pastebin/db/migrations && node migrate down",
+    "migratecreate": "cd e:/pastebin/db/migrations && node migrate create --name "
   },
   "author": "",
   "license": "ISC",

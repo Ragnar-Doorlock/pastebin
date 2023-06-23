@@ -13,4 +13,6 @@ exports.up = async ({context: sequelize}) => { await sequelize.query(`CREATE TAB
 )`)};
 
 /** @type {import('umzug').MigrationFn<any>} */
-exports.down = async ({context: sequelize}) => { await sequelize.query(`DROP TABLE paste`)};
+exports.down = async ({context: sequelize}) => { 
+    await sequelize.query(`DROP TABLE paste CASCADE`);
+};
