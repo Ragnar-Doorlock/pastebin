@@ -1,14 +1,15 @@
 const {Sequelize} = require('sequelize');
 const { Umzug, JSONStorage } = require('umzug');
+require('dotenv').config({path: '../../.env'});
 
 const getRawSqlClient = () => {
   const sequelize = new Sequelize({
     dialect: 'postgres',
-    host: 'localhost',
-        port: 5432,
-        password: '11234',
-        database: 'pastebin',
-        username: 'postgres',
+    host: process.env.POSTGRES_DB_HOST,
+    port: process.env.POSTGRES_DB_PORT,
+    password: process.env.POSTGRES_DB_PASSWORD,
+    database: process.env.POSTGRES_DB_DATABASE,
+    username: process.env.POSTGRES_DB_USERNAME
   });
 
   return {

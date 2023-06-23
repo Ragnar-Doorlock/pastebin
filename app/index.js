@@ -1,10 +1,10 @@
 const express = require('express');
 const app = express();
 //const RouterBuilder = require('');
+//require('dotenv').config();
 
 (async () => {
     //const routes = new RouterBuilder({express});
-
     //app.use(express.json());
     //app.use('/', routes.createRoutes());
 

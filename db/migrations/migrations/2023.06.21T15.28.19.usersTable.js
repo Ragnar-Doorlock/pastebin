@@ -1,6 +1,6 @@
 /** @type {import('umzug').MigrationFn<any>} */
 exports.up = async ({context: sequelize}) => { await sequelize.query(
-    `CREATE TABLE users (
+    `CREATE TABLE IF NOT EXISTS users (
     id serial PRIMARY KEY,
     name VARCHAR ( 50 )
 )`)};
