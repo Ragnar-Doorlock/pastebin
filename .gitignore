@@ -131,4 +131,4 @@ dist
 
 .vscode
 
-db/migrations/migrations
+db/migrations/umzug.json
