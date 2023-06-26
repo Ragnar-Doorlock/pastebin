@@ -35,6 +35,18 @@ class Paste {
         return this._authorId;
     }
 
+    getCreatedAt() {
+        return this._createdAt;
+    }
+
+    getUpdatedAt() {
+        return this._updatedAt;
+    }
+
+    getDeletedAt() {
+        return this._deletedAt;
+    }
+
 }
 
 module.exports = Paste;
