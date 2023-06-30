@@ -1,7 +1,6 @@
 class PasteReository {
-    constructor (pool, currentDateAndTime) {
+    constructor (pool) {
         this.pool = pool;
-        this.currentDateAndTime = currentDateAndTime;
     }
 
     async findByID({ id }) {
@@ -98,3 +97,5 @@ class PasteReository {
         await this.pool.end();
     }
 }
+
+module.exports = PasteReository;
