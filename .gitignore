@@ -132,3 +132,5 @@ dist
 .vscode
 
 db/migrations/umzug.json
+
+app/current-date
