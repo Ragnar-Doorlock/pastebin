@@ -1,56 +1,50 @@
 class PasteReository {
-    constructor (pool) {
+    constructor ({pool}) {
         this.pool = pool;
     }
 
     async findByID({ id }) {
         const result = this.findOne({ id });
-        return result;
+        return result.rows[0];
     }
 
     async findOne({ id, name, authorID }) {
         if ( id ) {
-            await this.pool.connect();
             const result = await this.pool.query(`SELECT * FROM paste WHERE id=${id}`);
             await this.pool.end();
-            return result;
+            return result.rows[0];
         }
 
         if( name ) {
-            await this.pool.connect();
             const result = await this.pool.query(`SELECT * FROM paste WHERE name='${name}' limit 1`);
             await this.pool.end();
-            return result;
+            return result.rows[0];
         }
 
         if( authorID ) {
-            await this.pool.connect();
             const result = await this.pool.query(`SELECT * FROM paste WHERE author_id='${authorID}' limit 1`);
             await this.pool.end();
-            return result;
+            return result.rows[0];
         }
     }
 
     async findAll({ id, name, authorID}) {
         if ( id ) {
-            await this.pool.connect();
             const result = await this.pool.query(`SELECT * FROM paste WHERE id=${id}`);
             await this.pool.end();
-            return result;
+            return result.rows[0];
         }
 
         if( name ) {
-            await this.pool.connect();
             const result = await this.pool.query(`SELECT * FROM paste WHERE name='${name}'`);
             await this.pool.end();
-            return result;
+            return result.rows[0];
         }
 
         if( authorID ) {
-            await this.pool.connect();
             const result = await this.pool.query(`SELECT * FROM paste WHERE author_id=${authorID}`);
             await this.pool.end();
-            return result;
+            return result.rows[0];
         }
     }
 
@@ -63,7 +57,6 @@ class PasteReository {
         const currentDateAndTime = new Date();
         createdAtTime = currentDateAndTime.toISOString().split('T')[0];
 
-        await this.pool.connect();
         await this.pool.query(`insert into paste (name, text, expires_after, visibility, author_id, created_at) values 
             ('${name}', '${text}', '${expiresAfter}', '${visibility}', ${authorID}, current_timestamp)`); //current_timestamp -> '${this.currentDateAndTime.getDateAndTime()}'
         await this.pool.end();
@@ -86,13 +79,11 @@ class PasteReository {
             itemsToUpdate.push(`visibility='${visibility}'`);
         }
 
-        await this.pool.connect();
         await this.pool.query(`update paste set ${itemsToUpdate.toString()} updated_at=current_timestamp where id=${id};`);
         await this.pool.end();
     }
 
     async delete({ id }) {
-        await this.pool.connect();
         await this.pool.query(`update paste set deleted_at=current_timestamp where id=${id};`);
         await this.pool.end();
     }
