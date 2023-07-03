@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const { Pool } = require("pg");
+/* const { Pool } = require("pg");
 const pg = require('pg');
 require('dotenv').config();
 const pool = new Pool({
@@ -15,11 +15,11 @@ const UserRepository = require('./app/entity-repositories/userRepository');
 const userRepository = new UserRepository({pool});
 
 const PasteReository = require('./app/entity-repositories/pasteRepository');
-const pasteRepository = new PasteReository({pool});
+const pasteRepository = new PasteReository({pool}); */
 
 (async () => {
 
     //console.log(await userRepository.findAll({id: 1}));
-    console.log(await pasteRepository.findAll({name: 'new name'}));
+    //console.log(await pasteRepository.findAll({name: 'new name'}));
     
 })()
