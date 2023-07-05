@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-/* const { Pool } = require("pg");
+const { Pool } = require("pg");
 const pg = require('pg');
 require('dotenv').config();
 const pool = new Pool({
@@ -11,15 +11,23 @@ const pool = new Pool({
     port: process.env.POSTGRES_DB_PORT,
 });
 
+const DBProvider = require('./db/dbProvider');
 const UserRepository = require('./app/entity-repositories/userRepository');
-const userRepository = new UserRepository({pool});
-
 const PasteReository = require('./app/entity-repositories/pasteRepository');
-const pasteRepository = new PasteReository({pool}); */
+const UrlRepository = require('./app/entity-repositories/urlRepository');
+
+const dbProvider = new DBProvider({ pool });
+const userRepository = new UserRepository({ dbProvider });
+const pasteRepository = new PasteReository({ dbProvider });
+const urlRepository = new UrlRepository({ dbProvider });
 
 (async () => {
 
-    //console.log(await userRepository.findAll({id: 1}));
-    //console.log(await pasteRepository.findAll({name: 'new name'}));
-    
+    // if i use "jopa's" apostrofe counts as quotation mark (have to fix it somehow later)
+    // in paste table, but most likely it's everywhere
+
+    //const gamno = await userRepository.findAll({id: [1, 3, 4], name: 'jopa'});
+    //const gamno = await pasteRepository.findAll({id: [1, 3, 4], name: 'jopas paste'});
+    //console.log(gamno);
+
 })()

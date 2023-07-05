@@ -1,6 +1,6 @@
 class UserRepository {
-    constructor ({pool}) {
-        this.pool = pool;
+    constructor ({ dbProvider }) {
+        this.dbProvider = dbProvider;
     }
 
     async findByID({ id }) {
@@ -9,52 +9,63 @@ class UserRepository {
     }
 
     async findOne({ id, name }) {
-       
-        if ( id ) {
-            const result = await this.pool.query(`SELECT * FROM users WHERE id=${id}`);
-            await this.pool.end();
-            return result.rows[0];
-        }
 
-        if( name ) {
-            const result = await this.pool.query(`SELECT * FROM users WHERE name='${name}' limit 1`);
-            await this.pool.end();
-            return result.rows[0];
-        }
+        const result = await this.findAll({ id, name });
+        return result[0];
 
     }
 
     async findAll({ id, name }) {
 
+        if ( !id && !name ) {
+            return;
+        }
+
+        const itemsToFind = [];
+
         if ( id ) {
-            const result = await this.pool.query(`SELECT * FROM users WHERE id=${id}`);
-            await this.pool.end();
-            return result.rows[0];
+            if (Array.isArray(id)) {
+                for (let i = 0; i < id.length; i++) {
+                    itemsToFind.push(`id=${id[i]}`);
+                }
+            } else {
+                itemsToFind.push(`id=${id}`);
+            }
         }
 
         if( name ) {
-            const result = await this.pool.query(`SELECT * FROM users WHERE name='${name}'`);
-            await this.pool.end();
-            return result.rows[0];
+            itemsToFind.push(`name='${name}'`);
         }
+        
+        // AND makes the query more precise i think
+        // but if it has to be that way then i'll change it
+        const result = await this.dbProvider.execute(`SELECT * FROM users WHERE ${itemsToFind.join(' OR ')}`); 
+        return result;
         
     }
 
     async create(name) {
-        await this.pool.query(`insert into users (name) values ('${name}')`);
-        await this.pool.end();
+
+        if (!name) {
+            return;
+        }
+
+        await this.dbProvider.execute(`insert into users (name) values ('${name}')`);
+
     }
 
     async update({ id, newName }) {
-        await this.pool.query(`update users set name='${newName}' where id=${id};`);
-        await this.pool.end();
+
+        await this.dbProvider.execute(`update users set name='${newName}' where id=${id};`);
+
     }
 
     // should i add deleting pastes after deleting user or is it ok
     // to leave pastes of deleted users?
     async delete({ id }) {
-        await this.pool.query(`delete from users where id=${id}`);
-        await this.pool.end();
+
+        await this.dbProvider.execute(`delete from users where id=${id}`);
+
     }
 }
 

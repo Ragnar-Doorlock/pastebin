@@ -1,69 +1,57 @@
 class PasteReository {
-    constructor ({pool}) {
-        this.pool = pool;
+    constructor ({ dbProvider }) {
+        this.dbProvider = dbProvider;
     }
 
     async findByID({ id }) {
-        const result = this.findOne({ id });
-        return result.rows[0];
+
+        const result = await this.findOne({ id });
+        return result;
+
     }
 
     async findOne({ id, name, authorID }) {
-        if ( id ) {
-            const result = await this.pool.query(`SELECT * FROM paste WHERE id=${id}`);
-            await this.pool.end();
-            return result.rows[0];
-        }
+        
+        const result = await this.findAll({ id, name, authorID });
+        return result[0];
 
-        if( name ) {
-            const result = await this.pool.query(`SELECT * FROM paste WHERE name='${name}' limit 1`);
-            await this.pool.end();
-            return result.rows[0];
-        }
-
-        if( authorID ) {
-            const result = await this.pool.query(`SELECT * FROM paste WHERE author_id='${authorID}' limit 1`);
-            await this.pool.end();
-            return result.rows[0];
-        }
     }
 
     async findAll({ id, name, authorID}) {
+
+        const itemsToFind = [];
+
         if ( id ) {
-            const result = await this.pool.query(`SELECT * FROM paste WHERE id=${id}`);
-            await this.pool.end();
-            return result.rows[0];
+            if (Array.isArray(id)) {
+                for (let i = 0; i < id.length; i++) {
+                    itemsToFind.push(`id=${id[i]}`);
+                }
+            } else {
+                itemsToFind.push(`id=${id}`);
+            }
         }
 
         if( name ) {
-            const result = await this.pool.query(`SELECT * FROM paste WHERE name='${name}'`);
-            await this.pool.end();
-            return result.rows[0];
+            itemsToFind.push(`name='${name}'`);
         }
 
         if( authorID ) {
-            const result = await this.pool.query(`SELECT * FROM paste WHERE author_id=${authorID}`);
-            await this.pool.end();
-            return result.rows[0];
+            itemsToFind.push(`author_id=${authorID}`);
         }
+        
+        const result = await this.dbProvider.execute(`SELECT * FROM paste WHERE ${itemsToFind.join(' OR ')}`);
+        return result;
+
     }
 
-    // do i need to add methors for getting each field? 
-    // basically it should be possible to get from result of paste search
-
     async create({ name, text, expiresAfter, visibility, authorID}) {
-        // expiresAfter and createdAt format: 2023-07-04 12:30:00
 
-        const currentDateAndTime = new Date();
-        createdAtTime = currentDateAndTime.toISOString().split('T')[0];
-
-        await this.pool.query(`insert into paste (name, text, expires_after, visibility, author_id, created_at) values 
-            ('${name}', '${text}', '${expiresAfter}', '${visibility}', ${authorID}, current_timestamp)`); //current_timestamp -> '${this.currentDateAndTime.getDateAndTime()}'
-        await this.pool.end();
+        await this.dbProvider.execute(`insert into paste (name, text, expires_after, visibility, author_id, created_at) values 
+            ('${name}', '${text}', '${expiresAfter}', '${visibility}', ${authorID}, current_timestamp)`);
+        
     }
 
     async update({id, name, text, visibility}) {
-        // expiresAfter and createdAt format: 2023-07-04 12:30:00
 
         const itemsToUpdate = [];
 
@@ -79,13 +67,14 @@ class PasteReository {
             itemsToUpdate.push(`visibility='${visibility}'`);
         }
 
-        await this.pool.query(`update paste set ${itemsToUpdate.toString()} updated_at=current_timestamp where id=${id};`);
-        await this.pool.end();
+        await this.dbProvider.execute(`update paste set ${itemsToUpdate.join(', ')} updated_at=current_timestamp where id=${id};`);
+        
     }
 
     async delete({ id }) {
-        await this.pool.query(`update paste set deleted_at=current_timestamp where id=${id};`);
-        await this.pool.end();
+
+        await this.dbProvider.execute(`update paste set deleted_at=current_timestamp where id=${id};`);
+        
     }
 }
 
