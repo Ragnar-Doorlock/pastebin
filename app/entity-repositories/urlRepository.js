@@ -3,10 +3,15 @@ class UrlRepository {
         this.dbProvider = dbProvider;
     }
 
-    async getHash({pasteID}) {
+    async getUrl({baseUrl, pasteID}) {
 
         const result = await this.dbProvider.execute(`SELECT hash FROM url WHERE paste_id=${pasteID}`);
-        return result;
+
+        if(!result) {
+            return null;
+        }
+
+        return baseUrl + result;
 
     }
 
@@ -19,6 +24,11 @@ class UrlRepository {
     async getPasteIdByHash({hash}) {
 
         const result = await this.dbProvider.execute(`SELECT paste_id FROM url WHERE hash='${hash}'`);
+
+        if(!result) {
+            return null;
+        }
+        
         return result;
 
     }

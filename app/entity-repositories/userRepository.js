@@ -11,6 +11,11 @@ class UserRepository {
     async findOne({ id, name }) {
 
         const result = await this.findAll({ id, name });
+
+        if(!result) {
+            return null;
+        }
+
         return result[0];
 
     }
@@ -24,22 +29,35 @@ class UserRepository {
         const itemsToFind = [];
 
         if ( id ) {
+
+            const arrayOfIDs = [];
+
             if (Array.isArray(id)) {
+
                 for (let i = 0; i < id.length; i++) {
-                    itemsToFind.push(`id=${id[i]}`);
+                    arrayOfIDs.push(id[i]);
                 }
+
+                itemsToFind.push(`id in (${arrayOfIDs.join(', ')})`); // 
+
             } else {
-                itemsToFind.push(`id=${id}`);
+
+                itemsToFind.push(`id in (${id})`);
+
             }
         }
 
         if( name ) {
             itemsToFind.push(`name='${name}'`);
         }
-        
-        // AND makes the query more precise i think
-        // but if it has to be that way then i'll change it
-        const result = await this.dbProvider.execute(`SELECT * FROM users WHERE ${itemsToFind.join(' OR ')}`); 
+
+        //console.log(`SELECT * FROM users WHERE ${itemsToFind.join(' AND ')}`);
+        const result = await this.dbProvider.execute(`SELECT * FROM users WHERE ${itemsToFind.join(' AND ')}`); 
+
+        if(!result) {
+            return null;
+        }
+
         return result;
         
     }
