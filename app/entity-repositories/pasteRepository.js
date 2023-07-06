@@ -1,4 +1,4 @@
-class PasteReository {
+class PasteRepository {
     constructor ({ dbProvider }) {
         this.dbProvider = dbProvider;
     }
@@ -13,6 +13,11 @@ class PasteReository {
     async findOne({ id, name, authorID }) {
         
         const result = await this.findAll({ id, name, authorID });
+        
+        if(!result) {
+            return null;
+        }
+
         return result[0];
 
     }
@@ -22,12 +27,21 @@ class PasteReository {
         const itemsToFind = [];
 
         if ( id ) {
+
+            const arrayOfIDs = [];
+
             if (Array.isArray(id)) {
+                
                 for (let i = 0; i < id.length; i++) {
-                    itemsToFind.push(`id=${id[i]}`);
+                    arrayOfIDs.push(id[i]);
                 }
+
+                itemsToFind.push(`id in (${arrayOfIDs.join(', ')})`);
+
             } else {
-                itemsToFind.push(`id=${id}`);
+
+                itemsToFind.push(`id in (${id})`);
+
             }
         }
 
@@ -39,7 +53,13 @@ class PasteReository {
             itemsToFind.push(`author_id=${authorID}`);
         }
         
-        const result = await this.dbProvider.execute(`SELECT * FROM paste WHERE ${itemsToFind.join(' OR ')}`);
+        //console.log(`SELECT * FROM paste WHERE ${itemsToFind.join(' AND ')}`);
+        const result = await this.dbProvider.execute(`SELECT * FROM paste WHERE ${itemsToFind.join(' AND ')}`);
+
+        if(!result) {
+            return null;
+        }
+
         return result;
 
     }
@@ -78,4 +98,4 @@ class PasteReository {
     }
 }
 
-module.exports = PasteReository;
+module.exports = PasteRepository;

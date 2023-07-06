@@ -22,10 +22,6 @@ class UserRepository {
 
     async findAll({ id, name }) {
 
-        if ( !id && !name ) {
-            return;
-        }
-
         const itemsToFind = [];
 
         if ( id ) {
