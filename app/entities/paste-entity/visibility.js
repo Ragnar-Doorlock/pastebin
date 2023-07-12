@@ -1,5 +1,5 @@
 const visibility = {
-    PUBLICK: "publick",
+    PUBLIC: "public",
     PRIVATE: "private",
     SHARED: "shared"
     // пускай пока будет shared, потом придумаю нормальное название
