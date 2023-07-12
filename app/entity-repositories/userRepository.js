@@ -1,6 +1,9 @@
+const UserFactory = require('../entities/user-entity/userFactory');
+
 class UserRepository {
     constructor ({ dbProvider }) {
         this.dbProvider = dbProvider;
+        this.userFactory = new UserFactory();
     }
 
     async findByID({ id }) {
@@ -10,35 +13,31 @@ class UserRepository {
 
     async findOne({ id, name }) {
 
-        const result = await this.findAll({ id, name });
+        const result = await this.findAll({ ids: id, name });
 
-        if(!result) {
-            return null;
-        }
-
-        return result[0];
+        return result.length > 0 ? result[0] : null;
 
     }
 
-    async findAll({ id, name }) {
+    async findAll({ ids, name }) {
 
         const itemsToFind = [];
 
-        if ( id ) {
+        if ( ids ) {
 
             const arrayOfIDs = [];
 
-            if (Array.isArray(id)) {
+            if (ids.length > 1) {
 
-                for (let i = 0; i < id.length; i++) {
-                    arrayOfIDs.push(id[i]);
+                for (let i = 0; i < ids.length; i++) {
+                    arrayOfIDs.push(ids[i]);
                 }
 
-                itemsToFind.push(`id in (${arrayOfIDs.join(', ')})`); // 
+                itemsToFind.push(`id in (${arrayOfIDs.join(', ')})`);
 
             } else {
 
-                itemsToFind.push(`id in (${id})`);
+                itemsToFind.push(`id in (${ids})`);
 
             }
         }
@@ -48,10 +47,16 @@ class UserRepository {
         }
 
         //console.log(`SELECT * FROM users WHERE ${itemsToFind.join(' AND ')}`);
-        const result = await this.dbProvider.execute(`SELECT * FROM users WHERE ${itemsToFind.join(' AND ')}`); 
+        const queryResult = await this.dbProvider.execute(`SELECT * FROM users WHERE ${itemsToFind.join(' AND ')}`); 
 
-        if(!result) {
+        if(!queryResult) {
             return null;
+        }
+
+        const result = [];
+
+        for (let i = 0; i < queryResult.length; i++) {
+            result.push(this.userFactory.create({ data: queryResult[i] }));
         }
 
         return result;
@@ -74,9 +79,7 @@ class UserRepository {
 
     }
 
-    // should i add deleting pastes after deleting user or is it ok
-    // to leave pastes of deleted users?
-    async delete({ id }) {
+    async delete(id) {
 
         await this.dbProvider.execute(`delete from users where id=${id}`);
 

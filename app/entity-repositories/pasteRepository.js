@@ -1,6 +1,9 @@
+const PasteFactory = require('../entities/paste-entity/pasteFactory');
+
 class PasteRepository {
     constructor ({ dbProvider }) {
         this.dbProvider = dbProvider;
+        this.pasteFactory = new PasteFactory();
     }
 
     async findByID({ id }) {
@@ -12,35 +15,31 @@ class PasteRepository {
 
     async findOne({ id, name, authorID }) {
         
-        const result = await this.findAll({ id, name, authorID });
+        const result = await this.findAll({ ids: id, name, authorID });
         
-        if(!result) {
-            return null;
-        }
-
-        return result[0];
+        return result.length > 0 ? result[0] : null;
 
     }
 
-    async findAll({ id, name, authorID}) {
+    async findAll({ ids, name, authorID}) {
 
         const itemsToFind = [];
 
-        if ( id ) {
+        if ( ids ) {
 
             const arrayOfIDs = [];
 
-            if (Array.isArray(id)) {
+            if (ids.length > 1) {
                 
-                for (let i = 0; i < id.length; i++) {
-                    arrayOfIDs.push(id[i]);
+                for (let i = 0; i < ids.length; i++) {
+                    arrayOfIDs.push(ids[i]);
                 }
 
                 itemsToFind.push(`id in (${arrayOfIDs.join(', ')})`);
 
             } else {
 
-                itemsToFind.push(`id in (${id})`);
+                itemsToFind.push(`id in (${ids})`);
 
             }
         }
@@ -54,10 +53,16 @@ class PasteRepository {
         }
         
         //console.log(`SELECT * FROM paste WHERE ${itemsToFind.join(' AND ')}`);
-        const result = await this.dbProvider.execute(`SELECT * FROM paste WHERE ${itemsToFind.join(' AND ')}`);
+        const queryResult = await this.dbProvider.execute(`SELECT * FROM paste WHERE ${itemsToFind.join(' AND ')}`);
 
-        if(!result) {
+        if(!queryResult) {
             return null;
+        }
+
+        const result = [];
+
+        for (let i = 0; i < queryResult.length; i++) {
+            result.push(this.pasteFactory.create({ data: queryResult[i], visibility: queryResult[i].visibility }));
         }
 
         return result;
@@ -91,7 +96,7 @@ class PasteRepository {
         
     }
 
-    async delete({ id }) {
+    async delete(id) {
 
         await this.dbProvider.execute(`update paste set deleted_at=current_timestamp where id=${id};`);
         

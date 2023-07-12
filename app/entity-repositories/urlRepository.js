@@ -1,23 +1,26 @@
+const UrlFactory = require('../entities/url-entity/urlFactory');
+
 class UrlRepository {
     constructor({ dbProvider }) {
         this.dbProvider = dbProvider;
+        this.urlFactory = new UrlFactory();
     }
 
-    async getUrl({baseUrl, pasteID}) {
+    async getUrl({ pasteID }) {
 
-        const result = await this.dbProvider.execute(`SELECT hash FROM url WHERE paste_id=${pasteID}`);
+        const queryResult = await this.dbProvider.execute(`SELECT * FROM url WHERE paste_id=${pasteID}`);
 
-        if(!result) {
+        if(!queryResult) {
             return null;
         }
 
-        return baseUrl + result;
+        return this.urlFactory.create({ data: queryResult[0] });
 
     }
 
-    async createHash({pasteID}) {
+    async createHash({pasteID, hash}) {
         
-        await this.dbProvider.execute(`insert into url (paste_id, hash) values (${pasteID}, '[fake-url-hash]')`); //fake hash for now
+        await this.dbProvider.execute(`insert into url (paste_id, hash) values (${pasteID}, '${hash}')`);
 
     }
 
@@ -33,7 +36,7 @@ class UrlRepository {
 
     }
 
-    async deleteHash({pasteID}) {
+    async deleteHash(pasteID) {
 
         await this.dbProvider.execute(`delete from url WHERE paste_id=${pasteID}`);
 

@@ -1,5 +1,5 @@
 class Url {
-    constructor(data) {
+    constructor({data}) {
         this._hash = data.hash;
     }
 

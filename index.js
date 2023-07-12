@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 
-const Singleton = require('./db/singleton');
-const pool = Singleton.getInstance();
+const PostgresPoolConnection = require('./db/postgresPoolConnection');
+const pool = PostgresPoolConnection.getInstance();
 
 const DBProvider = require('./db/dbProvider');
 const UserRepository = require('./app/entity-repositories/userRepository');
@@ -19,4 +19,7 @@ const urlRepository = new UrlRepository({ dbProvider });
     // if i use "jopa's" apostrofe counts as quotation mark (have to fix it somehow later)
     // in paste table, but most likely it's everywhere
 
+    //console.log(await pasteRepository.findAll({ids: [1, 2]}));
+    //console.log(await userRepository.findAll({ids: [1, 3]}));
+    //console.log(await urlRepository.getUrl({ pasteID: 1}));
 })()
