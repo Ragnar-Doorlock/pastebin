@@ -46,7 +46,6 @@ class Paste {
     getDeletedAt() {
         return this._deletedAt;
     }
-
 }
 
 module.exports = Paste;
