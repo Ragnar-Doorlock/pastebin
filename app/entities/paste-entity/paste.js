@@ -3,12 +3,12 @@ class Paste {
         this._id = data.id;
         this._name = data.name;
         this._text = data.text;
-        this._expiresAfter = data.expires_after;
+        this._expiresAfter = data.expiresAfter;
         this._visibility = visibility;
-        this._authorId = data.author_id;
-        this._createdAt = data.created_at;
-        this._updatedAt = data.updated_at;
-        this._deletedAt = data.deleted_at;
+        this._authorId = data.authorId;
+        this._createdAt = data.createdAt;
+        this._updatedAt = data.updatedAt;
+        this._deletedAt = data.deletedAt;
     }
 
     getId() {
@@ -46,7 +46,6 @@ class Paste {
     getDeletedAt() {
         return this._deletedAt;
     }
-
 }
 
 module.exports = Paste;

@@ -1,24 +1,22 @@
 const PasteFactory = require('../entities/paste-entity/pasteFactory');
+const KebabRemover = require('../kebab-case-remover/kebabRemover');
+
+const pasteFactory = new PasteFactory();
+const kebabRemover = new KebabRemover();
 
 class PasteRepository {
     constructor ({ dbProvider }) {
         this.dbProvider = dbProvider;
-        this.pasteFactory = new PasteFactory();
     }
 
     async findByID({ id }) {
-
         const result = await this.findOne({ id });
         return result;
-
     }
 
     async findOne({ id, name, authorID }) {
-        
         const result = await this.findAll({ ids: id, name, authorID });
-        
         return result.length > 0 ? result[0] : null;
-
     }
 
     async findAll({ ids, name, authorID}) {
@@ -62,22 +60,21 @@ class PasteRepository {
         const result = [];
 
         for (let i = 0; i < queryResult.length; i++) {
-            result.push(this.pasteFactory.create({ data: queryResult[i], visibility: queryResult[i].visibility }));
+            const queryResultKeysToCamel = kebabRemover.execute(queryResult[i]);
+            //console.log(queryResultKeysToCamel);
+            
+            result.push(pasteFactory.create({ data: queryResultKeysToCamel, visibility: queryResult[i].visibility }));
         }
 
         return result;
-
     }
 
     async create({ name, text, expiresAfter, visibility, authorID}) {
-
         await this.dbProvider.execute(`insert into paste (name, text, expires_after, visibility, author_id, created_at) values 
             ('${name}', '${text}', '${expiresAfter}', '${visibility}', ${authorID}, current_timestamp)`);
-        
     }
 
     async update({id, name, text, visibility}) {
-
         const itemsToUpdate = [];
 
         if (name) {
@@ -93,13 +90,10 @@ class PasteRepository {
         }
 
         await this.dbProvider.execute(`update paste set ${itemsToUpdate.join(', ')} updated_at=current_timestamp where id=${id};`);
-        
     }
 
     async delete(id) {
-
         await this.dbProvider.execute(`update paste set deleted_at=current_timestamp where id=${id};`);
-        
     }
 }
 
