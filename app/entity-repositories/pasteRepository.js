@@ -24,21 +24,10 @@ class PasteRepository {
         const itemsToFind = [];
 
         if ( ids ) {
-
-            const arrayOfIDs = [];
-
             if (ids.length > 1) {
-                
-                for (let i = 0; i < ids.length; i++) {
-                    arrayOfIDs.push(ids[i]);
-                }
-
-                itemsToFind.push(`id in (${arrayOfIDs.join(', ')})`);
-
+                itemsToFind.push(`id in (${ids.join(', ')})`);
             } else {
-
                 itemsToFind.push(`id in (${ids})`);
-
             }
         }
 
@@ -57,14 +46,8 @@ class PasteRepository {
             return null;
         }
 
-        const result = [];
-
-        for (let i = 0; i < queryResult.length; i++) {
-            const queryResultKeysToCamel = kebabRemover.execute(queryResult[i]);
-            //console.log(queryResultKeysToCamel);
-            
-            result.push(pasteFactory.create({ data: queryResultKeysToCamel, visibility: queryResult[i].visibility }));
-        }
+        const queryResultKeysToCamel = queryResult.map(x => kebabRemover.execute(x));
+        const result = queryResultKeysToCamel.map(x => pasteFactory.create({ data: x, visibility: x.visibility }));
 
         return result;
     }

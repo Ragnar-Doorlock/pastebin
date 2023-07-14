@@ -20,7 +20,6 @@ class PostgresPoolConnection {
 
         this.pool = new Singleton();
         return this.pool;
-    
     }
 }
 
