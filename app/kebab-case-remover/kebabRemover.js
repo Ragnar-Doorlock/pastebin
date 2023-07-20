@@ -6,8 +6,8 @@ class KebabRemover {
         const updatedObject = {};
         
         Object.keys(queryResult).forEach((key, index) => {
-          const newKey = queryKeysCamel[index];
-          updatedObject[newKey] = queryResult[key];
+            const newKey = queryKeysCamel[index];
+            updatedObject[newKey] = queryResult[key];
         });
 
         return updatedObject;

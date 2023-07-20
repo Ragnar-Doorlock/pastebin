@@ -1,8 +1,5 @@
 const PasteFactory = require('../entities/paste-entity/pasteFactory');
-const KebabRemover = require('../kebab-case-remover/kebabRemover');
-
 const pasteFactory = new PasteFactory();
-const kebabRemover = new KebabRemover();
 
 class PasteRepository {
     constructor ({ dbProvider }) {
@@ -24,11 +21,8 @@ class PasteRepository {
         const itemsToFind = [];
 
         if ( ids ) {
-            if (ids.length > 1) {
-                itemsToFind.push(`id in (${ids.join(', ')})`);
-            } else {
-                itemsToFind.push(`id in (${ids})`);
-            }
+            const stringIds = ids.map(x => `'${x}'`);
+            itemsToFind.push(`id in (${stringIds.join(', ')})`);
         }
 
         if( name ) {
@@ -46,18 +40,19 @@ class PasteRepository {
             return null;
         }
 
-        const queryResultKeysToCamel = queryResult.map(x => kebabRemover.execute(x));
-        const result = queryResultKeysToCamel.map(x => pasteFactory.create({ data: x, visibility: x.visibility }));
+        const result = queryResult.map(x => pasteFactory.create({ id: x.id, name: x.name, text: x.name, expiresAfter: x.expires_after,
+            visibility: x.visibility, authorID: x.author_id, createdAt: x.created_at, updatedAt: x.updated_at, deletedAt: x.deleted_at }));
 
         return result;
     }
 
-    async create({ name, text, expiresAfter, visibility, authorID}) {
-        await this.dbProvider.execute(`insert into paste (name, text, expires_after, visibility, author_id, created_at) values 
-            ('${name}', '${text}', '${expiresAfter}', '${visibility}', ${authorID}, current_timestamp)`);
+    async save(paste) {
+        await this.dbProvider.execute(`insert into paste (id, name, text, expires_after, visibility, author_id, created_at) 
+        values ('${paste.getId()}'::varchar(60), '${paste.getName()}', '${paste.getText()}', '${paste.getExpiration()}', '${paste.getVisibility()}', '${paste.getAuthorId()}', current_timestamp) ON conflict (id) 
+        DO update set name='${paste.getName()}', text='${paste.getText()}', visibility='${paste.getVisibility()}', updated_at=current_timestamp`);
     }
 
-    async update({id, name, text, visibility}) {
+    /* async update({id, name, text, visibility}) {
         const itemsToUpdate = [];
 
         if (name) {
@@ -73,7 +68,7 @@ class PasteRepository {
         }
 
         await this.dbProvider.execute(`update paste set ${itemsToUpdate.join(', ')} updated_at=current_timestamp where id=${id};`);
-    }
+    } */
 
     async delete(id) {
         await this.dbProvider.execute(`update paste set deleted_at=current_timestamp where id=${id};`);

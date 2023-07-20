@@ -21,19 +21,8 @@ class UserRepository {
         const itemsToFind = [];
 
         if ( ids ) {
-            const arrayOfIDs = [];
-
-            if (ids.length > 1) {
-
-                for (let i = 0; i < ids.length; i++) {
-                    arrayOfIDs.push(ids[i]);
-                }
-
-                itemsToFind.push(`id in (${arrayOfIDs.join(', ')})`);
-
-            } else {
-                itemsToFind.push(`id in (${ids})`);
-            }
+            const stringIds = ids.map(x => `'${x}'`);
+            itemsToFind.push(`id in (${stringIds.join(', ')})`);
         }
 
         if( name ) {
@@ -47,21 +36,21 @@ class UserRepository {
             return null;
         }
 
-        const result = queryResult.map(x => userFactory.create({ data: x }));
+        const result = queryResult.map(x => userFactory.create( x ));
         return result;
     }
 
-    async create(name) {
-        if (!name) {
+    async save(user) {
+        if (!user) {
             return;
         }
-
-        await this.dbProvider.execute(`insert into users (name) values ('${name}')`);
+        
+        await this.dbProvider.execute(`insert into users (id, name) values ('${user.getId()}'::varchar(60), '${user.getName()}') ON CONFLICT (id) DO UPDATE set name='${user.getName()}'`);
     }
 
-    async update({ id, newName }) {
+    /* async update({ id, newName }) {
         await this.dbProvider.execute(`update users set name='${newName}' where id=${id};`);
-    }
+    } */
 
     async delete(id) {
         await this.dbProvider.execute(`delete from users where id=${id}`);

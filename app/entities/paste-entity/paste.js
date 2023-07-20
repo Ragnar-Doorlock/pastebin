@@ -1,10 +1,10 @@
 class Paste {
-    constructor ({data, visibility}) {
+    constructor (data) {
         this._id = data.id;
         this._name = data.name;
         this._text = data.text;
         this._expiresAfter = data.expiresAfter;
-        this._visibility = visibility;
+        this._visibility = data.visibility;
         this._authorId = data.authorId;
         this._createdAt = data.createdAt;
         this._updatedAt = data.updatedAt;

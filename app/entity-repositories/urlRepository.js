@@ -1,7 +1,5 @@
 const UrlFactory = require('../entities/url-entity/urlFactory');
-const KebabRemover = require('../kebab-case-remover/kebabRemover');
 const urlFactory = new UrlFactory();
-const kebabRemover = new KebabRemover();
 
 class UrlRepository {
     constructor({ dbProvider }) {
@@ -22,21 +20,8 @@ class UrlRepository {
         const itemsToFind = [];
 
         if(pasteIds) {
-            const arrayOfIDs = [];
-
-            if (pasteIds.length > 1) {
-
-                for (let i = 0; i < pasteIds.length; i++) {
-                    arrayOfIDs.push(pasteIds[i]);
-                }
-
-                itemsToFind.push(`paste_id in (${arrayOfIDs.join(', ')})`);
-
-            } else {
-
-                itemsToFind.push(`paste_id in (${pasteIds})`);
-
-            }
+            const stringPasteIds = pasteIds.map(x => `'${x}'`);
+            itemsToFind.push(`paste_id in (${stringPasteIds.join(', ')})`);
         }
 
         if(hash) {
@@ -49,13 +34,13 @@ class UrlRepository {
             return null;
         }
 
-        const queryResultKeysToCamel = queryResult.map(x => kebabRemover.execute(x));
-        const result = queryResultKeysToCamel.map(x => urlFactory.create( x ));
+        const result = queryResult.map(x => urlFactory.create({ pasteId: x.paste_id, hash: x.hash }));
         return result;
     }
 
-    async createHash({pasteID, hash}) {
-        await this.dbProvider.execute(`insert into url (paste_id, hash) values (${pasteID}, '${hash}')`);
+    async createHash(data) {
+        //console.log(`insert into url (paste_id, hash) values ('${data.getPasteId()}'::varchar(40), '${data.getHash()}') ON conflict (paste_id) DO NOTHING`);
+        await this.dbProvider.execute(`insert into url (paste_id, hash) values ('${data.getPasteId}'::varchar(60), '${data.getHash}')`);
     }
 
 
