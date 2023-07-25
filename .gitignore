@@ -132,3 +132,4 @@ dist
 .vscode
 
 db/migrations/umzug.json
+app/kebab-case-remover/
