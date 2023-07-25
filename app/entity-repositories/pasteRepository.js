@@ -1,9 +1,9 @@
 const PasteFactory = require('../entities/paste-entity/pasteFactory');
-const pasteFactory = new PasteFactory();
 
 class PasteRepository {
-    constructor ({ dbProvider }) {
+    constructor ({ dbProvider, pasteFactory }) {
         this.dbProvider = dbProvider;
+        this.pasteFactory = pasteFactory;
     }
 
     async findByID({ id }) {
@@ -40,7 +40,7 @@ class PasteRepository {
             return null;
         }
 
-        const result = queryResult.map(x => pasteFactory.create({ id: x.id, name: x.name, text: x.name, expiresAfter: x.expires_after,
+        const result = queryResult.map(x => this.pasteFactory.create({ id: x.id, name: x.name, text: x.name, expiresAfter: x.expires_after,
             visibility: x.visibility, authorID: x.author_id, createdAt: x.created_at, updatedAt: x.updated_at, deletedAt: x.deleted_at }));
 
         return result;
@@ -51,24 +51,6 @@ class PasteRepository {
         values ('${paste.getId()}'::varchar(60), '${paste.getName()}', '${paste.getText()}', '${paste.getExpiration()}', '${paste.getVisibility()}', '${paste.getAuthorId()}', current_timestamp) ON conflict (id) 
         DO update set name='${paste.getName()}', text='${paste.getText()}', visibility='${paste.getVisibility()}', updated_at=current_timestamp`);
     }
-
-    /* async update({id, name, text, visibility}) {
-        const itemsToUpdate = [];
-
-        if (name) {
-            itemsToUpdate.push(`name='${name}'`);
-        }
-
-        if (text) {
-            itemsToUpdate.push(`text='${text}'`);
-        }
-
-        if (visibility) {
-            itemsToUpdate.push(`visibility='${visibility}'`);
-        }
-
-        await this.dbProvider.execute(`update paste set ${itemsToUpdate.join(', ')} updated_at=current_timestamp where id=${id};`);
-    } */
 
     async delete(id) {
         await this.dbProvider.execute(`update paste set deleted_at=current_timestamp where id=${id};`);

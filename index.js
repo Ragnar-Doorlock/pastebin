@@ -15,18 +15,15 @@ const UserFactory = require('./app/entities/user-entity/userFactory');
 const PasteFactory = require('./app/entities/paste-entity/pasteFactory');
 const UrlFactory = require('./app/entities/url-entity/urlFactory');
 
-const dbProvider = new DBProvider({ pool });
-const userRepository = new UserRepository({ dbProvider });
-const pasteRepository = new PasteRepository({ dbProvider });
-const urlRepository = new UrlRepository({ dbProvider });
 const userFactory = new UserFactory();
 const pasteFactory = new PasteFactory();
 const urlFactory = new UrlFactory();
+const dbProvider = new DBProvider({ pool });
+const userRepository = new UserRepository({ dbProvider, userFactory });
+const pasteRepository = new PasteRepository({ dbProvider, pasteFactory });
+const urlRepository = new UrlRepository({ dbProvider, urlFactory });
 
 (async () => {
-
-    // if i use "jopa's" apostrofe counts as quotation mark (have to fix it somehow later)
-    // in paste table, but most likely it's everywhere
 
     //console.log(await pasteRepository.findAll({ids: ['paste-1']}));
     //console.log(await userRepository.findAll({ids: ['user-3']}));

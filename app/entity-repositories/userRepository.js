@@ -1,9 +1,9 @@
 const UserFactory = require('../entities/user-entity/userFactory');
-const userFactory = new UserFactory();
 
 class UserRepository {
-    constructor ({ dbProvider }) {
+    constructor ({ dbProvider, userFactory }) {
         this.dbProvider = dbProvider;
+        this.userFactory = userFactory;
     }
 
     async findByID({ id }) {
@@ -36,7 +36,7 @@ class UserRepository {
             return null;
         }
 
-        const result = queryResult.map(x => userFactory.create( x ));
+        const result = queryResult.map(x => this.userFactory.create( x ));
         return result;
     }
 
@@ -47,10 +47,6 @@ class UserRepository {
         
         await this.dbProvider.execute(`insert into users (id, name) values ('${user.getId()}'::varchar(60), '${user.getName()}') ON CONFLICT (id) DO UPDATE set name='${user.getName()}'`);
     }
-
-    /* async update({ id, newName }) {
-        await this.dbProvider.execute(`update users set name='${newName}' where id=${id};`);
-    } */
 
     async delete(id) {
         await this.dbProvider.execute(`delete from users where id=${id}`);

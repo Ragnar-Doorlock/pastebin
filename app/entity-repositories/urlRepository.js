@@ -1,9 +1,9 @@
 const UrlFactory = require('../entities/url-entity/urlFactory');
-const urlFactory = new UrlFactory();
 
 class UrlRepository {
-    constructor({ dbProvider }) {
+    constructor({ dbProvider, urlFactory }) {
         this.dbProvider = dbProvider;
+        this.urlFactory = urlFactory;
     }
 
     async findById( pasteId ) {
@@ -34,7 +34,7 @@ class UrlRepository {
             return null;
         }
 
-        const result = queryResult.map(x => urlFactory.create({ pasteId: x.paste_id, hash: x.hash }));
+        const result = queryResult.map(x => this.urlFactory.create({ pasteId: x.paste_id, hash: x.hash }));
         return result;
     }
 
@@ -42,18 +42,6 @@ class UrlRepository {
         //console.log(`insert into url (paste_id, hash) values ('${data.getPasteId()}'::varchar(40), '${data.getHash()}') ON conflict (paste_id) DO NOTHING`);
         await this.dbProvider.execute(`insert into url (paste_id, hash) values ('${data.getPasteId}'::varchar(60), '${data.getHash}')`);
     }
-
-
-    // i'll uncomment and change it in case we need it
-    /* async findPasteIdByHash({hash}) {
-        const result = await this.dbProvider.execute(`SELECT paste_id FROM url WHERE hash='${hash}'`);
-
-        if(!result) {
-            return null;
-        }
-        
-        return result;
-    } */
 
     async deleteHash(pasteID) {
         await this.dbProvider.execute(`delete from url WHERE paste_id=${pasteID}`);
