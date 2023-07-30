@@ -1,5 +1,3 @@
-const UrlFactory = require('../entities/url-entity/urlFactory');
-
 class UrlRepository {
     constructor({ dbProvider, urlFactory }) {
         this.dbProvider = dbProvider;
@@ -34,11 +32,11 @@ class UrlRepository {
             return null;
         }
 
-        const result = queryResult.map(x => this.urlFactory.create({ pasteId: x.paste_id, hash: x.hash }));
-        return result;
+        return queryResult.map(x => this.urlFactory.create({ pasteId: x.paste_id, hash: x.hash }));
     }
 
     async createHash(data) {
+        // conflict in code
         //console.log(`insert into url (paste_id, hash) values ('${data.getPasteId()}'::varchar(40), '${data.getHash()}') ON conflict (paste_id) DO NOTHING`);
         await this.dbProvider.execute(`insert into url (paste_id, hash) values ('${data.getPasteId}'::varchar(60), '${data.getHash}')`);
     }

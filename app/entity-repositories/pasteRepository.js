@@ -1,5 +1,3 @@
-const PasteFactory = require('../entities/paste-entity/pasteFactory');
-
 class PasteRepository {
     constructor ({ dbProvider, pasteFactory }) {
         this.dbProvider = dbProvider;

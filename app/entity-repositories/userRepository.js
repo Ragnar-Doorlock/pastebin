@@ -1,5 +1,3 @@
-const UserFactory = require('../entities/user-entity/userFactory');
-
 class UserRepository {
     constructor ({ dbProvider, userFactory }) {
         this.dbProvider = dbProvider;
