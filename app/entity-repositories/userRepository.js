@@ -5,7 +5,7 @@ class UserRepository {
     }
 
     async findByID({ id }) {
-        const result = await this.findOne({ id });
+        const result = await this.findOne({ id: [id] });
         return result;
     }
 
@@ -47,7 +47,8 @@ class UserRepository {
     }
 
     async delete(id) {
-        await this.dbProvider.execute(`delete from users where id=${id}`);
+        //console.log(`delete from users where id='${id}'`);
+        await this.dbProvider.execute(`delete from users where id='${id}'`);
     }
 }
 
