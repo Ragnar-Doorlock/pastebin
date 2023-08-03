@@ -10,7 +10,6 @@ class UpdateUserInteractor {
     }
 
     async execute({id, name}) {
-        //code fails below in line 13
         const errors = this.validator.validate({id, name});
 
         if (errors.length > 0) {

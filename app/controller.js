@@ -1,4 +1,3 @@
-// req all interactors, validators
 const { v4: uuidv4 } = require('uuid');
 const HttpPresenter = require('./httpPresenter');
 const GetUserInteractor = require('./users/get-user/getUserInteractor');
@@ -10,7 +9,6 @@ const SearchUserValidator = require('./users/search-users/searchUserValidator');
 const UpdateUserInteractor = require('./users/update-user/updateUserInteractor');
 const UpdateUserValidator = require('./users/update-user/updateUserValidator');
 const DeleteUserInteractor = require('./users/delete-user/deleteUserInteractor');
-const DelelteUserValidator = require('./users/delete-user/deleteUserValidator');
 const UserFactory = require('./entities/user-entity/userFactory');
 const DeleteUserValidator = require('./users/delete-user/deleteUserValidator');
 
@@ -59,10 +57,6 @@ class RouterBuilder {
         });
 
         this.router.put('/:userId', async (req, res) => {
-
-            // unfinished :(
-            // errors...
-
             const validator = new UpdateUserValidator();
             const presenter = new HttpPresenter(req, res);
             const userFactory = new UserFactory();
