@@ -20,7 +20,7 @@ class UpdateUserInteractor {
         const user = await this.userRepository.findByID({id});
 
         if (!user) {
-            this.presenter.presentFailure(new NotFound('User was not found.'));
+            this.presenter.presentFailure(new NotFound(`User ${id} was not found.`));
             return;
         }
         

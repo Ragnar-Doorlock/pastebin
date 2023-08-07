@@ -5,12 +5,12 @@ class UserRepository {
     }
 
     async findByID({ id }) {
-        const result = await this.findOne({ id: [id] });
+        const result = await this.findOne({ id });
         return result;
     }
 
     async findOne({ id, name }) {
-        const result = await this.findAll({ ids: id, name });
+        const result = await this.findAll({ ids: [id], name });
 
         return result.length > 0 ? result[0] : null;
     }

@@ -8,7 +8,7 @@ class DeleteUserInteractor {
         this.userRepository = userRepository;
     }
 
-    async execute(id) {
+    async execute({id}) {
         const errors = this.validator.validate(id);
 
         if (errors.length > 0) {
