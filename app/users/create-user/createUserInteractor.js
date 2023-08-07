@@ -17,7 +17,7 @@ class CreateUserInteractor {
             return;
         }
 
-        const user = this.userFactory.create({id: this.idGenerator.generateUserId(), name});
+        const user = this.userFactory.create({id: this.idGenerator.generate('user'), name});
         await this.userRepository.save(user);
 
         this.presenter.presentSuccess();

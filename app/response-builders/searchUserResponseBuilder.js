@@ -1,10 +1,6 @@
 class SearchUserResponseBuilder {
     build(entities) {
-        const result = []
-        for (const iterator of entities) {
-            result.push({id: iterator.getId(), name: iterator.getName()});
-        }
-        return result;
+        return entities.map(x => ({id: x.getId(), name: x.getName()}));
     }
 }
 
