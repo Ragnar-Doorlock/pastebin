@@ -1,5 +1,4 @@
 const ValidationError = require('../../errors/validationError');
-const NotFound = require('../../errors/notFound');
 
 class SearchPasteInteractor {
     constructor ({validator, presenter, pasteRepository, responseBuilder}) {

@@ -7,7 +7,7 @@ class DeletePasteValidator {
         }
 
         if (id && !/^paste-/.test(id)) {
-
+            errors.push('Invalid ID format.');
         }
 
         if (id && id.length < 20) {
