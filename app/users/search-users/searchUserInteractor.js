@@ -11,10 +11,6 @@ class SearchUserInteractor {
 
     async execute({id, name}) {
         const errors = this.validator.validate({id, name});
-        if (errors.length > 0) {
-            this.presenter.presentFailure(new ValidationError(errors));
-            return;
-        }
 
         if (errors.length > 0) {
             this.presenter.presentFailure(new ValidationError(errors));

@@ -26,7 +26,7 @@ class UpdateUserInteractor {
         
         const userEntity = this.userFactory.create({id, name});
         await this.userRepository.save(userEntity);
-        return this.presenter.presentSuccess();
+        this.presenter.presentSuccess();
     }
 }
 
