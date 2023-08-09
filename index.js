@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const UserRouterBuilder = require('./app/userController');
 const PasteRouterBuilder = require('./app/pasteController');
+const UrlRouterBuilder = require('./app/urlController');
 const PostgresPoolConnection = require('./db/postgresPoolConnection');
 const pool = PostgresPoolConnection.getInstance();
 const { v4: uuidv4 } = require('uuid');
@@ -19,6 +20,8 @@ const GetUserResponseBuilder = require('./app/response-builders/getUserResponseB
 const SearchUserResponseBuilder = require('./app/response-builders/searchUserResponseBuilder');
 const GetPasteResponseBuilder = require('./app/response-builders/getPasteResponseBuilder');
 const SearchPasteResponseBuilder = require('./app/response-builders/searchPasteResponseBuilder');
+const GetUrlResponseBuilder = require('./app/response-builders/getUrlResponseBuilder');
+const SearchUrlResponseBuilder = require('./app/response-builders/searchUrlResponseBuilder');
 
 const userFactory = new UserFactory();
 const pasteFactory = new PasteFactory();
@@ -32,14 +35,18 @@ const getUserResponseBuilder = new GetUserResponseBuilder();
 const searchUserResponseBuilder = new SearchUserResponseBuilder();
 const getPasteResponseBuilder = new GetPasteResponseBuilder();
 const searchPasteResponseBuilder = new SearchPasteResponseBuilder();
+const getUrlResponseBuilder = new GetUrlResponseBuilder();
+const searchUrlResponseBuilder = new SearchUrlResponseBuilder();
 
 (async () => {
     const userRoutes = new UserRouterBuilder({express, userRepository, userFactory, idGenerator, getUserResponseBuilder, searchUserResponseBuilder});
     const pasteRoutes = new PasteRouterBuilder({express, pasteRepository, pasteFactory, idGenerator, getPasteResponseBuilder, searchPasteResponseBuilder});
+    const urlRoutes = new UrlRouterBuilder({express, urlRepository, urlFactory, getUrlResponseBuilder, searchUrlResponseBuilder});
 
     app.use(express.json());
     app.use('/user', userRoutes.createRoutes());
     app.use('/paste', pasteRoutes.createRoutes());
+    app.use('/url', urlRoutes.createRoutes());
 
     app.listen(3000, () => console.log(`App is running.`));
 
