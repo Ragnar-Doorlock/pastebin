@@ -9,6 +9,11 @@ const UpdatePasteInteractor = require('./pastes/update-paste/updatePasteInteract
 const UpdatePasteValidator = require('./pastes/update-paste/updatePasteValidator');
 const DeletePasteValidator = require('./pastes/delete-paste/deletePasteValidator');
 const DeletePasteInteractor = require('./pastes/delete-paste/deletePasteInteractor');
+const GetPasteHttpRequest = require('./pastes/get-paste/getPasteHttpRequest');
+const CreatePasteHttpRequest = require('./pastes/create-paste/createPasteHttpRequest');
+const SearchPasteHttpRequest = require('./pastes/search-paste/searchPasteHttpRequest');
+const UpdatePasteHttpRequest = require('./pastes/update-paste/updatePasteHttpRequest');
+const DeletePasteHttpRequest = require('./pastes/delete-paste/deletePasteHttpRequest');
 
 class PasteRouterBuilder {
     constructor ({express, pasteRepository, pasteFactory, idGenerator, getPasteResponseBuilder, searchPasteResponseBuilder}) {
@@ -27,7 +32,7 @@ class PasteRouterBuilder {
             const interactor = new GetPasteInteractor({presenter, validator, pasteRepository: this.pasteRepository, responseBuilder: this.getPasteResponseBuilder});
 
             try {
-                await interactor.execute({id: request.params.pasteId});
+                await interactor.execute(new GetPasteHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }
@@ -39,7 +44,7 @@ class PasteRouterBuilder {
             const interactor = new CreatePasteInteractor({presenter, validator, pasteFactory: this.pasteFactory, pasteRepository: this.pasteRepository, idGenerator: this.idGenerator});
 
             try {
-                await interactor.execute({name: request.body.name, text: request.body.text, expiresAfter: request.body.expiresAfter, visibility: request.body.visibility, authorId: request.body.authorId});
+                await interactor.execute(new CreatePasteHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }
@@ -52,7 +57,7 @@ class PasteRouterBuilder {
 
             try {
                 //where/when can i restrict results, for example to show only public pastes?
-                await interactor.execute({id: request.body.id, name: request.body.name, authorId: request.body.authorId});
+                await interactor.execute(new SearchPasteHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }
@@ -64,7 +69,7 @@ class PasteRouterBuilder {
             const interactor = new UpdatePasteInteractor({validator, presenter, pasteFactory: this.pasteFactory, pasteRepository: this.pasteRepository});
            
             try {
-                await interactor.execute({id: request.params.pasteId, name: request.body.name, text: request.body.text, visibility: request.body.visibility});
+                await interactor.execute(new UpdatePasteHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }
@@ -76,7 +81,7 @@ class PasteRouterBuilder {
             const interactor = new DeletePasteInteractor({validator, presenter, pasteRepository: this.pasteRepository});
 
             try {
-                await interactor.execute({id: request.params.pasteId});
+                await interactor.execute(new DeletePasteHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }

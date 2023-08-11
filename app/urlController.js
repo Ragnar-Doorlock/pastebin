@@ -7,6 +7,10 @@ const SearchUrlValidator = require('./url/search-url/searchUrlValidator');
 const SearchUrlInteractor = require('./url/search-url/searchUrlInteractor');
 const DeleteUrlValidator = require('./url/delete-url/deleteUrlValidator');
 const DeleteUrlInteractor = require('./url/delete-url/deleteUrlInteractor');
+const GetUrlHttpRequest = require('./url/get-url/getUrlHttpRequest');
+const CreateUrlHttpRequest = require('./url/create-url/createUrlHttpRequest');
+const SearchUrlHttpRequest = require('./url/search-url/searchUrlHttpRequest');
+const DeleteUrlHttpRequest = require('./url/delete-url/deleteUrlHttpRequest');
 
 class UrlRouterBuilder {
     constructor ({express, urlRepository, urlFactory, getUrlResponseBuilder, searchUrlResponseBuilder}) {
@@ -24,7 +28,7 @@ class UrlRouterBuilder {
             const interactor = new GetUrlInteractor({presenter, validator, responseBuilder: this.getUrlResponseBuilder, urlRepository: this.urlRepository});
 
             try {
-                await interactor.execute({pasteId: request.params.pasteId});
+                await interactor.execute(new GetUrlHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }
@@ -37,7 +41,7 @@ class UrlRouterBuilder {
 
             try {
                 // i pass hash here but if we have hash generator later then i have to pass only pasteId
-                await interactor.execute({pasteId: request.body.pasteId, hash: request.body.hash});
+                await interactor.execute(new CreateUrlHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }
@@ -49,7 +53,7 @@ class UrlRouterBuilder {
             const interactor = new SearchUrlInteractor({presenter, validator, urlRepository: this.urlRepository, responseBuilder: this.searchUrlResponseBuilder});
 
             try {
-                await interactor.execute({pasteId: request.body.pasteId, hash: request.body.hash});
+                await interactor.execute(new SearchUrlHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }
@@ -61,7 +65,7 @@ class UrlRouterBuilder {
             const interactor = new DeleteUrlInteractor({presenter, validator, urlRepository: this.urlRepository});
 
             try {
-                await interactor.execute({pasteId: request.params.pasteId});
+                await interactor.execute(new DeleteUrlHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }

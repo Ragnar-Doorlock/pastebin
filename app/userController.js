@@ -8,8 +8,12 @@ const SearchUserValidator = require('./users/search-users/searchUserValidator');
 const UpdateUserInteractor = require('./users/update-user/updateUserInteractor');
 const UpdateUserValidator = require('./users/update-user/updateUserValidator');
 const DeleteUserInteractor = require('./users/delete-user/deleteUserInteractor');
-//const UserFactory = require('./entities/user-entity/userFactory');
 const DeleteUserValidator = require('./users/delete-user/deleteUserValidator');
+const GetUserHttpRequest = require('./users/get-user/getUserHttpRequest');
+const CreateUserHttpRequest = require('./users/create-user/createUserHttpRequest');
+const SearchUserHttpRequest = require('./users/search-users/searchUserHttpRequest');
+const UpdateUserHttpRequest = require('./users/update-user/updateUserHttpRequest');
+const DeleteUserHttpRequest = require('./users/delete-user/deleteUserHttpRequest');
 
 class UserRouterBuilder {
     constructor({express, userRepository, userFactory, idGenerator, getUserResponseBuilder, searchUserResponseBuilder}) {
@@ -25,10 +29,10 @@ class UserRouterBuilder {
         this.router.get('/:userId', async (request, respone) => {
             const validator = new GetUserValidator();
             const presenter = new HttpPresenter(request, respone);
-            const interactor = new GetUserInteractor({presenter, validator, userRepository: this.userRepository, getUserResponseBuilder: this.getUserResponseBuilder});
+            const interactor = new GetUserInteractor({presenter, validator, userRepository: this.userRepository, responseBuilder: this.getUserResponseBuilder});
 
             try {
-                await interactor.execute({id: request.params.userId});
+                await interactor.execute(new GetUserHttpRequest(request));
             } catch(error) {
                 presenter.presentFailure(error);
             }
@@ -40,7 +44,7 @@ class UserRouterBuilder {
             const interactor = new CreateUserInteractor({presenter, validator, userFactory: this.userFactory, userRepository: this.userRepository, idGenerator: this.idGenerator});
 
             try {
-                await interactor.execute({name: request.body.name});
+                await interactor.execute(new CreateUserHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }
@@ -52,7 +56,7 @@ class UserRouterBuilder {
             const interactor = new SearchUserInteractor({validator, userRepository: this.userRepository, presenter, responseBuilder: this.searchUserResponseBuilder});
             
             try {
-                await interactor.execute({id: request.body.id, name: request.body.name});
+                await interactor.execute(new SearchUserHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }
@@ -64,7 +68,7 @@ class UserRouterBuilder {
             const interactor = new UpdateUserInteractor({validator, presenter, userFactory: this.userFactory, userRepository: this.userRepository});
 
             try {
-                await interactor.execute({id: request.params.userId, name: request.body.name});
+                await interactor.execute(new UpdateUserHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }
@@ -76,7 +80,7 @@ class UserRouterBuilder {
             const interactor = new DeleteUserInteractor({validator, presenter, userRepository: this.userRepository});
 
             try {
-                await interactor.execute({id: request.params.userId});
+                await interactor.execute(new DeleteUserHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }
