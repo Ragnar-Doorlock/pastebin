@@ -16,12 +16,12 @@ const UserFactory = require('./app/entities/user-entity/userFactory');
 const PasteFactory = require('./app/entities/paste-entity/pasteFactory');
 const UrlFactory = require('./app/entities/url-entity/urlFactory');
 
-const GetUserResponseBuilder = require('./app/response-builders/getUserResponseBuilder');
-const SearchUserResponseBuilder = require('./app/response-builders/searchUserResponseBuilder');
-const GetPasteResponseBuilder = require('./app/response-builders/getPasteResponseBuilder');
-const SearchPasteResponseBuilder = require('./app/response-builders/searchPasteResponseBuilder');
-const GetUrlResponseBuilder = require('./app/response-builders/getUrlResponseBuilder');
-const SearchUrlResponseBuilder = require('./app/response-builders/searchUrlResponseBuilder');
+const GetUserResponseBuilder = require('./app/users/get-user/getUserResponseBuilder');
+const SearchUserResponseBuilder = require('./app/users/search-users/searchUserResponseBuilder');
+const GetPasteResponseBuilder = require('./app/pastes/get-paste/getPasteResponseBuilder');
+const SearchPasteResponseBuilder = require('./app/pastes/search-paste/searchPasteResponseBuilder');
+const GetUrlResponseBuilder = require('./app/url/get-url/getUrlResponseBuilder');
+const SearchUrlResponseBuilder = require('./app/url/search-url/searchUrlResponseBuilder');
 
 const userFactory = new UserFactory();
 const pasteFactory = new PasteFactory();

@@ -2,10 +2,6 @@ class SearchPasteValidator {
     validate({id, name, authorId}) {
         const errors = [];
 
-        if (!id && !name && !authorId) {
-            errors.push('Parameters are missing');
-        }
-
         if (id && !/^paste-/.test(id)) {
             errors.push('Invalid ID format.');
         }
@@ -24,6 +20,10 @@ class SearchPasteValidator {
             if (id && id.length < 20) {
                 errors.push('ID is too short.');
             }
+        }
+
+        if (authorId && !/^user-/.test(authorId)) {
+            errors.push('Invalid ID format.');
         }
 
         return errors;

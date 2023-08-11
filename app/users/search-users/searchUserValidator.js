@@ -2,10 +2,6 @@ class SearchUserValidator {
     validate ({id, name}) {
         const errors = [];
 
-        if(!id && !name) {
-            errors.push('At least one parameter is required.');
-        }
-
         if (Array.isArray(id)) {
             for (const i of id) {
                 if (i.length < 20) {

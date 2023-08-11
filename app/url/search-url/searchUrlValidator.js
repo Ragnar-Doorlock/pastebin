@@ -2,10 +2,6 @@ class SearchUrlValidator {
     validate({pasteId, hash}) {
         const errors = [];
 
-        if (!pasteId && !hash) {
-            errors.push('Paste ID or hash are missing');
-        }
-
         if (pasteId && !/^paste-/.test(pasteId)) {
             errors.push('Invalid paste ID format.');
         }
