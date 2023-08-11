@@ -8,22 +8,22 @@ class DeletePasteInteractor {
         this.pasteRepository = pasteRepository;
     }
 
-    async execute({id}) {
-        const errors = this.validator.validate({id});
+    async execute(request) {
+        const errors = this.validator.validate(request);
 
         if (errors.length > 0) {
             this.presenter.presentFailure(new ValidationError(errors));
             return;
         }
 
-        const paste = await this.pasteRepository.findById({id});
+        const paste = await this.pasteRepository.findById({id: request.id});
 
         if (!paste) {
-            this.presenter.presentFailure(new NotFound(`Paste with ID ${id} was not found.`));
+            this.presenter.presentFailure(new NotFound(`Paste with ID ${request.id} was not found.`));
             return;
         }
 
-        await this.pasteRepository.delete(id);
+        await this.pasteRepository.delete(request.id);
         this.presenter.presentSuccess();
     }
 }

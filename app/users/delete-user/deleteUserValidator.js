@@ -1,5 +1,5 @@
 class DeleteUserValidator {
-    validate(id) {
+    validate({id}) {
         const errors = [];
 
         if (!id) {

@@ -8,16 +8,16 @@ class SearchUrlInteractor {
         this.responseBuilder = responseBuilder;
     }
 
-    async execute({pasteId, hash}) {
-        const errors = this.validator.validate({pasteId, hash});
+    async execute(request) {
+        const errors = this.validator.validate(request);
 
         if (errors.length > 0) {
             this.presenter.presentFailure(new ValidationError(errors));
             return;
         }
 
-        const pasteIds = Array.isArray(pasteId) ? pasteId : [pasteId];
-        const urls = await this.urlRepository.findAll({pasteIds, hash});
+        const pasteIds = Array.isArray(request.pasteId) ? request.pasteId : [request.pasteId];
+        const urls = await this.urlRepository.findAll({pasteIds, hash: request.hash});
 
         this.presenter.presentSuccess(this.responseBuilder.build(urls));
     }

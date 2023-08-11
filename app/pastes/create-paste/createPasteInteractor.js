@@ -9,15 +9,16 @@ class CreatePasteInteractor {
         this.idGenerator = idGenerator;
     }
 
-    async execute({name, text, visibility, expiresAfter, authorId}) {
-        const errors = this.validator.validate({name, text, visibility, expiresAfter, authorId});
+    async execute(request) {
+        const errors = this.validator.validate(request);
 
         if (errors.length > 0) {
             this.presenter.presentFailure(new ValidationError(errors));
             return;
         }
 
-        const paste = this.pasteFactory.create({id: this.idGenerator.generate('paste'), name, text, visibility, expiresAfter, authorId});
+        const paste = this.pasteFactory.create({id: this.idGenerator.generate('paste'), name: request.name, text: request.text, 
+            visibility: request.visibility, expiresAfter: request.expiresAfter, authorId: request.authorId});
         await this.pasteRepository.save(paste);
 
         this.presenter.presentSuccess();

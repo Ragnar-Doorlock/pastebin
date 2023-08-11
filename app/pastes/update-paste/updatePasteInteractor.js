@@ -9,23 +9,24 @@ class UpdatePasteInteractor {
         this.pasteRepository = pasteRepository;
     }
 
-    async execute({id, name, text, visibility}) {
-        const errors = this.validator.validate({id, name, text, visibility});
+    async execute(request) {
+        const errors = this.validator.validate(request);
 
         if (errors.length > 0) {
             this.presenter.presentFailure(new ValidationError(errors));
             return;
         }
 
-        const paste = await this.pasteRepository.findById({id});
+        const paste = await this.pasteRepository.findById({id: request.id});
 
         if (!paste) {
-            this.presenter.presentFailure(new NotFound(`Paste with ID ${id} was not found.`));
+            this.presenter.presentFailure(new NotFound(`Paste with ID ${request.id} was not found.`));
             return;
         }
 
-        // if the expiration day should be edatable then pass here expiration date from request
-        const pasteEntity = this.pasteFactory.create({id, name, text, visibility, authorId: paste.getAuthorId(), expiresAfter: new Date(paste.getExpiration()).toUTCString()});
+        // if the expiration day should be editable then pass here expiration date from request
+        const pasteEntity = this.pasteFactory.create({id: request.id, name: request.name, text: request.text, 
+            visibility: request.visibility, authorId: paste.getAuthorId(), expiresAfter: new Date(paste.getExpiration()).toUTCString()});
         await this.pasteRepository.save(pasteEntity);
         this.presenter.presentSuccess();
     }

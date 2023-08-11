@@ -8,16 +8,16 @@ class SearchPasteInteractor {
         this.responseBuilder = responseBuilder;
     }
 
-    async execute({id, name, authorId}) {
-        const errors = this.validator.validate({id, name, authorId});
+    async execute(request) {
+        const errors = this.validator.validate(request);
 
         if(errors.length > 0) {
             this.presenter.presentFailure(new ValidationError(errors));
             return;
         }
 
-        const pasteId = Array.isArray(id) ? id : [id];
-        const pastes = await this.pasteRepository.findAll({ids: pasteId, name, authorId});
+        const pasteId = Array.isArray(request.id) ? request.id : [request.id];
+        const pastes = await this.pasteRepository.findAll({ids: pasteId, name: request.name, authorId: request.authorId});
 
         this.presenter.presentSuccess(this.responseBuilder.build(pastes));
     }

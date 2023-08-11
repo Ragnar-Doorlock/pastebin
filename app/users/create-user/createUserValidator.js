@@ -1,5 +1,5 @@
 class CreateUserValidator {
-    validate(name) {
+    validate({name}) {
         const errors = [];
 
         if (!name) {

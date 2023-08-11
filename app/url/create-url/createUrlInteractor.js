@@ -10,16 +10,15 @@ class CreateUrlInteractor {
         this.urlFactory = urlFactory;
     }
 
-    async execute({pasteId, hash}) {
-        // i'm validating only pasteId since hash is going to be generated
-        const errors = this.validator.validate({pasteId});
+    async execute(request) {
+        const errors = this.validator.validate(request);
 
         if (errors.length > 0) {
             this.presenter.presentFailure(new ValidationError(errors));
             return;
         }
 
-        const url = this.urlFactory.create({pasteId, hash});
+        const url = this.urlFactory.create({pasteId: request.pasteId, hash: request.hash});
         await this.urlRepository.createHash(url);
 
         this.presenter.presentSuccess();

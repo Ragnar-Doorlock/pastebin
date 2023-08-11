@@ -9,15 +9,15 @@ class CreateUserInteractor {
         this.idGenerator = idGenerator;
     }
 
-    async execute({name}) {
-        const errors = this.validator.validate(name);
+    async execute(request) {
+        const errors = this.validator.validate(request);
 
         if (errors.length > 0) {
             this.presenter.presentFailure(new ValidationError(errors));
             return;
         }
 
-        const user = this.userFactory.create({id: this.idGenerator.generate('user'), name});
+        const user = this.userFactory.create({id: this.idGenerator.generate('user'), name: request.name});
         await this.userRepository.save(user);
 
         this.presenter.presentSuccess();

@@ -9,16 +9,16 @@ class SearchUserInteractor {
         this.responseBuilder = responseBuilder;
     }
 
-    async execute({id, name}) {
-        const errors = this.validator.validate({id, name});
+    async execute(request) {
+        const errors = this.validator.validate(request);
 
         if (errors.length > 0) {
             this.presenter.presentFailure(new ValidationError(errors));
             return;
         }
 
-        const userID = Array.isArray(id) ? id : [id];
-        const users = await this.userRepository.findAll({ids: userID, name});
+        const userID = Array.isArray(request.id) ? request.id : [request.id];
+        const users = await this.userRepository.findAll({ids: userID, name: request.name});
 
         this.presenter.presentSuccess(this.responseBuilder.build(users));
     }
