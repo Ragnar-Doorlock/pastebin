@@ -1,5 +1,5 @@
 class UrlRepository {
-    constructor({ dbProvider, urlFactory }) {
+    constructor({ dbProvider, urlFactory, jwt }) {
         this.dbProvider = dbProvider;
         this.urlFactory = urlFactory;
     }
@@ -10,7 +10,17 @@ class UrlRepository {
     }
 
     async findOne({pasteId, hash}) {
-        const result = await this.findAll({ pasteIds: [pasteId], hash });
+        const searchItems = {};
+
+        if (pasteId) {
+            searchItems.pasteIds = [pasteId];
+        }
+
+        if (hash) {
+            searchItems.hash = hash;
+        }
+
+        const result = await this.findAll(searchItems);
         return result.length > 0 ? result[0] : null;
     }
 
@@ -26,6 +36,7 @@ class UrlRepository {
             itemsToFind.push(`hash='${hash}'`);
         }
 
+        //console.log(`SELECT * FROM url WHERE ${itemsToFind.join(' AND ')}`)
         const queryResult = await this.dbProvider.execute(`SELECT * FROM url WHERE ${itemsToFind.join(' AND ')}`); 
 
         if(!queryResult) {
@@ -35,9 +46,7 @@ class UrlRepository {
         return queryResult.map(x => this.urlFactory.create({ pasteId: x.paste_id, hash: x.hash }));
     }
 
-    async createHash(data) {
-        // conflict in code
-        //console.log(`insert into url (paste_id, hash) values ('${data.getPasteId()}'::varchar(40), '${data.getHash()}') ON conflict (paste_id) DO NOTHING`);
+    async save(data) {
         await this.dbProvider.execute(`insert into url (paste_id, hash) values ('${data.getPasteId()}'::varchar(60), '${data.getHash()}')`);
     }
 

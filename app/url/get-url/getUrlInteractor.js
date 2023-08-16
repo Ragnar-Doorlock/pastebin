@@ -1,6 +1,5 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
-const GetUserValidator = require('../../users/get-user/getUserValidator');
 
 class GetUrlInteractor {
     constructor ({presenter, validator, urlRepository, responseBuilder}) {

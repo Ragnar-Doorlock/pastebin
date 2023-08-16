@@ -1,19 +1,19 @@
-const HttpPresenter = require('./httpPresenter');
-const GetUserInteractor = require('./users/get-user/getUserInteractor');
-const GetUserValidator = require('./users/get-user/getUserValidator');
-const CreateUserValidator = require('./users/create-user/createUserValidator');
-const CreateUserInteractor = require('./users/create-user/createUserInteractor');
-const SearchUserInteractor = require('./users/search-users/searchUserInteractor');
-const SearchUserValidator = require('./users/search-users/searchUserValidator');
-const UpdateUserInteractor = require('./users/update-user/updateUserInteractor');
-const UpdateUserValidator = require('./users/update-user/updateUserValidator');
-const DeleteUserInteractor = require('./users/delete-user/deleteUserInteractor');
-const DeleteUserValidator = require('./users/delete-user/deleteUserValidator');
-const GetUserHttpRequest = require('./users/get-user/getUserHttpRequest');
-const CreateUserHttpRequest = require('./users/create-user/createUserHttpRequest');
-const SearchUserHttpRequest = require('./users/search-users/searchUserHttpRequest');
-const UpdateUserHttpRequest = require('./users/update-user/updateUserHttpRequest');
-const DeleteUserHttpRequest = require('./users/delete-user/deleteUserHttpRequest');
+const HttpPresenter = require('../httpPresenter');
+const GetUserInteractor = require('./get-user/getUserInteractor');
+const GetUserValidator = require('./get-user/getUserValidator');
+const CreateUserValidator = require('./create-user/createUserValidator');
+const CreateUserInteractor = require('./create-user/createUserInteractor');
+const SearchUserInteractor = require('./search-users/searchUserInteractor');
+const SearchUserValidator = require('./search-users/searchUserValidator');
+const UpdateUserInteractor = require('./update-user/updateUserInteractor');
+const UpdateUserValidator = require('./update-user/updateUserValidator');
+const DeleteUserInteractor = require('./delete-user/deleteUserInteractor');
+const DeleteUserValidator = require('./delete-user/deleteUserValidator');
+const GetUserHttpRequest = require('./get-user/getUserHttpRequest');
+const CreateUserHttpRequest = require('./create-user/createUserHttpRequest');
+const SearchUserHttpRequest = require('./search-users/searchUserHttpRequest');
+const UpdateUserHttpRequest = require('./update-user/updateUserHttpRequest');
+const DeleteUserHttpRequest = require('./delete-user/deleteUserHttpRequest');
 
 class UserRouterBuilder {
     constructor({express, userRepository, userFactory, idGenerator, getUserResponseBuilder, searchUserResponseBuilder}) {
