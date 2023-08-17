@@ -1,14 +1,16 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
+const ApiError = require('../../errors/apiError');
 
 class GetPasteByHashInteractor {
-    constructor ({presenter, validator, pasteRepository, urlRepository, responseBuilder, pasteFactory}) {
+    constructor ({presenter, validator, pasteRepository, urlRepository, responseBuilder, pasteFactory, jwt}) {
         this.presenter = presenter;
         this.validator = validator;
         this.pasteRepository = pasteRepository;
         this.urlRepository = urlRepository;
         this.responseBuilder = responseBuilder;
         this.pasteFactory = pasteFactory;
+        this.jwt = jwt;
     }
 
     async execute(request) {
@@ -18,15 +20,20 @@ class GetPasteByHashInteractor {
             this.presenter.presentFailure(new ValidationError(errors));
             return;
         }
+        
+        const decodedToken = this.jwt.verify(request.hash, process.env.SECRET_KEY);
 
-        const url = await this.urlRepository.findOne({hash: request.hash});
-
-        if (!url) {
-            this.presenter.presentFailure(new NotFound(`No pastes with '${(request.hash).substring(0, 20).concat('...')}' hash`));
+        if (!decodedToken) {
+            this.presenter.presentFailure(new ApiError('Unable to verify url.'));
             return;
+        } else {
+            if ((Date.now() / 1000) > decodedToken.exp) {
+                this.presenter.presentFailure(new ApiError('Url is expired.'));
+                return;
+            }
         }
 
-        const paste = await this.pasteRepository.findById({id: url._pasteId});
+        const paste = await this.pasteRepository.findById({id: decodedToken.id});
 
         this.presenter.presentSuccess(this.responseBuilder.build(paste));
     }

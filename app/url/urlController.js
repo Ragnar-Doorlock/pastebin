@@ -13,7 +13,7 @@ const SearchUrlHttpRequest = require('./search-url/searchUrlHttpRequest');
 const DeleteUrlHttpRequest = require('./delete-url/deleteUrlHttpRequest');
 
 class UrlRouterBuilder {
-    constructor ({express, urlRepository, urlFactory, getUrlResponseBuilder, searchUrlResponseBuilder, pasteRepository, jwt, createUrlResponseBuilder}) {
+    constructor ({express, urlRepository, urlFactory, getUrlResponseBuilder, searchUrlResponseBuilder, pasteRepository, jwt, createUrlResponseBuilder, idGenerator}) {
         this.router = express.Router();
         this.urlRepository = urlRepository;
         this.urlFactory = urlFactory;
@@ -22,6 +22,7 @@ class UrlRouterBuilder {
         this.pasteRepository = pasteRepository;
         this.jwt = jwt;
         this.createUrlResponseBuilder = createUrlResponseBuilder;
+        this.idGenerator = idGenerator;
     }
 
     createRoutes() {
@@ -41,7 +42,8 @@ class UrlRouterBuilder {
             const validator = new CreateUrlValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new CreateUrlInteractor({presenter, validator, urlFactory: this.urlFactory, 
-                urlRepository: this.urlRepository, pasteRepository: this.pasteRepository, jwt: this.jwt, responseBuilder: this.createUrlResponseBuilder});
+                urlRepository: this.urlRepository, pasteRepository: this.pasteRepository, jwt: this.jwt, responseBuilder: this.createUrlResponseBuilder, 
+                idGenerator: this.idGenerator});
 
             try {
                 await interactor.execute(new CreateUrlHttpRequest(request));

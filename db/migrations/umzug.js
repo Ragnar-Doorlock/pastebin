@@ -1,6 +1,5 @@
 const {Sequelize} = require('sequelize');
 const { Umzug, JSONStorage } = require('umzug');
-require('dotenv').config({path: '../../.env'});
 
 const getRawSqlClient = () => {
   const sequelize = new Sequelize({

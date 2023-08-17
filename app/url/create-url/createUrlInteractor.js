@@ -1,9 +1,8 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
-require('dotenv').config({path: '../../../.env'});
 
 class CreateUrlInteractor {
-    constructor ({presenter, validator, urlRepository, urlFactory, jwt, pasteRepository, responseBuilder}) {
+    constructor ({presenter, validator, urlRepository, urlFactory, jwt, pasteRepository, responseBuilder, idGenerator}) {
         this.presenter = presenter;
         this.validator = validator;
         this.urlRepository = urlRepository;
@@ -11,6 +10,7 @@ class CreateUrlInteractor {
         this.pasteRepository = pasteRepository;
         this.jwt = jwt;
         this.responseBuilder = responseBuilder;
+        this.idGenerator = idGenerator;
     }
 
     async execute(request) {
@@ -28,13 +28,12 @@ class CreateUrlInteractor {
             return;
         }
 
-        const hash = this.jwt.sign({id: request.pasteId, expiresAt: Date.now() + new Date(request.expiresAfterMs), 
-            visibility: paste._visibility}, process.env.SECRET_KEY, {expiresIn: request.expiresAfterMs});
+        const hash = this.jwt.sign({id: request.pasteId, visibility: paste._visibility}, process.env.SECRET_KEY, {expiresIn: +request.expiresAfterMs});
 
-        const url = this.urlFactory.create({pasteId: request.pasteId, hash});
+        const url = this.urlFactory.create({pasteId: request.pasteId, urlId: this.idGenerator.generate('url') });
         await this.urlRepository.save(url);
 
-        this.presenter.presentSuccess(this.responseBuilder.build(url));
+        this.presenter.presentSuccess(this.responseBuilder.build(hash));
     }
 }
 

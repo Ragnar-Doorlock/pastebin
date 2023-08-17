@@ -47,10 +47,11 @@ class UrlRepository {
     }
 
     async save(data) {
-        await this.dbProvider.execute(`insert into url (paste_id, hash) values ('${data.getPasteId()}'::varchar(60), '${data.getHash()}')`);
+        await this.dbProvider.execute(`insert into url (paste_id, url_id) values ('${data.getPasteId()}', 
+            '${data.geturlId()}')`);
     }
 
-    async deleteHash(pasteID) {
+    async delete(pasteID) {
         await this.dbProvider.execute(`delete from url WHERE paste_id='${pasteID}'`);
     }
 

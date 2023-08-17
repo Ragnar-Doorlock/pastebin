@@ -19,7 +19,7 @@ const GetPasteByHashValidator = require('./get-paste-by-hash/getPasteByHashValid
 const GetPasteByHashInteractor = require('./get-paste-by-hash/getPasteByHashInteractor');
 
 class PasteRouterBuilder {
-    constructor ({express, pasteRepository, pasteFactory, idGenerator, getPasteResponseBuilder, searchPasteResponseBuilder, getPasteByHashResponseBuilder, urlRepository}) {
+    constructor ({express, pasteRepository, pasteFactory, idGenerator, getPasteResponseBuilder, searchPasteResponseBuilder, getPasteByHashResponseBuilder, urlRepository, jwt}) {
         this.router = express.Router();
         this.pasteRepository = pasteRepository;
         this.pasteFactory = pasteFactory;
@@ -28,6 +28,7 @@ class PasteRouterBuilder {
         this.searchPasteResponseBuilder = searchPasteResponseBuilder;
         this.getPasteByHashResponseBuilder = getPasteByHashResponseBuilder;
         this.urlRepository = urlRepository;
+        this.jwt = jwt;
     }
 
     createRoutes() {
@@ -35,7 +36,7 @@ class PasteRouterBuilder {
             const validator = new GetPasteByHashValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new GetPasteByHashInteractor({validator, presenter, pasteRepository: this.pasteRepository, urlRepository: this.urlRepository, 
-                responseBuilder: this.getPasteByHashResponseBuilder, pasteFactory: this.pasteFactory});
+                responseBuilder: this.getPasteByHashResponseBuilder, pasteFactory: this.pasteFactory, jwt: this.jwt});
 
             try {
                 await interactor.execute(new GetPasteByHashHttpRequest(request));

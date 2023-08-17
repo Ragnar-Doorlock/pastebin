@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const UserRouterBuilder = require('./app/users/userController');
@@ -45,8 +46,10 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
 
 (async () => {
     const userRoutes = new UserRouterBuilder({express, userRepository, userFactory, idGenerator, getUserResponseBuilder, searchUserResponseBuilder});
-    const pasteRoutes = new PasteRouterBuilder({express, pasteRepository, pasteFactory, idGenerator, getPasteResponseBuilder, searchPasteResponseBuilder, urlRepository, getPasteByHashResponseBuilder});
-    const urlRoutes = new UrlRouterBuilder({express, urlRepository, urlFactory, getUrlResponseBuilder, searchUrlResponseBuilder, pasteRepository, jwt, createUrlResponseBuilder});
+    const pasteRoutes = new PasteRouterBuilder({express, pasteRepository, pasteFactory, idGenerator, getPasteResponseBuilder, 
+        searchPasteResponseBuilder, urlRepository, getPasteByHashResponseBuilder, jwt});
+    const urlRoutes = new UrlRouterBuilder({express, urlRepository, urlFactory, getUrlResponseBuilder, searchUrlResponseBuilder, 
+        pasteRepository, jwt, createUrlResponseBuilder, idGenerator});
 
     app.use(express.json());
     app.use('/user', userRoutes.createRoutes());
