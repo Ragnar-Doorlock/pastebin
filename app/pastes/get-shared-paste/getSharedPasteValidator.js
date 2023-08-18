@@ -1,5 +1,5 @@
-class GetPasteByHashValidator {
-    validate ({hash}) {
+class GetSharedPasteValidator {
+    validate (hash) {
         const errors = [];
 
         if (!hash) {
@@ -14,4 +14,4 @@ class GetPasteByHashValidator {
     }
 }
 
-module.exports = GetPasteByHashValidator;
+module.exports = GetSharedPasteValidator;
