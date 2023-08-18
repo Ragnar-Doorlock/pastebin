@@ -1,45 +1,45 @@
 const visibilityAcceptedValues = require('../../entities/paste-entity/visibility');
 
 class CreatePasteValidator {
-    validate({name, text, visibility, expiresAfter, authorId}) {
+    validate(request) {
         const errors = [];
 
-        if (!name) {
+        if (!request.name) {
             errors.push('Paste name is required.');
         } else {
-            if (name.length > 50) {
+            if (request.name.length > 50) {
                 errors.push('Maximum paste length is 50 characters.');
             }
         }
 
-        if (!text) {
+        if (!request.text) {
             errors.push('Paste text is required.');
         } else {
-            if (text.length > 2000) {
+            if (request.text.length > 2000) {
                 errors.push('Maximum text length is 2000 characters.');
             }
         }
 
-        if (!visibility) {
+        if (!request.visibility) {
             errors.push('Paste visibility is required.');
         } else {
-            if (!Object.values(visibilityAcceptedValues).includes(visibility)) {
+            if (!Object.values(visibilityAcceptedValues).includes(request.visibility)) {
                 errors.push('Invalid visibility values.');
             };
         }
 
-        if (!authorId) {
+        if (!request.authorId) {
             errors.push('Author ID is required.');
         } else {
-            if (!/^user-/.test(authorId)) {
+            if (!/^user-/.test(request.authorId)) {
                 errors.push('Invalid author ID value.');
             }
         }
 
-        if (!expiresAfter) {
+        if (!request.expiresAfter) {
             errors.push('Expiration time is required');
         } else {
-            if (!/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(.\d\d\d)?/.test(expiresAfter)) {
+            if (!/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(.\d\d\d)?/.test(request.expiresAfter)) {
                 errors.push('Incorrect visibility timestamp value, please use "YYYY-MM-DD hh:mm:ss"');
             }
         }

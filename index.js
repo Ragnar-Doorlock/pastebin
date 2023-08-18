@@ -25,7 +25,7 @@ const SearchPasteResponseBuilder = require('./app/pastes/search-paste/searchPast
 const GetUrlResponseBuilder = require('./app/url/get-url/getUrlResponseBuilder');
 const SearchUrlResponseBuilder = require('./app/url/search-url/searchUrlResponseBuilder');
 const CreateUrlResponseBuilder = require('./app/url/create-url/createUrlResponseBuilder');
-const GetPasteByHashResponseBuilder = require('./app/pastes/get-paste-by-hash/getPasteByHashResponseBuilder');
+const GetPasteByHashResponseBuilder = require('./app/pastes/get-shared-paste/getSharedPasteResponseBuilder');
 
 const userFactory = new UserFactory();
 const pasteFactory = new PasteFactory();
@@ -60,5 +60,5 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
 
     //console.log(await pasteRepository.findAll({ids: ['paste-1']}));
     //console.log(await userRepository.findAll({ids: ['user-3']}));
-    //console.log(await urlRepository.findOne({hash: '1'}));
+    //console.log(await urlRepository.findOne({pasteId: 'paste-56d7d275-d21b-471a-8343-5c001c6fe0a2'}));
 })()

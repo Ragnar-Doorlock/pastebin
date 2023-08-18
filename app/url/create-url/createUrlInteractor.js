@@ -1,5 +1,6 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
+const DEFAULT_TOKEN_EXPIRES_AFTER_MS= "24 h";
 
 class CreateUrlInteractor {
     constructor ({presenter, validator, urlRepository, urlFactory, jwt, pasteRepository, responseBuilder, idGenerator}) {
@@ -28,9 +29,9 @@ class CreateUrlInteractor {
             return;
         }
 
-        const hash = this.jwt.sign({id: request.pasteId, visibility: paste._visibility}, process.env.SECRET_KEY, {expiresIn: +request.expiresAfterMs});
+        const hash = this.jwt.sign({pasteId: request.pasteId, visibility: paste._visibility}, process.env.SECRET_KEY, {expiresIn: DEFAULT_TOKEN_EXPIRES_AFTER_MS});
 
-        const url = this.urlFactory.create({pasteId: request.pasteId, urlId: this.idGenerator.generate('url') });
+        const url = this.urlFactory.create({pasteId: request.pasteId, id: this.idGenerator.generate('url') });
         await this.urlRepository.save(url);
 
         this.presenter.presentSuccess(this.responseBuilder.build(hash));

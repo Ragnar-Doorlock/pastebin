@@ -1,11 +1,11 @@
 class CreateUserValidator {
-    validate({name}) {
+    validate(request) {
         const errors = [];
 
-        if (!name) {
+        if (!request.name) {
             errors.push('Name is required');
         } else {
-            if (name.length > 50) {
+            if (request.name.length > 50) {
                 errors.push('Name value is over 50 characters');
             }
         }

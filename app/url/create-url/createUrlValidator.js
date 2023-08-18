@@ -1,11 +1,11 @@
 class CreateUrlValidator {
-    validate({pasteId, hash}) {
+    validate(request) {
         const errors = [];
 
-        if (!pasteId) {
+        if (!request.pasteId) {
             errors.push('Paste ID is required.');
         } else {
-            if (!/^paste-/.test(pasteId)) {
+            if (!/^paste-/.test(request.pasteId)) {
                 errors.push('Paste ID format is invalid.');
             }
         }

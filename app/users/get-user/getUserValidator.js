@@ -1,19 +1,19 @@
 class GetUserValidator {
-    validate({id}) {
+    validate(request) {
         const errors = [];
         
-        if (!id) {
+        if (!request.id) {
             errors.push('ID is required');
         } else {
-            if (!/^user-/.test(id)) {
+            if (!/^user-/.test(request.id)) {
                 errors.push('Invalid ID format');
             }
 
-            if (id.length < 20) {
+            if (request.id.length < 20) {
                 errors.push('ID is too short');
             }
 
-            if (id.length > 60) {
+            if (request.id.length > 60) {
                 errors.push('ID is too long.');
             }
         }

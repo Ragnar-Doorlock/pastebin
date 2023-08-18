@@ -1,15 +1,15 @@
 class DeleteUrlValidator {
-    validate ({pasteId}) {
+    validate (request) {
         const errors = [];
 
-        if (!pasteId) {
+        if (!request.pasteId) {
             errors.push('Paste ID is required.');
         } else {
-            if (!/^paste-/.test(pasteId)) {
+            if (!/^paste-/.test(request.pasteId)) {
                 errors.push('Invalid ID format.');
             }
 
-            if (pasteId.length < 20) {
+            if (request.pasteId.length < 20) {
                 errors.push('ID is too short.');
             }
         }

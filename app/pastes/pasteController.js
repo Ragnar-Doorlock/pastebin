@@ -14,9 +14,9 @@ const CreatePasteHttpRequest = require('./create-paste/createPasteHttpRequest');
 const SearchPasteHttpRequest = require('./search-paste/searchPasteHttpRequest');
 const UpdatePasteHttpRequest = require('./update-paste/updatePasteHttpRequest');
 const DeletePasteHttpRequest = require('./delete-paste/deletePasteHttpRequest');
-const GetPasteByHashHttpRequest = require('./get-paste-by-hash/getPasteByHashHttpRequest');
-const GetPasteByHashValidator = require('./get-paste-by-hash/getPasteByHashValidator');
-const GetPasteByHashInteractor = require('./get-paste-by-hash/getPasteByHashInteractor');
+const GetSharedPasteHttpRequest = require('./get-shared-paste/getSharedPasteHttpRequest');
+const GetSharedPasteValidator = require('./get-shared-paste/getSharedPasteValidator');
+const GetSharedPasteInteractor = require('./get-shared-paste/getSharedPasteInteractor');
 
 class PasteRouterBuilder {
     constructor ({express, pasteRepository, pasteFactory, idGenerator, getPasteResponseBuilder, searchPasteResponseBuilder, getPasteByHashResponseBuilder, urlRepository, jwt}) {
@@ -33,13 +33,13 @@ class PasteRouterBuilder {
 
     createRoutes() {
         this.router.get('/shared', async (request, response) => {
-            const validator = new GetPasteByHashValidator();
+            const validator = new GetSharedPasteValidator();
             const presenter = new HttpPresenter(request, response);
-            const interactor = new GetPasteByHashInteractor({validator, presenter, pasteRepository: this.pasteRepository, urlRepository: this.urlRepository, 
+            const interactor = new GetSharedPasteInteractor({validator, presenter, pasteRepository: this.pasteRepository, urlRepository: this.urlRepository, 
                 responseBuilder: this.getPasteByHashResponseBuilder, pasteFactory: this.pasteFactory, jwt: this.jwt});
 
             try {
-                await interactor.execute(new GetPasteByHashHttpRequest(request));
+                await interactor.execute(new GetSharedPasteHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }
@@ -78,7 +78,6 @@ class PasteRouterBuilder {
                 responseBuilder: this.searchPasteResponseBuilder});
 
             try {
-                //where/when can i restrict results, for example to show only public pastes?
                 await interactor.execute(new SearchPasteHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
