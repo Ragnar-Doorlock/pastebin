@@ -21,17 +21,15 @@ class GetSharedPasteInteractor {
         }
 
         let decodedToken;
-        this.jwt.verify(request.hash, process.env.SECRET_KEY, (error, decoded) => {
-            if (error) {
-                this.presenter.presentFailure(new ApiError(error));
-                return;
-            }
-            decodedToken = decoded;
-            //console.log(decoded);
-        });
+        try {
+            decodedToken = await this.jwt.verify(request.hash, process.env.SECRET_KEY);
+        } catch (error) {
+            this.presenter.presentFailure(new ApiError(error));
+            return;
+        }
 
         if (!decodedToken.pasteId) {
-            this.presenter.presentFailure(new ApiError('Unable to verify url.'));
+            this.presenter.presentFailure(new ApiError('Invalid token.'));
             return;
         }
 

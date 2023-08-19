@@ -29,9 +29,17 @@ class CreateUrlInteractor {
             return;
         }
 
-        const hash = this.jwt.sign({pasteId: request.pasteId, visibility: paste._visibility}, process.env.SECRET_KEY, {expiresIn: DEFAULT_TOKEN_EXPIRES_AFTER_MS});
+        const hash = this.jwt.sign({
+            pasteId: request.pasteId, 
+            visibility: paste._visibility}, 
+            process.env.SECRET_KEY, 
+            {expiresIn: DEFAULT_TOKEN_EXPIRES_AFTER_MS}
+        );
 
-        const url = this.urlFactory.create({pasteId: request.pasteId, id: this.idGenerator.generate('url') });
+        const url = this.urlFactory.create({
+            pasteId: request.pasteId, 
+            id: this.idGenerator.generate('url') 
+        });
         await this.urlRepository.save(url);
 
         this.presenter.presentSuccess(this.responseBuilder.build(hash));

@@ -29,7 +29,12 @@ class UserRouterBuilder {
         this.router.get('/:userId', async (request, respone) => {
             const validator = new GetUserValidator();
             const presenter = new HttpPresenter(request, respone);
-            const interactor = new GetUserInteractor({presenter, validator, userRepository: this.userRepository, responseBuilder: this.getUserResponseBuilder});
+            const interactor = new GetUserInteractor({
+                presenter, 
+                validator, 
+                userRepository: this.userRepository, 
+                responseBuilder: this.getUserResponseBuilder
+            });
 
             try {
                 await interactor.execute(new GetUserHttpRequest(request));
@@ -41,7 +46,13 @@ class UserRouterBuilder {
         this.router.post('/', async (request, respone) => {
             const validator = new CreateUserValidator();
             const presenter = new HttpPresenter(request, respone);
-            const interactor = new CreateUserInteractor({presenter, validator, userFactory: this.userFactory, userRepository: this.userRepository, idGenerator: this.idGenerator});
+            const interactor = new CreateUserInteractor({
+                presenter, 
+                validator, 
+                userFactory: this.userFactory, 
+                userRepository: this.userRepository, 
+                idGenerator: this.idGenerator
+            });
 
             try {
                 await interactor.execute(new CreateUserHttpRequest(request));
@@ -53,7 +64,11 @@ class UserRouterBuilder {
         this.router.post('/search-users', async (request, respone) => {
             const validator = new SearchUserValidator();
             const presenter = new HttpPresenter(request, respone);
-            const interactor = new SearchUserInteractor({validator, userRepository: this.userRepository, presenter, responseBuilder: this.searchUserResponseBuilder});
+            const interactor = new SearchUserInteractor({
+                validator, 
+                userRepository: this.userRepository, 
+                presenter, responseBuilder: this.searchUserResponseBuilder
+            });
             
             try {
                 await interactor.execute(new SearchUserHttpRequest(request));
@@ -65,7 +80,12 @@ class UserRouterBuilder {
         this.router.put('/:userId', async (request, respone) => {
             const validator = new UpdateUserValidator();
             const presenter = new HttpPresenter(request, respone);
-            const interactor = new UpdateUserInteractor({validator, presenter, userFactory: this.userFactory, userRepository: this.userRepository});
+            const interactor = new UpdateUserInteractor({
+                validator, 
+                presenter, 
+                userFactory: this.userFactory, 
+                userRepository: this.userRepository
+            });
 
             try {
                 await interactor.execute(new UpdateUserHttpRequest(request));
@@ -77,7 +97,11 @@ class UserRouterBuilder {
         this.router.delete('/:userId', async (request, respone) => {
             const validator = new DeleteUserValidator();
             const presenter = new HttpPresenter(request, respone);
-            const interactor = new DeleteUserInteractor({validator, presenter, userRepository: this.userRepository});
+            const interactor = new DeleteUserInteractor({
+                validator, 
+                presenter, 
+                userRepository: this.userRepository
+            });
 
             try {
                 await interactor.execute(new DeleteUserHttpRequest(request));

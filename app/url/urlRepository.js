@@ -33,8 +33,11 @@ class UrlRepository {
     }
 
     async save(data) {
-        await this.dbProvider.execute(`insert into url (paste_id, url_id) values ('${data.getPasteId()}', '${data.getId()}') 
-        ON CONFLICT (paste_id) DO UPDATE set url_id='${data.getId()}'`);
+        await this.dbProvider.execute(`
+            insert into url (paste_id, url_id) 
+            values ('${data.getPasteId()}', '${data.getId()}') 
+            ON CONFLICT (paste_id) DO UPDATE set url_id='${data.getId()}'
+        `);
     }
 
     async delete(pasteID) {

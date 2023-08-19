@@ -1,11 +1,11 @@
 class GetSharedPasteValidator {
-    validate (hash) {
+    validate (request) {
         const errors = [];
 
-        if (!hash) {
+        if (!request.hash) {
             errors.push('Invalid link.');
         } else {
-            if (hash.length < 100) {
+            if (request.hash.length < 100) {
                 errors.push('Link is too short');
             }
         }

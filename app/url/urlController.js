@@ -29,7 +29,12 @@ class UrlRouterBuilder {
         this.router.get('/:pasteId', async (request, response) => {
             const validator = new GetUrlValidator();
             const presenter = new HttpPresenter(request, response);
-            const interactor = new GetUrlInteractor({presenter, validator, responseBuilder: this.getUrlResponseBuilder, urlRepository: this.urlRepository});
+            const interactor = new GetUrlInteractor({
+                presenter, 
+                validator, 
+                responseBuilder: this.getUrlResponseBuilder, 
+                urlRepository: this.urlRepository
+            });
 
             try {
                 await interactor.execute(new GetUrlHttpRequest(request));
@@ -41,9 +46,16 @@ class UrlRouterBuilder {
         this.router.post('/', async (request, response) => {
             const validator = new CreateUrlValidator();
             const presenter = new HttpPresenter(request, response);
-            const interactor = new CreateUrlInteractor({presenter, validator, urlFactory: this.urlFactory, 
-                urlRepository: this.urlRepository, pasteRepository: this.pasteRepository, jwt: this.jwt, responseBuilder: this.createUrlResponseBuilder, 
-                idGenerator: this.idGenerator});
+            const interactor = new CreateUrlInteractor({
+                presenter, 
+                validator, 
+                urlFactory: this.urlFactory, 
+                urlRepository: this.urlRepository, 
+                pasteRepository: this.pasteRepository, 
+                jwt: this.jwt, 
+                responseBuilder: this.createUrlResponseBuilder, 
+                idGenerator: this.idGenerator
+            });
 
             try {
                 await interactor.execute(new CreateUrlHttpRequest(request));
@@ -55,7 +67,12 @@ class UrlRouterBuilder {
         this.router.post('/search-url', async (request, response) => {
             const validator = new SearchUrlValidator();
             const presenter = new HttpPresenter(request, response);
-            const interactor = new SearchUrlInteractor({presenter, validator, urlRepository: this.urlRepository, responseBuilder: this.searchUrlResponseBuilder});
+            const interactor = new SearchUrlInteractor({
+                presenter, 
+                validator, 
+                urlRepository: this.urlRepository, 
+                responseBuilder: this.searchUrlResponseBuilder
+            });
 
             try {
                 await interactor.execute(new SearchUrlHttpRequest(request));
@@ -67,7 +84,11 @@ class UrlRouterBuilder {
         this.router.delete('/:pasteId', async (request, response) => {
             const validator = new DeleteUrlValidator();
             const presenter = new HttpPresenter(request, response);
-            const interactor = new DeleteUrlInteractor({presenter, validator, urlRepository: this.urlRepository});
+            const interactor = new DeleteUrlInteractor({
+                presenter, 
+                validator, 
+                urlRepository: this.urlRepository
+            });
 
             try {
                 await interactor.execute(new DeleteUrlHttpRequest(request));

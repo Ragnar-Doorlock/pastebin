@@ -17,7 +17,11 @@ class SearchPasteInteractor {
         }
 
         const pasteId = Array.isArray(request.id) ? request.id : [request.id];
-        const pastes = await this.pasteRepository.findAll({ids: pasteId, name: request.name, authorId: request.authorId});
+        const pastes = await this.pasteRepository.findAll({
+            ids: pasteId, 
+            name: request.name, 
+            authorId: request.authorId
+        });
 
         this.presenter.presentSuccess(this.responseBuilder.build(pastes));
     }

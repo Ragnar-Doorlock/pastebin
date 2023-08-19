@@ -1,6 +1,9 @@
 class GetUrlResponseBuilder {
     build(entity) {
-        return {pasteId: entity.getPasteId(), hash: entity.getHash()};
+        return {
+            pasteId: entity.getPasteId(), 
+            hash: entity.getHash()
+        };
     }
 }
 

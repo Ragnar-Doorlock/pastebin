@@ -35,8 +35,15 @@ class PasteRouterBuilder {
         this.router.get('/shared', async (request, response) => {
             const validator = new GetSharedPasteValidator();
             const presenter = new HttpPresenter(request, response);
-            const interactor = new GetSharedPasteInteractor({validator, presenter, pasteRepository: this.pasteRepository, urlRepository: this.urlRepository, 
-                responseBuilder: this.getPasteByHashResponseBuilder, pasteFactory: this.pasteFactory, jwt: this.jwt});
+            const interactor = new GetSharedPasteInteractor({
+                validator, 
+                presenter, 
+                pasteRepository: this.pasteRepository, 
+                urlRepository: this.urlRepository, 
+                responseBuilder: this.getPasteByHashResponseBuilder, 
+                pasteFactory: this.pasteFactory, 
+                jwt: this.jwt
+            });
 
             try {
                 await interactor.execute(new GetSharedPasteHttpRequest(request));
@@ -48,8 +55,12 @@ class PasteRouterBuilder {
         this.router.get('/:pasteId', async (request, response) => {
             const validator = new GetPasteValidator();
             const presenter = new HttpPresenter(request, response);
-            const interactor = new GetPasteInteractor({presenter, validator, pasteRepository: this.pasteRepository, 
-                responseBuilder: this.getPasteResponseBuilder});
+            const interactor = new GetPasteInteractor({
+                presenter, 
+                validator, 
+                pasteRepository: this.pasteRepository, 
+                responseBuilder: this.getPasteResponseBuilder
+            });
 
             try {
                 await interactor.execute(new GetPasteHttpRequest(request));
@@ -61,8 +72,13 @@ class PasteRouterBuilder {
         this.router.post('/', async (request, response) => {
             const validator = new CreatePasteValidator();
             const presenter = new HttpPresenter(request, response);
-            const interactor = new CreatePasteInteractor({presenter, validator, pasteFactory: this.pasteFactory, 
-                pasteRepository: this.pasteRepository, idGenerator: this.idGenerator});
+            const interactor = new CreatePasteInteractor({
+                presenter, 
+                validator, 
+                pasteFactory: this.pasteFactory, 
+                pasteRepository: this.pasteRepository, 
+                idGenerator: this.idGenerator
+            });
 
             try {
                 await interactor.execute(new CreatePasteHttpRequest(request));
@@ -74,8 +90,12 @@ class PasteRouterBuilder {
         this.router.post('/search-pastes', async (request, response) => {
             const validator = new SearchPasteValidator();
             const presenter = new HttpPresenter(request, response);
-            const interactor = new SearchPasteInteractor({validator, presenter, pasteRepository: this.pasteRepository, 
-                responseBuilder: this.searchPasteResponseBuilder});
+            const interactor = new SearchPasteInteractor({
+                validator, 
+                presenter, 
+                pasteRepository: this.pasteRepository, 
+                responseBuilder: this.searchPasteResponseBuilder
+            });
 
             try {
                 await interactor.execute(new SearchPasteHttpRequest(request));
@@ -87,8 +107,12 @@ class PasteRouterBuilder {
         this.router.put('/:pasteId', async (request, response) => {
             const validator = new UpdatePasteValidator();
             const presenter = new HttpPresenter(request, response);
-            const interactor = new UpdatePasteInteractor({validator, presenter, pasteFactory: this.pasteFactory, 
-                pasteRepository: this.pasteRepository});
+            const interactor = new UpdatePasteInteractor({
+                validator, 
+                presenter, 
+                pasteFactory: this.pasteFactory, 
+                pasteRepository: this.pasteRepository
+            });
            
             try {
                 await interactor.execute(new UpdatePasteHttpRequest(request));
@@ -100,7 +124,11 @@ class PasteRouterBuilder {
         this.router.delete('/:pasteId', async (request, response) => {
             const validator = new DeletePasteValidator();
             const presenter = new HttpPresenter(request, response);
-            const interactor = new DeletePasteInteractor({validator, presenter, pasteRepository: this.pasteRepository});
+            const interactor = new DeletePasteInteractor({
+                validator, 
+                presenter, 
+                pasteRepository: this.pasteRepository
+            });
 
             try {
                 await interactor.execute(new DeletePasteHttpRequest(request));

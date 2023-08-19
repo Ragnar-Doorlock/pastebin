@@ -132,4 +132,5 @@ dist
 .vscode
 
 db/migrations/umzug.json
+db/migrations/migrations/2023.08.18T13.01.26.urlTableChanges.js
 app/kebab-case-remover/

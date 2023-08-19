@@ -17,8 +17,14 @@ class CreatePasteInteractor {
             return;
         }
 
-        const paste = this.pasteFactory.create({id: this.idGenerator.generate('paste'), name: request.name, text: request.text, 
-            visibility: request.visibility, expiresAfter: request.expiresAfter, authorId: request.authorId});
+        const paste = this.pasteFactory.create({
+            id: this.idGenerator.generate('paste'), 
+            name: request.name, 
+            text: request.text, 
+            visibility: request.visibility, 
+            expiresAfter: request.expiresAfter, 
+            authorId: request.authorId
+        });
         await this.pasteRepository.save(paste);
 
         this.presenter.presentSuccess();
