@@ -1,15 +1,15 @@
 class Url {
     constructor(data) {
         this._pasteId = data.pasteId;
-        this._hash = data.hash;
+        this._id = data.id;
     }
 
     getPasteId() {
         return this._pasteId;
     }
 
-    getHash() {
-        return this._hash;
+    getId() {
+        return this._id;
     }
 }
 

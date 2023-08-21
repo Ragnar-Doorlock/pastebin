@@ -1,19 +1,19 @@
 class SearchUrlValidator {
-    validate({pasteId, hash}) {
+    validate(request) {
         const errors = [];
 
-        if (pasteId && !/^paste-/.test(pasteId)) {
+        if (request.pasteId && !/^paste-/.test(request.pasteId)) {
             errors.push('Invalid paste ID format.');
         }
 
-        if (Array.isArray(pasteId)) {
-            for (const i of pasteId) {
+        if (Array.isArray(request.pasteId)) {
+            for (const i of request.pasteId) {
                 if (i.length < 20) {
                     errors.push(`ID ${i} is too short.`);
                 }
             }
         } else {
-            if (pasteId && pasteId.length < 20) {
+            if (request.pasteId && request.pasteId.length < 20) {
                 errors.push('ID is too short.');
             }
         }

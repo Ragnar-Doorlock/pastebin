@@ -38,18 +38,30 @@ class PasteRepository {
             return null;
         }
 
-        const result = queryResult.map(x => this.pasteFactory.create({ id: x.id, name: x.name, text: x.name, expiresAfter: x.expires_after,
-            visibility: x.visibility, authorId: x.author_id, createdAt: x.created_at, updatedAt: x.updated_at, deletedAt: x.deleted_at }));
+        const result = queryResult.map(x => this.pasteFactory.create({ 
+            id: x.id, 
+            name: x.name, 
+            text: x.name, 
+            expiresAfter: x.expires_after,
+            visibility: x.visibility, 
+            authorId: x.author_id, 
+            createdAt: x.created_at, 
+            updatedAt: x.updated_at, 
+            deletedAt: x.deleted_at 
+        }));
 
         return result;
     }
 
     async save(paste) {
-        // either leave it as it is (user can't change expiration date) or adjust query later so he can change expiration date. For now in interactor i pass expiration from code
-        // so the query doesn't get 'undefined' and can be executed
-        await this.dbProvider.execute(`insert into paste (id, name, text, expires_after, visibility, author_id, created_at) 
-        values ('${paste.getId()}'::varchar(60), '${paste.getName()}', '${paste.getText()}', '${paste.getExpiration()}', '${paste.getVisibility()}', '${paste.getAuthorId()}'::varchar(60), current_timestamp) ON conflict (id) 
-        DO update set name='${paste.getName()}', text='${paste.getText()}', visibility='${paste.getVisibility()}', updated_at=current_timestamp`);
+        await this.dbProvider.execute(`
+            insert into paste (id, name, text, expires_after, visibility, author_id, created_at) 
+            values ('${paste.getId()}', '${paste.getName()}', '${paste.getText()}', '${paste.getExpiration()}', '${paste.getVisibility()}', '${paste.getAuthorId()}', current_timestamp) 
+            ON conflict (id) DO update set name='${paste.getName()}', 
+            text='${paste.getText()}', 
+            visibility='${paste.getVisibility()}', 
+            updated_at=current_timestamp`
+        );
     }
 
     async delete(id) {

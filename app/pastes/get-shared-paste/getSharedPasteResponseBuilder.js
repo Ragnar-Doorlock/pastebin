@@ -1,5 +1,5 @@
-class GetPasteResponseBuilder {
-    build(entity) {
+class GetSharedPasteResponseBuilder {
+    build (entity) {
         return {
             id: entity.getId(), 
             name: entity.getName(), 
@@ -13,4 +13,4 @@ class GetPasteResponseBuilder {
     }
 }
 
-module.exports = GetPasteResponseBuilder;
+module.exports = GetSharedPasteResponseBuilder;

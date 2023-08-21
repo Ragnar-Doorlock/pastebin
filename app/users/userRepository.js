@@ -38,12 +38,12 @@ class UserRepository {
         return result;
     }
 
-    async save(user) {
-        if (!user) {
-            return;
-        }
-        
-        await this.dbProvider.execute(`insert into users (id, name) values ('${user.getId()}'::varchar(60), '${user.getName()}') ON CONFLICT (id) DO UPDATE set name='${user.getName()}'`);
+    async save(user) {        
+        await this.dbProvider.execute(`
+            insert into users (id, name) 
+            values ('${user.getId()}', '${user.getName()}') 
+            ON CONFLICT (id) DO UPDATE set name='${user.getName()}'
+        `);
     }
 
     async delete(id) {

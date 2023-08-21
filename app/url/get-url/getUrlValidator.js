@@ -1,19 +1,19 @@
 class GetUrlValidator {
-    validate({pasteId}) {
+    validate(request) {
         const errors = [];
 
-        if(!pasteId) {
+        if(!request.urlId) {
             errors.push('ID is required.');
         } else {
-            if (!/^paste-/.test(pasteId)) {
+            if (!/^paste-/.test(request.urlId)) {
                 errors.push('Invalid ID format.');
             }
 
-            if (pasteId.length < 20) {
+            if (request.urlId.length < 20) {
                 errors.push('ID is too short.');
             }
 
-            if (pasteId.length > 60) {
+            if (request.urlId.length > 60) {
                 errors.push('ID is too long.');
             }
         }
