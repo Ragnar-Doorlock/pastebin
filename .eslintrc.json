@@ -11,7 +11,7 @@
     },
     "rules": {
         // Possible Errors
-        //"no-console": "error",
+        "no-console": "error",
         "no-empty": ["error", {
             "allowEmptyCatch": true
         }],
