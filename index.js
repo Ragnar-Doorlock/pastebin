@@ -9,6 +9,15 @@ const pool = PostgresPoolConnection.getInstance();
 const { v4: uuidv4 } = require('uuid');
 const IdGenerator = require('./app/idGenerator');
 const jwt = require('jsonwebtoken');
+const log4js = require('log4js');
+log4js.configure({
+    appenders: {
+        console: { type: 'console' }
+    },
+    categories: {
+        default: { appenders: ['console'], level: 'debug' }
+    }
+});
 
 const DBProvider = require('./db/dbProvider');
 const UserRepository = require('./app/users/userRepository');
@@ -17,6 +26,7 @@ const UrlRepository = require('./app/url/urlRepository');
 const UserFactory = require('./app/entities/user-entity/userFactory');
 const PasteFactory = require('./app/entities/paste-entity/pasteFactory');
 const UrlFactory = require('./app/entities/url-entity/urlFactory');
+const LoggerProvider = require('./app/loggerProvider');
 
 const GetUserResponseBuilder = require('./app/users/get-user/getUserResponseBuilder');
 const SearchUserResponseBuilder = require('./app/users/search-users/searchUserResponseBuilder');
@@ -43,6 +53,8 @@ const getUrlResponseBuilder = new GetUrlResponseBuilder();
 const searchUrlResponseBuilder = new SearchUrlResponseBuilder();
 const createUrlResponseBuilder = new CreateUrlResponseBuilder();
 const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
+const loggerProvider = new LoggerProvider(log4js);
+const logger = loggerProvider.create('index');
 
 (async () => {
     const userRoutes = new UserRouterBuilder({
@@ -81,7 +93,7 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
     app.use('/paste', pasteRoutes.createRoutes());
     app.use('/url', urlRoutes.createRoutes());
 
-    app.listen(3000, () => console.log('App is running.'));
+    app.listen(3000, logger.info('App is running.'));
 
     //console.log(await pasteRepository.findAll({ids: ['paste-1']}));
     //console.log(await userRepository.findAll({ids: ['user-3']}));
