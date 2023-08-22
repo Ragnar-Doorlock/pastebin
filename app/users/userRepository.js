@@ -1,5 +1,5 @@
 class UserRepository {
-    constructor ({ dbProvider, userFactory }) {
+    constructor({ dbProvider, userFactory }) {
         this.dbProvider = dbProvider;
         this.userFactory = userFactory;
     }
@@ -23,14 +23,14 @@ class UserRepository {
             itemsToFind.push(`id in (${stringIds.join(', ')})`);
         }
 
-        if( name ) {
+        if ( name ) {
             itemsToFind.push(`name='${name}'`);
         }
 
         //console.log(`SELECT * FROM users WHERE ${itemsToFind.join(' AND ')}`);
-        const queryResult = await this.dbProvider.execute(`SELECT * FROM users WHERE ${itemsToFind.join(' AND ')}`); 
+        const queryResult = await this.dbProvider.execute(`SELECT * FROM users WHERE ${itemsToFind.join(' AND ')}`);
 
-        if(!queryResult) {
+        if (!queryResult) {
             return null;
         }
 
@@ -38,7 +38,7 @@ class UserRepository {
         return result;
     }
 
-    async save(user) {        
+    async save(user) {
         await this.dbProvider.execute(`
             insert into users (id, name) 
             values ('${user.getId()}', '${user.getName()}') 

@@ -1,5 +1,5 @@
 class UpdateUserValidator {
-    validate (request) {
+    validate(request) {
         const errors = [];
 
         if (!request.id) {
@@ -25,7 +25,7 @@ class UpdateUserValidator {
                 errors.push('Name value is over 50 characters.');
             }
         }
-        
+
         return errors;
     }
 }

@@ -1,7 +1,7 @@
 class GetUserValidator {
     validate(request) {
         const errors = [];
-        
+
         if (!request.id) {
             errors.push('ID is required');
         } else {

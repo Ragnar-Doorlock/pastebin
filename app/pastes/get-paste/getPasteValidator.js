@@ -1,7 +1,7 @@
 class GetPasteValidator {
     validate(request) {
-        const errors = []
-        
+        const errors = [];
+
         if (!request.id) {
             errors.push('ID is required.');
         } else {

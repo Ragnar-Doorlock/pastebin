@@ -1,5 +1,5 @@
 class DeleteUrlValidator {
-    validate (request) {
+    validate(request) {
         const errors = [];
 
         if (!request.pasteId) {
@@ -13,7 +13,7 @@ class DeleteUrlValidator {
                 errors.push('ID is too short.');
             }
         }
-        
+
         return errors;
     }
 }

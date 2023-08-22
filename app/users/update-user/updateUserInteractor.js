@@ -2,7 +2,7 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class UpdateUserInteractor {
-    constructor ({presenter, validator, userFactory, userRepository}) {
+    constructor({ presenter, validator, userFactory, userRepository }) {
         this.presenter = presenter;
         this.validator = validator;
         this.userFactory = userFactory;
@@ -17,14 +17,14 @@ class UpdateUserInteractor {
             return;
         }
 
-        const user = await this.userRepository.findByID({id: request.id});
+        const user = await this.userRepository.findByID({ id: request.id });
 
         if (!user) {
             this.presenter.presentFailure(new NotFound(`User ${request.id} was not found.`));
             return;
         }
-        
-        const userEntity = this.userFactory.create({id: request.id, name: request.name});
+
+        const userEntity = this.userFactory.create({ id: request.id, name: request.name });
         await this.userRepository.save(userEntity);
         this.presenter.presentSuccess();
     }

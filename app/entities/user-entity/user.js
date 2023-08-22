@@ -11,7 +11,7 @@ class User {
     getName() {
         return this._name;
     }
-    
+
 }
 
 module.exports = User;

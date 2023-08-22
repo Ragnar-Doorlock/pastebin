@@ -2,7 +2,7 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class DeleteUserInteractor {
-    constructor ({validator, presenter, userRepository}) {
+    constructor({ validator, presenter, userRepository }) {
         this.validator = validator;
         this.presenter = presenter;
         this.userRepository = userRepository;
@@ -16,7 +16,7 @@ class DeleteUserInteractor {
             return;
         }
 
-        const user = await this.userRepository.findByID({id: request.id});
+        const user = await this.userRepository.findByID({ id: request.id });
 
         if (!user) {
             this.presenter.presentFailure( new NotFound(`User with ${request.id} was not found`));

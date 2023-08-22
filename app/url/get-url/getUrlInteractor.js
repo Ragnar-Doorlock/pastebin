@@ -2,7 +2,7 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class GetUrlInteractor {
-    constructor ({presenter, validator, urlRepository, responseBuilder}) {
+    constructor({ presenter, validator, urlRepository, responseBuilder }) {
         this.validator = validator;
         this.presenter = presenter;
         this.urlRepository = urlRepository;
@@ -17,7 +17,7 @@ class GetUrlInteractor {
             return;
         }
 
-        const url = await this.urlRepository.findById({pasteId: request.pasteId});
+        const url = await this.urlRepository.findById({ pasteId: request.pasteId });
 
         if (!url) {
             this.presenter.presentFailure(new NotFound(`Url hash with paste ID ${request.pasteId} was not found.`));

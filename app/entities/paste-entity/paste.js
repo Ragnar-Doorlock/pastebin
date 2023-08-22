@@ -1,5 +1,5 @@
 class Paste {
-    constructor (data) {
+    constructor(data) {
         this._id = data.id;
         this._name = data.name;
         this._text = data.text;

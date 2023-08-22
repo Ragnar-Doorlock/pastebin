@@ -12,10 +12,8 @@ class SearchUrlValidator {
                     errors.push(`ID ${i} is too short.`);
                 }
             }
-        } else {
-            if (request.pasteId && request.pasteId.length < 20) {
-                errors.push('ID is too short.');
-            }
+        } else if (request.pasteId && request.pasteId.length < 20) {
+            errors.push('ID is too short.');
         }
 
         return errors;

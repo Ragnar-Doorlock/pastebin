@@ -1,5 +1,5 @@
 class SearchUrlHttpRequest {
-    constructor (request) {
+    constructor(request) {
         this.pasteId = request.body.pasteId;
         this.hash = request.body.hash;
     }

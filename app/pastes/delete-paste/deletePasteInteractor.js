@@ -2,7 +2,7 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class DeletePasteInteractor {
-    constructor ({validator, presenter, pasteRepository}) {
+    constructor({ validator, presenter, pasteRepository }) {
         this.validator = validator;
         this.presenter = presenter;
         this.pasteRepository = pasteRepository;
@@ -16,7 +16,7 @@ class DeletePasteInteractor {
             return;
         }
 
-        const paste = await this.pasteRepository.findById({id: request.id});
+        const paste = await this.pasteRepository.findById({ id: request.id });
 
         if (!paste) {
             this.presenter.presentFailure(new NotFound(`Paste with ID ${request.id} was not found.`));

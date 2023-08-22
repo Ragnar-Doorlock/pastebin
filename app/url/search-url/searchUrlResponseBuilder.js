@@ -1,6 +1,6 @@
 class SearchUrlResponseBuilder {
     build(entities) {
-        return entities.map(x => ({pasteId: x.getPasteId(), hash: x.getHash()}));
+        return entities.map(x => ({ pasteId: x.getPasteId(), hash: x.getHash() }));
     }
 }
 

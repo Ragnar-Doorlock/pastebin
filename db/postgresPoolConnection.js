@@ -1,6 +1,6 @@
-const { Pool } = require("pg");
+const { Pool } = require('pg');
 const path = require('path');
-require('dotenv').config({path: path.resolve(__dirname, '../.env')});
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 class PostgresPoolConnection {
     constructor() {
@@ -18,7 +18,7 @@ class PostgresPoolConnection {
             return this.pool;
         }
 
-        this.pool = new Singleton();
+        this.pool = new PostgresPoolConnection();
         return this.pool;
     }
 }

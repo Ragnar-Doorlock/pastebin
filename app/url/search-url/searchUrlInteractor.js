@@ -1,7 +1,7 @@
 const ValidationError = require('../../errors/validationError');
 
 class SearchUrlInteractor {
-    constructor ({validator, presenter, urlRepository, responseBuilder}) {
+    constructor({ validator, presenter, urlRepository, responseBuilder }) {
         this.validator = validator;
         this.presenter = presenter;
         this.urlRepository = urlRepository;
@@ -17,7 +17,7 @@ class SearchUrlInteractor {
         }
 
         const pasteIds = Array.isArray(request.pasteId) ? request.pasteId : [request.pasteId];
-        const urls = await this.urlRepository.findAll({pasteIds, hash: request.hash});
+        const urls = await this.urlRepository.findAll({ pasteIds, hash: request.hash });
 
         this.presenter.presentSuccess(this.responseBuilder.build(urls));
     }

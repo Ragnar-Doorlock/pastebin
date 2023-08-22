@@ -1,5 +1,5 @@
 class SearchUserValidator {
-    validate (request) {
+    validate(request) {
         const errors = [];
 
         if (Array.isArray(request.id)) {
@@ -8,10 +8,8 @@ class SearchUserValidator {
                     errors.push(`ID ${i} is too short.`);
                 }
             }
-        } else {
-            if (request.id && request.id.length < 20) {
-                errors.push('ID is too short.');
-            }
+        } else if (request.id && request.id.length < 20) {
+            errors.push('ID is too short.');
         }
 
         if (request.name && request.name.length === 0) {

@@ -1,5 +1,5 @@
 class DeletePasteValidator {
-    validate ({id}) {
+    validate({ id }) {
         const errors = [];
 
         if (!id) {
@@ -8,7 +8,7 @@ class DeletePasteValidator {
             if (!/^paste-/.test(id)) {
                 errors.push('Invalid ID format.');
             }
-    
+
             if (id && id.length < 20) {
                 errors.push('ID is too short.');
             }

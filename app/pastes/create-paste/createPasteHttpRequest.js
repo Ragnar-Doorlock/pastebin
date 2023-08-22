@@ -1,5 +1,5 @@
 class CreatePasteHttpRequest {
-    constructor (request) {
+    constructor(request) {
         this.name = request.body.name;
         this.text = request.body.text;
         this.expiresAfter = request.body.expiresAfter;

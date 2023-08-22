@@ -2,7 +2,7 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class GetPasteInteractor {
-    constructor ({presenter, validator, pasteRepository, responseBuilder}) {
+    constructor({ presenter, validator, pasteRepository, responseBuilder }) {
         this.presenter = presenter;
         this.validator = validator;
         this.pasteRepository = pasteRepository;
@@ -17,10 +17,10 @@ class GetPasteInteractor {
             return;
         }
 
-        const paste = await this.pasteRepository.findById({id: request.id});
+        const paste = await this.pasteRepository.findById({ id: request.id });
 
         if (!paste) {
-            this.presenter.presentFailure( new NotFound(`Paste with ${id} was not found.`));
+            this.presenter.presentFailure( new NotFound(`Paste with ${request.id} was not found.`));
             return;
         }
 

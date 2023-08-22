@@ -1,8 +1,8 @@
 const ApiError = require('./apiError');
 
 class BadRequest extends ApiError {
-    constructor (message) {
-        super({httpCode: 400, message});
+    constructor(message) {
+        super({ httpCode: 400, message });
         this.name = this.constructor.name;
     }
 }

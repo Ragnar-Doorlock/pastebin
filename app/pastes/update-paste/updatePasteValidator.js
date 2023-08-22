@@ -1,7 +1,7 @@
 const visibilityAcceptedValues = require('../../entities/paste-entity/visibility');
 
 class UpdatePasteValidator {
-    validate({id, name, text, visibility}) {
+    validate({ id, name, text, visibility }) {
         const errors = [];
 
         if (!id) {
@@ -18,26 +18,20 @@ class UpdatePasteValidator {
 
         if (!name) {
             errors.push('Paste name is required.');
-        } else {
-            if (name.length > 50) {
-                errors.push('Paste name is over 50 characters.');
-            }
+        } else if (name.length > 50) {
+            errors.push('Paste name is over 50 characters.');
         }
 
         if (!text) {
             errors.push('Paste text is required.');
-        } else {
-            if (text.length > 2000) {
-                errors.push('Paste text is over 2000 characters.');
-            }
+        } else if (text.length > 2000) {
+            errors.push('Paste text is over 2000 characters.');
         }
 
         if (!visibility) {
             errors.push('Visibility is required.');
-        } else {
-            if (!Object.values(visibilityAcceptedValues).includes(visibility)) {
-                errors.push('Invalid visibility values.');
-            };
+        } else if (!Object.values(visibilityAcceptedValues).includes(visibility)) {
+            errors.push('Invalid visibility values.');
         }
 
         return errors;
