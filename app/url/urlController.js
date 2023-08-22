@@ -1,16 +1,7 @@
 const HttpPresenter = require('../httpPresenter');
-const GetUrlValidator = require('./get-url/getUrlValidator');
-const GetUrlInteractor = require('./get-url/getUrlInteractor');
 const CreateUrlValidator = require('./create-url/createUrlValidator');
 const CreateUrlInteractor = require('./create-url/createUrlInteractor');
-const SearchUrlValidator = require('./search-url/searchUrlValidator');
-const SearchUrlInteractor = require('./search-url/searchUrlInteractor');
-const DeleteUrlValidator = require('./delete-url/deleteUrlValidator');
-const DeleteUrlInteractor = require('./delete-url/deleteUrlInteractor');
-const GetUrlHttpRequest = require('./get-url/getUrlHttpRequest');
 const CreateUrlHttpRequest = require('./create-url/createUrlHttpRequest');
-const SearchUrlHttpRequest = require('./search-url/searchUrlHttpRequest');
-const DeleteUrlHttpRequest = require('./delete-url/deleteUrlHttpRequest');
 
 class UrlRouterBuilder {
     constructor ({express, urlRepository, urlFactory, getUrlResponseBuilder, searchUrlResponseBuilder, pasteRepository, jwt, createUrlResponseBuilder, idGenerator}) {
