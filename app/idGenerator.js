@@ -1,5 +1,5 @@
 class IdGenerator {
-    constructor ({uuid}) {
+    constructor({ uuid }) {
         this.uuid = uuid;
     }
 

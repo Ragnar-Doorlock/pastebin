@@ -1,5 +1,5 @@
 class SearchUserHttpRequest {
-    constructor (request) {
+    constructor(request) {
         this.id = request.body.id;
         this.name = request.body.name;
     }

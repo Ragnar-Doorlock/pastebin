@@ -2,7 +2,7 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class DeleteUrlInteractor {
-    constructor ({validator, presenter, urlRepository}) {
+    constructor({ validator, presenter, urlRepository }) {
         this.presenter = presenter;
         this.validator = validator;
         this.urlRepository = urlRepository;
@@ -16,7 +16,7 @@ class DeleteUrlInteractor {
             return;
         }
 
-        const url = await this.urlRepository.findById({pasteId: request.pasteId});
+        const url = await this.urlRepository.findById({ pasteId: request.pasteId });
 
         if (!url) {
             this.presenter.presentFailure(new NotFound(`Hash with ID ${request.pasteId} was not found.`));

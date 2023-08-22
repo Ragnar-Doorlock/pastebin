@@ -1,5 +1,5 @@
 class HttpPresenter {
-    constructor (request, response) {
+    constructor(request, response) {
         this.request = request;
         this.response = response;
     }
@@ -14,7 +14,7 @@ class HttpPresenter {
     }
 
     presentFailure(error) {
-        this.response.status(error.httpCode).send({message: error.message});
+        this.response.status(error.httpCode).send({ message: error.message });
     }
 }
 

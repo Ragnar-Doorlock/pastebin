@@ -1,5 +1,5 @@
 class DeletePasteHttpRequest {
-    constructor (request) {
+    constructor(request) {
         this.id = request.params.pasteId;
     }
 }

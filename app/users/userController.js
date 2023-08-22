@@ -16,7 +16,7 @@ const UpdateUserHttpRequest = require('./update-user/updateUserHttpRequest');
 const DeleteUserHttpRequest = require('./delete-user/deleteUserHttpRequest');
 
 class UserRouterBuilder {
-    constructor({express, userRepository, userFactory, idGenerator, getUserResponseBuilder, searchUserResponseBuilder}) {
+    constructor({ express, userRepository, userFactory, idGenerator, getUserResponseBuilder, searchUserResponseBuilder }) {
         this.router = express.Router();
         this.userRepository = userRepository;
         this.userFactory = userFactory;
@@ -30,15 +30,15 @@ class UserRouterBuilder {
             const validator = new GetUserValidator();
             const presenter = new HttpPresenter(request, respone);
             const interactor = new GetUserInteractor({
-                presenter, 
-                validator, 
-                userRepository: this.userRepository, 
+                presenter,
+                validator,
+                userRepository: this.userRepository,
                 responseBuilder: this.getUserResponseBuilder
             });
 
             try {
                 await interactor.execute(new GetUserHttpRequest(request));
-            } catch(error) {
+            } catch (error) {
                 presenter.presentFailure(error);
             }
         });
@@ -47,10 +47,10 @@ class UserRouterBuilder {
             const validator = new CreateUserValidator();
             const presenter = new HttpPresenter(request, respone);
             const interactor = new CreateUserInteractor({
-                presenter, 
-                validator, 
-                userFactory: this.userFactory, 
-                userRepository: this.userRepository, 
+                presenter,
+                validator,
+                userFactory: this.userFactory,
+                userRepository: this.userRepository,
                 idGenerator: this.idGenerator
             });
 
@@ -65,11 +65,11 @@ class UserRouterBuilder {
             const validator = new SearchUserValidator();
             const presenter = new HttpPresenter(request, respone);
             const interactor = new SearchUserInteractor({
-                validator, 
-                userRepository: this.userRepository, 
+                validator,
+                userRepository: this.userRepository,
                 presenter, responseBuilder: this.searchUserResponseBuilder
             });
-            
+
             try {
                 await interactor.execute(new SearchUserHttpRequest(request));
             } catch (error) {
@@ -81,9 +81,9 @@ class UserRouterBuilder {
             const validator = new UpdateUserValidator();
             const presenter = new HttpPresenter(request, respone);
             const interactor = new UpdateUserInteractor({
-                validator, 
-                presenter, 
-                userFactory: this.userFactory, 
+                validator,
+                presenter,
+                userFactory: this.userFactory,
                 userRepository: this.userRepository
             });
 
@@ -98,8 +98,8 @@ class UserRouterBuilder {
             const validator = new DeleteUserValidator();
             const presenter = new HttpPresenter(request, respone);
             const interactor = new DeleteUserInteractor({
-                validator, 
-                presenter, 
+                validator,
+                presenter,
                 userRepository: this.userRepository
             });
 
@@ -108,8 +108,8 @@ class UserRouterBuilder {
             } catch (error) {
                 presenter.presentFailure(error);
             }
-        })
-        
+        });
+
         return this.router;
     }
 }

@@ -1,7 +1,7 @@
 const ValidationError = require('../../errors/validationError');
 
 class CreateUserInteractor {
-    constructor ({presenter, validator, userRepository, userFactory, idGenerator}) {
+    constructor({ presenter, validator, userRepository, userFactory, idGenerator }) {
         this.presenter = presenter;
         this.validator = validator;
         this.userRepository = userRepository;
@@ -17,7 +17,7 @@ class CreateUserInteractor {
             return;
         }
 
-        const user = this.userFactory.create({id: this.idGenerator.generate('user'), name: request.name});
+        const user = this.userFactory.create({ id: this.idGenerator.generate('user'), name: request.name });
         await this.userRepository.save(user);
 
         this.presenter.presentSuccess();

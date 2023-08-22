@@ -2,7 +2,7 @@ const ValidationError = require('../../errors/validationError');
 const ApiError = require('../../errors/apiError');
 
 class GetSharedPasteInteractor {
-    constructor ({presenter, validator, pasteRepository, urlRepository, responseBuilder, pasteFactory, jwt}) {
+    constructor({ presenter, validator, pasteRepository, urlRepository, responseBuilder, pasteFactory, jwt }) {
         this.presenter = presenter;
         this.validator = validator;
         this.pasteRepository = pasteRepository;
@@ -33,7 +33,7 @@ class GetSharedPasteInteractor {
             return;
         }
 
-        const paste = await this.pasteRepository.findById({id: decodedToken.pasteId});
+        const paste = await this.pasteRepository.findById({ id: decodedToken.pasteId });
 
         this.presenter.presentSuccess(this.responseBuilder.build(paste));
     }

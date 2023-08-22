@@ -14,9 +14,13 @@
   "scripts": {
     "migrateup": "cd e:/pastebin/db/migrations && node migrate up",
     "migratedown": "cd e:/pastebin/db/migrations && node migrate down",
-    "migratecreate": "cd e:/pastebin/db/migrations && node migrate create --name "
+    "migratecreate": "cd e:/pastebin/db/migrations && node migrate create --name ",
+    "lint": "eslint --fix --ext .js,.jsx ."
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "eslint": "^8.47.0"
+  }
 }

@@ -1,5 +1,5 @@
 class PasteRepository {
-    constructor ({ dbProvider, pasteFactory }) {
+    constructor({ dbProvider, pasteFactory }) {
         this.dbProvider = dbProvider;
         this.pasteFactory = pasteFactory;
     }
@@ -23,31 +23,31 @@ class PasteRepository {
             itemsToFind.push(`id in (${stringIds.join(', ')})`);
         }
 
-        if( name ) {
+        if ( name ) {
             itemsToFind.push(`name='${name}'`);
         }
 
-        if( authorId ) {
+        if ( authorId ) {
             itemsToFind.push(`author_id='${authorId}'`);
         }
-        
+
         //console.log(`SELECT * FROM paste WHERE ${itemsToFind.join(' AND ')}`);
         const queryResult = await this.dbProvider.execute(`SELECT * FROM paste WHERE ${itemsToFind.join(' AND ')}`);
 
-        if(!queryResult) {
+        if (!queryResult) {
             return null;
         }
 
-        const result = queryResult.map(x => this.pasteFactory.create({ 
-            id: x.id, 
-            name: x.name, 
-            text: x.name, 
+        const result = queryResult.map(x => this.pasteFactory.create({
+            id: x.id,
+            name: x.name,
+            text: x.name,
             expiresAfter: x.expires_after,
-            visibility: x.visibility, 
-            authorId: x.author_id, 
-            createdAt: x.created_at, 
-            updatedAt: x.updated_at, 
-            deletedAt: x.deleted_at 
+            visibility: x.visibility,
+            authorId: x.author_id,
+            createdAt: x.created_at,
+            updatedAt: x.updated_at,
+            deletedAt: x.deleted_at
         }));
 
         return result;

@@ -1,5 +1,5 @@
 class CreateUserHttpRequest {
-    constructor (request) {
+    constructor(request) {
         this.name = request.body.name;
     }
 }

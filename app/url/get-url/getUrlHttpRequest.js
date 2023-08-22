@@ -1,5 +1,5 @@
 class GetUrlHttpRequest {
-    constructor (request) {
+    constructor(request) {
         this.pasteId = request.params.pasteId;
     }
 }

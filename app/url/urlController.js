@@ -4,7 +4,17 @@ const CreateUrlInteractor = require('./create-url/createUrlInteractor');
 const CreateUrlHttpRequest = require('./create-url/createUrlHttpRequest');
 
 class UrlRouterBuilder {
-    constructor ({express, urlRepository, urlFactory, getUrlResponseBuilder, searchUrlResponseBuilder, pasteRepository, jwt, createUrlResponseBuilder, idGenerator}) {
+    constructor({
+        express,
+        urlRepository,
+        urlFactory,
+        getUrlResponseBuilder,
+        searchUrlResponseBuilder,
+        pasteRepository,
+        jwt,
+        createUrlResponseBuilder,
+        idGenerator
+    }) {
         this.router = express.Router();
         this.urlRepository = urlRepository;
         this.urlFactory = urlFactory;
@@ -21,13 +31,13 @@ class UrlRouterBuilder {
             const validator = new CreateUrlValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new CreateUrlInteractor({
-                presenter, 
-                validator, 
-                urlFactory: this.urlFactory, 
-                urlRepository: this.urlRepository, 
-                pasteRepository: this.pasteRepository, 
-                jwt: this.jwt, 
-                responseBuilder: this.createUrlResponseBuilder, 
+                presenter,
+                validator,
+                urlFactory: this.urlFactory,
+                urlRepository: this.urlRepository,
+                pasteRepository: this.pasteRepository,
+                jwt: this.jwt,
+                responseBuilder: this.createUrlResponseBuilder,
                 idGenerator: this.idGenerator
             });
 

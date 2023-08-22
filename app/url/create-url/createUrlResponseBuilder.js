@@ -1,5 +1,5 @@
 class CreateUrlResponseBuilder {
-    build (hash) {
+    build(hash) {
         return `${process.env.BASE_URL}paste/shared?t=${hash}`;
     }
 }

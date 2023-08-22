@@ -4,28 +4,28 @@ class UrlRepository {
         this.urlFactory = urlFactory;
     }
 
-    async findById( {pasteId} ) {
+    async findById( { pasteId } ) {
         const result = await this.findOne({ pasteId });
         return result;
     }
 
     async findOne({ pasteId }) {
-        const result = await this.findAll({pasteIds: [pasteId]});
+        const result = await this.findAll({ pasteIds: [pasteId] });
         return result.length > 0 ? result[0] : null;
     }
 
     async findAll({ urlIds }) {
         const itemsToFind = [];
 
-        if(urlIds) {
+        if (urlIds) {
             const stringUrlIds = urlIds.map(x => `'${x}'`);
             itemsToFind.push(`url_id in (${stringUrlIds.join(', ')})`);
         }
 
         //console.log(`SELECT * FROM url WHERE ${itemsToFind.join(' AND ')}`)
-        const queryResult = await this.dbProvider.execute(`SELECT * FROM url WHERE ${itemsToFind.join(' AND ')}`); 
+        const queryResult = await this.dbProvider.execute(`SELECT * FROM url WHERE ${itemsToFind.join(' AND ')}`);
 
-        if(!queryResult) {
+        if (!queryResult) {
             return null;
         }
 

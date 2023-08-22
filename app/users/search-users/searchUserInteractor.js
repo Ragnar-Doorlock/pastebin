@@ -1,8 +1,7 @@
 const ValidationError = require('../../errors/validationError');
-const NotFound = require('../../errors/notFound');
 
 class SearchUserInteractor {
-    constructor ({userRepository, validator, presenter, responseBuilder}) {
+    constructor({ userRepository, validator, presenter, responseBuilder }) {
         this.userRepository = userRepository;
         this.validator = validator;
         this.presenter = presenter;
@@ -18,7 +17,7 @@ class SearchUserInteractor {
         }
 
         const userID = Array.isArray(request.id) ? request.id : [request.id];
-        const users = await this.userRepository.findAll({ids: userID, name: request.name});
+        const users = await this.userRepository.findAll({ ids: userID, name: request.name });
 
         this.presenter.presentSuccess(this.responseBuilder.build(users));
     }

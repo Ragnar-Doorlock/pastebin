@@ -2,7 +2,7 @@ class GetUrlValidator {
     validate(request) {
         const errors = [];
 
-        if(!request.urlId) {
+        if (!request.urlId) {
             errors.push('ID is required.');
         } else {
             if (!/^paste-/.test(request.urlId)) {

@@ -1,1 +1,1 @@
-require('./umzug').runAsCLI(); 
+require('./umzug').runAsCLI();

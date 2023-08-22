@@ -1,5 +1,5 @@
 class GetSharedPasteHttpRequest {
-    constructor (request) {
+    constructor(request) {
         this.hash = request.query.t;
     }
 }

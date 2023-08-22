@@ -1,5 +1,5 @@
 class GetUserHttpRequest {
-    constructor (request) {
+    constructor(request) {
         this.id = request.params.userId;
     }
 }

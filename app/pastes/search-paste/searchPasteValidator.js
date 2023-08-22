@@ -16,10 +16,8 @@ class SearchPasteValidator {
                     errors.push(`ID ${i} is too short.`);
                 }
             }
-        } else {
-            if (request.id && request.id.length < 20) {
-                errors.push('ID is too short.');
-            }
+        } else if (request.id && request.id.length < 20) {
+            errors.push('ID is too short.');
         }
 
         if (request.authorId && !/^user-/.test(request.authorId)) {

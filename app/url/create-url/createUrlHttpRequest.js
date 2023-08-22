@@ -1,5 +1,5 @@
 class CreateUrlHttpRequest {
-    constructor (request) {
+    constructor(request) {
         this.pasteId = request.body.pasteId;
         this.expiresAfterMs = request.body.expiresAfterMs;
     }

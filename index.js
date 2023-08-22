@@ -34,7 +34,7 @@ const dbProvider = new DBProvider({ pool });
 const userRepository = new UserRepository({ dbProvider, userFactory });
 const pasteRepository = new PasteRepository({ dbProvider, pasteFactory });
 const urlRepository = new UrlRepository({ dbProvider, urlFactory });
-const idGenerator = new IdGenerator({uuid: uuidv4});
+const idGenerator = new IdGenerator({ uuid: uuidv4 });
 const getUserResponseBuilder = new GetUserResponseBuilder();
 const searchUserResponseBuilder = new SearchUserResponseBuilder();
 const getPasteResponseBuilder = new GetPasteResponseBuilder();
@@ -45,20 +45,45 @@ const createUrlResponseBuilder = new CreateUrlResponseBuilder();
 const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
 
 (async () => {
-    const userRoutes = new UserRouterBuilder({express, userRepository, userFactory, idGenerator, getUserResponseBuilder, searchUserResponseBuilder});
-    const pasteRoutes = new PasteRouterBuilder({express, pasteRepository, pasteFactory, idGenerator, getPasteResponseBuilder, 
-        searchPasteResponseBuilder, urlRepository, getPasteByHashResponseBuilder, jwt});
-    const urlRoutes = new UrlRouterBuilder({express, urlRepository, urlFactory, getUrlResponseBuilder, searchUrlResponseBuilder, 
-        pasteRepository, jwt, createUrlResponseBuilder, idGenerator});
+    const userRoutes = new UserRouterBuilder({
+        express,
+        userRepository,
+        userFactory,
+        idGenerator,
+        getUserResponseBuilder,
+        searchUserResponseBuilder
+    });
+    const pasteRoutes = new PasteRouterBuilder({
+        express,
+        pasteRepository,
+        pasteFactory,
+        idGenerator,
+        getPasteResponseBuilder,
+        searchPasteResponseBuilder,
+        urlRepository,
+        getPasteByHashResponseBuilder,
+        jwt
+    });
+    const urlRoutes = new UrlRouterBuilder({
+        express,
+        urlRepository,
+        urlFactory,
+        getUrlResponseBuilder,
+        searchUrlResponseBuilder,
+        pasteRepository,
+        jwt,
+        createUrlResponseBuilder,
+        idGenerator
+    });
 
     app.use(express.json());
     app.use('/user', userRoutes.createRoutes());
     app.use('/paste', pasteRoutes.createRoutes());
     app.use('/url', urlRoutes.createRoutes());
 
-    app.listen(3000, () => console.log(`App is running.`));
+    app.listen(3000, () => console.log('App is running.'));
 
     //console.log(await pasteRepository.findAll({ids: ['paste-1']}));
     //console.log(await userRepository.findAll({ids: ['user-3']}));
     //console.log(await urlRepository.findOne({pasteId: 'paste-56d7d275-d21b-471a-8343-5c001c6fe0a2'}));
-})()
+})();
