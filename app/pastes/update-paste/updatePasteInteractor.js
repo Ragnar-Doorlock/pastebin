@@ -2,11 +2,12 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class UpdatePasteInteractor {
-    constructor({ presenter, validator, pasteFactory, pasteRepository }) {
+    constructor({ presenter, validator, pasteFactory, pasteRepository, loggerProvider }) {
         this.presenter = presenter;
         this.validator = validator;
         this.pasteFactory = pasteFactory;
         this.pasteRepository = pasteRepository;
+        this.logger = loggerProvider.create(UpdatePasteInteractor.name);
     }
 
     async execute(request) {
@@ -21,10 +22,10 @@ class UpdatePasteInteractor {
 
         if (!paste) {
             this.presenter.presentFailure(new NotFound(`Paste with ID ${request.id} was not found.`));
+            this.logger.error(`Not found: Paste with ID ${request.id} was not found.`);
             return;
         }
 
-        // if the expiration day should be editable then pass here expiration date from request
         const pasteEntity = this.pasteFactory.create({
             id: request.id,
             name: request.name,

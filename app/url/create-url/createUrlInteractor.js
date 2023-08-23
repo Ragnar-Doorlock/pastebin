@@ -3,7 +3,17 @@ const ValidationError = require('../../errors/validationError');
 const DEFAULT_TOKEN_EXPIRES_AFTER_HOURS= '24 h';
 
 class CreateUrlInteractor {
-    constructor({ presenter, validator, urlRepository, urlFactory, jwt, pasteRepository, responseBuilder, idGenerator }) {
+    constructor({
+        presenter,
+        validator,
+        urlRepository,
+        urlFactory,
+        jwt,
+        pasteRepository,
+        responseBuilder,
+        idGenerator,
+        loggerProvider
+    }) {
         this.presenter = presenter;
         this.validator = validator;
         this.urlRepository = urlRepository;
@@ -12,6 +22,7 @@ class CreateUrlInteractor {
         this.jwt = jwt;
         this.responseBuilder = responseBuilder;
         this.idGenerator = idGenerator;
+        this.logger = loggerProvider.create(CreateUrlInteractor.name);
     }
 
     async execute(request) {
@@ -26,14 +37,19 @@ class CreateUrlInteractor {
 
         if (!paste) {
             this.presenter.presentFailure(new NotFound(`Paste with id ${request.pasteId} doesn't exist`));
+            this.logger.error(`Not found: Paste with ID ${request.id} was not found.`);
             return;
         }
 
-        const hash = this.jwt.sign({
-            pasteId: request.pasteId,
-            visibility: paste._visibility },
-        process.env.SECRET_KEY,
-        { expiresIn: DEFAULT_TOKEN_EXPIRES_AFTER_HOURS }
+        const hash = this.jwt.sign(
+            {
+                pasteId: request.pasteId,
+                visibility: paste._visibility
+            },
+            process.env.SECRET_KEY,
+            {
+                expiresIn: DEFAULT_TOKEN_EXPIRES_AFTER_HOURS
+            }
         );
 
         const url = this.urlFactory.create({

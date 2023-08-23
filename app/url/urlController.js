@@ -8,22 +8,20 @@ class UrlRouterBuilder {
         express,
         urlRepository,
         urlFactory,
-        getUrlResponseBuilder,
-        searchUrlResponseBuilder,
         pasteRepository,
         jwt,
         createUrlResponseBuilder,
-        idGenerator
+        idGenerator,
+        loggerProvider
     }) {
         this.router = express.Router();
         this.urlRepository = urlRepository;
         this.urlFactory = urlFactory;
-        this.getUrlResponseBuilder = getUrlResponseBuilder;
-        this.searchUrlResponseBuilder = searchUrlResponseBuilder;
         this.pasteRepository = pasteRepository;
         this.jwt = jwt;
         this.createUrlResponseBuilder = createUrlResponseBuilder;
         this.idGenerator = idGenerator;
+        this.loggerProvider = loggerProvider;
     }
 
     createRoutes() {
@@ -38,7 +36,8 @@ class UrlRouterBuilder {
                 pasteRepository: this.pasteRepository,
                 jwt: this.jwt,
                 responseBuilder: this.createUrlResponseBuilder,
-                idGenerator: this.idGenerator
+                idGenerator: this.idGenerator,
+                loggerProvider: this.loggerProvider
             });
 
             try {

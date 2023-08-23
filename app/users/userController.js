@@ -16,13 +16,22 @@ const UpdateUserHttpRequest = require('./update-user/updateUserHttpRequest');
 const DeleteUserHttpRequest = require('./delete-user/deleteUserHttpRequest');
 
 class UserRouterBuilder {
-    constructor({ express, userRepository, userFactory, idGenerator, getUserResponseBuilder, searchUserResponseBuilder }) {
+    constructor({
+        express,
+        userRepository,
+        userFactory,
+        idGenerator,
+        getUserResponseBuilder,
+        searchUserResponseBuilder,
+        loggerProvider
+    }) {
         this.router = express.Router();
         this.userRepository = userRepository;
         this.userFactory = userFactory;
         this.idGenerator = idGenerator;
         this.getUserResponseBuilder = getUserResponseBuilder;
         this.searchUserResponseBuilder = searchUserResponseBuilder;
+        this.loggerProvider = loggerProvider;
     }
 
     createRoutes() {
@@ -33,7 +42,8 @@ class UserRouterBuilder {
                 presenter,
                 validator,
                 userRepository: this.userRepository,
-                responseBuilder: this.getUserResponseBuilder
+                responseBuilder: this.getUserResponseBuilder,
+                loggerProvider: this.loggerProvider
             });
 
             try {
@@ -84,7 +94,8 @@ class UserRouterBuilder {
                 validator,
                 presenter,
                 userFactory: this.userFactory,
-                userRepository: this.userRepository
+                userRepository: this.userRepository,
+                loggerProvider: this.loggerProvider
             });
 
             try {
@@ -100,7 +111,8 @@ class UserRouterBuilder {
             const interactor = new DeleteUserInteractor({
                 validator,
                 presenter,
-                userRepository: this.userRepository
+                userRepository: this.userRepository,
+                loggerProvider: this.loggerProvider
             });
 
             try {

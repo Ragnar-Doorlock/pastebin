@@ -9,6 +9,15 @@ const pool = PostgresPoolConnection.getInstance();
 const { v4: uuidv4 } = require('uuid');
 const IdGenerator = require('./app/idGenerator');
 const jwt = require('jsonwebtoken');
+const log4js = require('log4js');
+log4js.configure({
+    appenders: {
+        console: { type: 'console' }
+    },
+    categories: {
+        default: { appenders: ['console'], level: 'debug' }
+    }
+});
 
 const DBProvider = require('./db/dbProvider');
 const UserRepository = require('./app/users/userRepository');
@@ -17,13 +26,12 @@ const UrlRepository = require('./app/url/urlRepository');
 const UserFactory = require('./app/entities/user-entity/userFactory');
 const PasteFactory = require('./app/entities/paste-entity/pasteFactory');
 const UrlFactory = require('./app/entities/url-entity/urlFactory');
+const LoggerProvider = require('./app/loggerProvider');
 
 const GetUserResponseBuilder = require('./app/users/get-user/getUserResponseBuilder');
 const SearchUserResponseBuilder = require('./app/users/search-users/searchUserResponseBuilder');
 const GetPasteResponseBuilder = require('./app/pastes/get-paste/getPasteResponseBuilder');
 const SearchPasteResponseBuilder = require('./app/pastes/search-paste/searchPasteResponseBuilder');
-const GetUrlResponseBuilder = require('./app/url/get-url/getUrlResponseBuilder');
-const SearchUrlResponseBuilder = require('./app/url/search-url/searchUrlResponseBuilder');
 const CreateUrlResponseBuilder = require('./app/url/create-url/createUrlResponseBuilder');
 const GetPasteByHashResponseBuilder = require('./app/pastes/get-shared-paste/getSharedPasteResponseBuilder');
 
@@ -39,19 +47,21 @@ const getUserResponseBuilder = new GetUserResponseBuilder();
 const searchUserResponseBuilder = new SearchUserResponseBuilder();
 const getPasteResponseBuilder = new GetPasteResponseBuilder();
 const searchPasteResponseBuilder = new SearchPasteResponseBuilder();
-const getUrlResponseBuilder = new GetUrlResponseBuilder();
-const searchUrlResponseBuilder = new SearchUrlResponseBuilder();
 const createUrlResponseBuilder = new CreateUrlResponseBuilder();
 const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
 
 (async () => {
+    const loggerProvider = new LoggerProvider(log4js);
+    const logger = loggerProvider.create('Logger');
+
     const userRoutes = new UserRouterBuilder({
         express,
         userRepository,
         userFactory,
         idGenerator,
         getUserResponseBuilder,
-        searchUserResponseBuilder
+        searchUserResponseBuilder,
+        loggerProvider
     });
     const pasteRoutes = new PasteRouterBuilder({
         express,
@@ -62,18 +72,18 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
         searchPasteResponseBuilder,
         urlRepository,
         getPasteByHashResponseBuilder,
-        jwt
+        jwt,
+        loggerProvider
     });
     const urlRoutes = new UrlRouterBuilder({
         express,
         urlRepository,
         urlFactory,
-        getUrlResponseBuilder,
-        searchUrlResponseBuilder,
         pasteRepository,
         jwt,
         createUrlResponseBuilder,
-        idGenerator
+        idGenerator,
+        loggerProvider
     });
 
     app.use(express.json());
@@ -81,7 +91,7 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
     app.use('/paste', pasteRoutes.createRoutes());
     app.use('/url', urlRoutes.createRoutes());
 
-    app.listen(3000, () => console.log('App is running.'));
+    app.listen(3000, logger.info('App is running.'));
 
     //console.log(await pasteRepository.findAll({ids: ['paste-1']}));
     //console.log(await userRepository.findAll({ids: ['user-3']}));
