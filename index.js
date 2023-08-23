@@ -61,7 +61,7 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
         idGenerator,
         getUserResponseBuilder,
         searchUserResponseBuilder,
-        logger
+        loggerProvider
     });
     const pasteRoutes = new PasteRouterBuilder({
         express,
@@ -73,7 +73,7 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
         urlRepository,
         getPasteByHashResponseBuilder,
         jwt,
-        logger
+        loggerProvider
     });
     const urlRoutes = new UrlRouterBuilder({
         express,
@@ -83,7 +83,7 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
         jwt,
         createUrlResponseBuilder,
         idGenerator,
-        logger
+        loggerProvider
     });
 
     app.use(express.json());

@@ -12,7 +12,7 @@ class CreateUrlInteractor {
         pasteRepository,
         responseBuilder,
         idGenerator,
-        logger
+        loggerProvider
     }) {
         this.presenter = presenter;
         this.validator = validator;
@@ -22,7 +22,7 @@ class CreateUrlInteractor {
         this.jwt = jwt;
         this.responseBuilder = responseBuilder;
         this.idGenerator = idGenerator;
-        this.logger = logger;
+        this.logger = loggerProvider.create(CreateUrlInteractor.name);
     }
 
     async execute(request) {

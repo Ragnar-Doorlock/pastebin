@@ -2,12 +2,12 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class GetPasteInteractor {
-    constructor({ presenter, validator, pasteRepository, responseBuilder, logger }) {
+    constructor({ presenter, validator, pasteRepository, responseBuilder, loggerProvider }) {
         this.presenter = presenter;
         this.validator = validator;
         this.pasteRepository = pasteRepository;
         this.responseBuilder = responseBuilder;
-        this.logger = logger;
+        this.logger = loggerProvider.create(GetPasteInteractor.name);
     }
 
     async execute(request) {

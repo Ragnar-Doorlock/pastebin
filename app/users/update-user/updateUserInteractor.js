@@ -2,12 +2,12 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class UpdateUserInteractor {
-    constructor({ presenter, validator, userFactory, userRepository, logger }) {
+    constructor({ presenter, validator, userFactory, userRepository, loggerProvider }) {
         this.presenter = presenter;
         this.validator = validator;
         this.userFactory = userFactory;
         this.userRepository = userRepository;
-        this.logger = logger;
+        this.logger = loggerProvider.create(UpdateUserInteractor.name);
     }
 
     async execute(request) {

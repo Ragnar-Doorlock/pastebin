@@ -2,11 +2,11 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class DeleteUserInteractor {
-    constructor({ validator, presenter, userRepository, logger }) {
+    constructor({ validator, presenter, userRepository, loggerProvider }) {
         this.validator = validator;
         this.presenter = presenter;
         this.userRepository = userRepository;
-        this.logger = logger;
+        this.logger = loggerProvider.create(DeleteUserInteractor.name);
     }
 
     async execute(request) {

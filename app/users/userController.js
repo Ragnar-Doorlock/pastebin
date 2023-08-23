@@ -23,7 +23,7 @@ class UserRouterBuilder {
         idGenerator,
         getUserResponseBuilder,
         searchUserResponseBuilder,
-        logger
+        loggerProvider
     }) {
         this.router = express.Router();
         this.userRepository = userRepository;
@@ -31,7 +31,7 @@ class UserRouterBuilder {
         this.idGenerator = idGenerator;
         this.getUserResponseBuilder = getUserResponseBuilder;
         this.searchUserResponseBuilder = searchUserResponseBuilder;
-        this.logger = logger;
+        this.loggerProvider = loggerProvider;
     }
 
     createRoutes() {
@@ -43,7 +43,7 @@ class UserRouterBuilder {
                 validator,
                 userRepository: this.userRepository,
                 responseBuilder: this.getUserResponseBuilder,
-                logger: this.logger
+                loggerProvider: this.loggerProvider
             });
 
             try {
@@ -95,7 +95,7 @@ class UserRouterBuilder {
                 presenter,
                 userFactory: this.userFactory,
                 userRepository: this.userRepository,
-                logger: this.logger
+                loggerProvider: this.loggerProvider
             });
 
             try {
@@ -112,7 +112,7 @@ class UserRouterBuilder {
                 validator,
                 presenter,
                 userRepository: this.userRepository,
-                logger: this.logger
+                loggerProvider: this.loggerProvider
             });
 
             try {

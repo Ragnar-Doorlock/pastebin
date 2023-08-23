@@ -2,11 +2,11 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class DeletePasteInteractor {
-    constructor({ validator, presenter, pasteRepository, logger }) {
+    constructor({ validator, presenter, pasteRepository, loggerProvider }) {
         this.validator = validator;
         this.presenter = presenter;
         this.pasteRepository = pasteRepository;
-        this.logger = logger;
+        this.logger = loggerProvider.create(DeletePasteInteractor.name);
     }
 
     async execute(request) {

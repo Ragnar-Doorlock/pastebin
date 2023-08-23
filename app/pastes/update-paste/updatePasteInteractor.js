@@ -2,12 +2,12 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class UpdatePasteInteractor {
-    constructor({ presenter, validator, pasteFactory, pasteRepository, logger }) {
+    constructor({ presenter, validator, pasteFactory, pasteRepository, loggerProvider }) {
         this.presenter = presenter;
         this.validator = validator;
         this.pasteFactory = pasteFactory;
         this.pasteRepository = pasteRepository;
-        this.logger = logger;
+        this.logger = loggerProvider.create(UpdatePasteInteractor.name);
     }
 
     async execute(request) {
