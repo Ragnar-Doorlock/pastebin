@@ -28,7 +28,8 @@ class PasteRouterBuilder {
         searchPasteResponseBuilder,
         getPasteByHashResponseBuilder,
         urlRepository,
-        jwt
+        jwt,
+        logger
     }) {
         this.router = express.Router();
         this.pasteRepository = pasteRepository;
@@ -39,6 +40,7 @@ class PasteRouterBuilder {
         this.getPasteByHashResponseBuilder = getPasteByHashResponseBuilder;
         this.urlRepository = urlRepository;
         this.jwt = jwt;
+        this.logger = logger;
     }
 
     createRoutes() {
@@ -52,7 +54,8 @@ class PasteRouterBuilder {
                 urlRepository: this.urlRepository,
                 responseBuilder: this.getPasteByHashResponseBuilder,
                 pasteFactory: this.pasteFactory,
-                jwt: this.jwt
+                jwt: this.jwt,
+                logger: this.logger
             });
 
             try {
@@ -69,7 +72,8 @@ class PasteRouterBuilder {
                 presenter,
                 validator,
                 pasteRepository: this.pasteRepository,
-                responseBuilder: this.getPasteResponseBuilder
+                responseBuilder: this.getPasteResponseBuilder,
+                logger: this.logger
             });
 
             try {
@@ -137,7 +141,8 @@ class PasteRouterBuilder {
             const interactor = new DeletePasteInteractor({
                 validator,
                 presenter,
-                pasteRepository: this.pasteRepository
+                pasteRepository: this.pasteRepository,
+                logger: this.logger
             });
 
             try {

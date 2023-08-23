@@ -32,8 +32,6 @@ const GetUserResponseBuilder = require('./app/users/get-user/getUserResponseBuil
 const SearchUserResponseBuilder = require('./app/users/search-users/searchUserResponseBuilder');
 const GetPasteResponseBuilder = require('./app/pastes/get-paste/getPasteResponseBuilder');
 const SearchPasteResponseBuilder = require('./app/pastes/search-paste/searchPasteResponseBuilder');
-const GetUrlResponseBuilder = require('./app/url/get-url/getUrlResponseBuilder');
-const SearchUrlResponseBuilder = require('./app/url/search-url/searchUrlResponseBuilder');
 const CreateUrlResponseBuilder = require('./app/url/create-url/createUrlResponseBuilder');
 const GetPasteByHashResponseBuilder = require('./app/pastes/get-shared-paste/getSharedPasteResponseBuilder');
 
@@ -49,21 +47,21 @@ const getUserResponseBuilder = new GetUserResponseBuilder();
 const searchUserResponseBuilder = new SearchUserResponseBuilder();
 const getPasteResponseBuilder = new GetPasteResponseBuilder();
 const searchPasteResponseBuilder = new SearchPasteResponseBuilder();
-const getUrlResponseBuilder = new GetUrlResponseBuilder();
-const searchUrlResponseBuilder = new SearchUrlResponseBuilder();
 const createUrlResponseBuilder = new CreateUrlResponseBuilder();
 const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
-const loggerProvider = new LoggerProvider(log4js);
-const logger = loggerProvider.create('index');
 
 (async () => {
+    const loggerProvider = new LoggerProvider(log4js);
+    const logger = loggerProvider.create('Logger');
+
     const userRoutes = new UserRouterBuilder({
         express,
         userRepository,
         userFactory,
         idGenerator,
         getUserResponseBuilder,
-        searchUserResponseBuilder
+        searchUserResponseBuilder,
+        logger
     });
     const pasteRoutes = new PasteRouterBuilder({
         express,
@@ -74,18 +72,18 @@ const logger = loggerProvider.create('index');
         searchPasteResponseBuilder,
         urlRepository,
         getPasteByHashResponseBuilder,
-        jwt
+        jwt,
+        logger
     });
     const urlRoutes = new UrlRouterBuilder({
         express,
         urlRepository,
         urlFactory,
-        getUrlResponseBuilder,
-        searchUrlResponseBuilder,
         pasteRepository,
         jwt,
         createUrlResponseBuilder,
-        idGenerator
+        idGenerator,
+        logger
     });
 
     app.use(express.json());

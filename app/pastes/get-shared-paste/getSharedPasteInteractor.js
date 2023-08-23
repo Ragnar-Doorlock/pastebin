@@ -2,7 +2,7 @@ const ValidationError = require('../../errors/validationError');
 const ApiError = require('../../errors/apiError');
 
 class GetSharedPasteInteractor {
-    constructor({ presenter, validator, pasteRepository, urlRepository, responseBuilder, pasteFactory, jwt }) {
+    constructor({ presenter, validator, pasteRepository, urlRepository, responseBuilder, pasteFactory, jwt, logger }) {
         this.presenter = presenter;
         this.validator = validator;
         this.pasteRepository = pasteRepository;
@@ -10,6 +10,7 @@ class GetSharedPasteInteractor {
         this.responseBuilder = responseBuilder;
         this.pasteFactory = pasteFactory;
         this.jwt = jwt;
+        this.logger = logger;
     }
 
     async execute(request) {
@@ -25,11 +26,13 @@ class GetSharedPasteInteractor {
             decodedToken = await this.jwt.verify(request.hash, process.env.SECRET_KEY);
         } catch (error) {
             this.presenter.presentFailure(new ApiError(error));
+            this.logger.error('Failed to decode token.');
             return;
         }
 
         if (!decodedToken.pasteId) {
             this.presenter.presentFailure(new ApiError('Invalid token.'));
+            this.logger.error('Invalid token.');
             return;
         }
 

@@ -2,11 +2,12 @@ const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 
 class GetUserInteractor {
-    constructor({ presenter, validator, userRepository, responseBuilder }) {
+    constructor({ presenter, validator, userRepository, responseBuilder, logger }) {
         this.presenter = presenter;
         this.validator = validator;
         this.userRepository = userRepository;
         this.responseBuilder = responseBuilder;
+        this.logger = logger;
     }
 
     async execute(request) {
@@ -21,6 +22,7 @@ class GetUserInteractor {
 
         if (!user) {
             this.presenter.presentFailure( new NotFound(`User with ${request.id} was not found`));
+            this.logger.error(`Not found: User with ID ${request.id} was not found.`);
             return;
         }
 
