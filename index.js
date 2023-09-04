@@ -4,10 +4,12 @@ const app = express();
 const UserRouterBuilder = require('./app/users/userController');
 const PasteRouterBuilder = require('./app/pastes/pasteController');
 const UrlRouterBuilder = require('./app/url/urlController');
+const AuthRouterBuilder = require('./app/authorisation/authController');
 const PostgresPoolConnection = require('./db/postgresPoolConnection');
 const pool = PostgresPoolConnection.getInstance();
 const { v4: uuidv4 } = require('uuid');
 const IdGenerator = require('./app/idGenerator');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const log4js = require('log4js');
 log4js.configure({
@@ -34,6 +36,7 @@ const GetPasteResponseBuilder = require('./app/pastes/get-paste/getPasteResponse
 const SearchPasteResponseBuilder = require('./app/pastes/search-paste/searchPasteResponseBuilder');
 const CreateUrlResponseBuilder = require('./app/url/create-url/createUrlResponseBuilder');
 const GetPasteByHashResponseBuilder = require('./app/pastes/get-shared-paste/getSharedPasteResponseBuilder');
+const LoginResponseBuilder = require('./app/authorisation/login/loginResponseBuilder');
 
 const userFactory = new UserFactory();
 const pasteFactory = new PasteFactory();
@@ -49,6 +52,7 @@ const getPasteResponseBuilder = new GetPasteResponseBuilder();
 const searchPasteResponseBuilder = new SearchPasteResponseBuilder();
 const createUrlResponseBuilder = new CreateUrlResponseBuilder();
 const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
+const loginResponseBuilder = new LoginResponseBuilder();
 
 (async () => {
     const loggerProvider = new LoggerProvider(log4js);
@@ -61,7 +65,8 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
         idGenerator,
         getUserResponseBuilder,
         searchUserResponseBuilder,
-        loggerProvider
+        loggerProvider,
+        bcrypt
     });
     const pasteRoutes = new PasteRouterBuilder({
         express,
@@ -86,14 +91,26 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
         loggerProvider
     });
 
+    const authRoutes = new AuthRouterBuilder({
+        express,
+        jwt,
+        userFactory,
+        userRepository,
+        loggerProvider,
+        loginResponseBuilder,
+        bcrypt,
+        idGenerator
+    });
+
     app.use(express.json());
     app.use('/user', userRoutes.createRoutes());
     app.use('/paste', pasteRoutes.createRoutes());
     app.use('/url', urlRoutes.createRoutes());
+    app.use('/auth', authRoutes.createRoutes());
 
     app.listen(3000, logger.info('App is running.'));
 
     //console.log(await pasteRepository.findAll({ids: ['paste-1']}));
-    //console.log(await userRepository.findAll({ids: ['user-3']}));
+    //console.log(await userRepository.findOne({id: 'user-bd68c580-bcd6-4b67-8131-288f2bb6a155', login: 'Ledenec'}));
     //console.log(await urlRepository.findOne({pasteId: 'paste-56d7d275-d21b-471a-8343-5c001c6fe0a2'}));
 })();

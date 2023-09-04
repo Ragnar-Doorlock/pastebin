@@ -1,8 +1,6 @@
 const HttpPresenter = require('../httpPresenter');
 const GetUserInteractor = require('./get-user/getUserInteractor');
 const GetUserValidator = require('./get-user/getUserValidator');
-const CreateUserValidator = require('./create-user/createUserValidator');
-const CreateUserInteractor = require('./create-user/createUserInteractor');
 const SearchUserInteractor = require('./search-users/searchUserInteractor');
 const SearchUserValidator = require('./search-users/searchUserValidator');
 const UpdateUserInteractor = require('./update-user/updateUserInteractor');
@@ -10,7 +8,6 @@ const UpdateUserValidator = require('./update-user/updateUserValidator');
 const DeleteUserInteractor = require('./delete-user/deleteUserInteractor');
 const DeleteUserValidator = require('./delete-user/deleteUserValidator');
 const GetUserHttpRequest = require('./get-user/getUserHttpRequest');
-const CreateUserHttpRequest = require('./create-user/createUserHttpRequest');
 const SearchUserHttpRequest = require('./search-users/searchUserHttpRequest');
 const UpdateUserHttpRequest = require('./update-user/updateUserHttpRequest');
 const DeleteUserHttpRequest = require('./delete-user/deleteUserHttpRequest');
@@ -23,7 +20,8 @@ class UserRouterBuilder {
         idGenerator,
         getUserResponseBuilder,
         searchUserResponseBuilder,
-        loggerProvider
+        loggerProvider,
+        bcrypt
     }) {
         this.router = express.Router();
         this.userRepository = userRepository;
@@ -32,6 +30,7 @@ class UserRouterBuilder {
         this.getUserResponseBuilder = getUserResponseBuilder;
         this.searchUserResponseBuilder = searchUserResponseBuilder;
         this.loggerProvider = loggerProvider;
+        this.bcrypt = bcrypt;
     }
 
     createRoutes() {
@@ -48,24 +47,6 @@ class UserRouterBuilder {
 
             try {
                 await interactor.execute(new GetUserHttpRequest(request));
-            } catch (error) {
-                presenter.presentFailure(error);
-            }
-        });
-
-        this.router.post('/', async (request, respone) => {
-            const validator = new CreateUserValidator();
-            const presenter = new HttpPresenter(request, respone);
-            const interactor = new CreateUserInteractor({
-                presenter,
-                validator,
-                userFactory: this.userFactory,
-                userRepository: this.userRepository,
-                idGenerator: this.idGenerator
-            });
-
-            try {
-                await interactor.execute(new CreateUserHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }

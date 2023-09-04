@@ -17,6 +17,7 @@ const DeletePasteHttpRequest = require('./delete-paste/deletePasteHttpRequest');
 const GetSharedPasteHttpRequest = require('./get-shared-paste/getSharedPasteHttpRequest');
 const GetSharedPasteValidator = require('./get-shared-paste/getSharedPasteValidator');
 const GetSharedPasteInteractor = require('./get-shared-paste/getSharedPasteInteractor');
+const auth = require('../authProvider');
 
 class PasteRouterBuilder {
     constructor({
@@ -65,7 +66,7 @@ class PasteRouterBuilder {
             }
         });
 
-        this.router.get('/:pasteId', async (request, response) => {
+        this.router.get('/:pasteId', auth, async (request, response) => {
             const validator = new GetPasteValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new GetPasteInteractor({
@@ -73,7 +74,8 @@ class PasteRouterBuilder {
                 validator,
                 pasteRepository: this.pasteRepository,
                 responseBuilder: this.getPasteResponseBuilder,
-                loggerProvider: this.loggerProvider
+                loggerProvider: this.loggerProvider,
+                jwt: this.jwt
             });
 
             try {
