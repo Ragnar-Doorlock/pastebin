@@ -1,6 +1,7 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 const DEFAULT_TOKEN_EXPIRES_AFTER_HOURS= '24 h';
+const visibility = require('../../entities/paste-entity/visibility');
 
 class CreateUrlInteractor {
     constructor({
@@ -12,7 +13,8 @@ class CreateUrlInteractor {
         pasteRepository,
         responseBuilder,
         idGenerator,
-        loggerProvider
+        loggerProvider,
+        pasteFactory
     }) {
         this.presenter = presenter;
         this.validator = validator;
@@ -23,6 +25,7 @@ class CreateUrlInteractor {
         this.responseBuilder = responseBuilder;
         this.idGenerator = idGenerator;
         this.logger = loggerProvider.create(CreateUrlInteractor.name);
+        this.pasteFactory = pasteFactory;
     }
 
     async execute(request) {
@@ -51,6 +54,19 @@ class CreateUrlInteractor {
                 expiresIn: DEFAULT_TOKEN_EXPIRES_AFTER_HOURS
             }
         );
+
+        // if paste was private -> it changes it's visibility to shared
+        if (paste.getVisibility() === visibility.PRIVATE) {
+            const pasteEntity = this.pasteFactory.create({
+                id: paste.getId(),
+                name: paste.getName(),
+                text: paste.getText(),
+                visibility: visibility.SHARED,
+                expiresAfter: new Date(paste.getExpiration()).toUTCString(),
+                authorId: paste.getAuthorId()
+            });
+            await this.pasteRepository.save(pasteEntity);
+        }
 
         const url = this.urlFactory.create({
             pasteId: request.pasteId,

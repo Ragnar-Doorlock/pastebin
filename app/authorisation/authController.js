@@ -14,6 +14,7 @@ class AuthRouterBuilder {
         userRepository,
         loggerProvider,
         loginResponseBuilder,
+        registerResponseBuilder,
         bcrypt,
         idGenerator
     }) {
@@ -23,14 +24,15 @@ class AuthRouterBuilder {
         this.userRepository = userRepository;
         this.loggerProvider = loggerProvider;
         this.loginResponseBuilder = loginResponseBuilder;
+        this.registerResponseBuilder = registerResponseBuilder;
         this.bcrypt = bcrypt;
         this.idGenerator = idGenerator;
     }
 
     createRoutes() {
-        this.router.post('/register', async (request, respone) => {
+        this.router.post('/register', async (request, response) => {
             const validator = new RegisterUserValidator();
-            const presenter = new HttpPresenter(request, respone);
+            const presenter = new HttpPresenter(request, response);
             const interactor = new RegisterUserInteractor({
                 presenter,
                 validator,
@@ -38,7 +40,9 @@ class AuthRouterBuilder {
                 userRepository: this.userRepository,
                 idGenerator: this.idGenerator,
                 bcrypt: this.bcrypt,
-                loggerProvider: this.loggerProvider
+                loggerProvider: this.loggerProvider,
+                responseBuilder: this.registerResponseBuilder,
+                jwt: this.jwt
             });
 
             try {
@@ -56,7 +60,7 @@ class AuthRouterBuilder {
                 validator,
                 userRepository: this.userRepository,
                 bcrypt: this.bcrypt,
-                loginResponseBuilder: this.loginResponseBuilder,
+                responseBuilder: this.loginResponseBuilder,
                 jwt: this.jwt
             });
 

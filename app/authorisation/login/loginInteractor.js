@@ -1,7 +1,6 @@
 const ValidationError = require('../../errors/validationError');
 const NotFound = require('../../errors/notFound');
 const ApiError = require('../../errors/apiError');
-const DEFAULT_TOKEN_EXPIRES_AFTER_HOURS= '24 h';
 
 class LoginInteractor {
     constructor({
@@ -9,14 +8,14 @@ class LoginInteractor {
         validator,
         userRepository,
         bcrypt,
-        loginResponseBuilder,
+        responseBuilder,
         jwt
     }) {
         this.presenter = presenter;
         this.validator = validator;
         this.userRepository = userRepository;
         this.bcrypt = bcrypt;
-        this.responseBuilder = loginResponseBuilder;
+        this.responseBuilder = responseBuilder;
         this.jwt = jwt;
     }
 
@@ -31,14 +30,14 @@ class LoginInteractor {
         const user = await this.userRepository.findOne({ login: request.login });
 
         if (!user) {
-            this.presenter.presentFailure(new NotFound('Login does not exist.'));
+            this.presenter.presentFailure(new NotFound('User does not exist.'));
             return;
         }
 
-        const match = await this.bcrypt.compare(request.password, user._password);
+        const match = await this.bcrypt.compare(request.password, user.getPassword());
 
         if (!match) {
-            this.presenter.presentFailure(new ApiError('Invalid password.'));
+            this.presenter.presentFailure(new ApiError({ message: 'Invalid password.' }));
             return;
         }
 
@@ -48,11 +47,10 @@ class LoginInteractor {
             },
             process.env.SECRET_KEY,
             {
-                expiresIn: DEFAULT_TOKEN_EXPIRES_AFTER_HOURS
+                expiresIn: process.env.DEFAULT_ACCESS_TOKEN_EXPIRES_AFTER_HOURS
             }
         );
 
-        // not really sure if we need response builder, inside it looks like 'take token and return it immidiately'
         this.presenter.presentSuccess(this.responseBuilder.build(token));
     }
 }

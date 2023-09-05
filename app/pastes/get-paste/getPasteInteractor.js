@@ -1,15 +1,15 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 const Forbidden = require('../../errors/forbidden');
+const visibility = require('../../entities/paste-entity/visibility');
 
 class GetPasteInteractor {
-    constructor({ presenter, validator, pasteRepository, responseBuilder, loggerProvider, jwt }) {
+    constructor({ presenter, validator, pasteRepository, responseBuilder, loggerProvider }) {
         this.presenter = presenter;
         this.validator = validator;
         this.pasteRepository = pasteRepository;
         this.responseBuilder = responseBuilder;
         this.logger = loggerProvider.create(GetPasteInteractor.name);
-        this.jwt = jwt;
     }
 
     async execute(request) {
@@ -28,9 +28,13 @@ class GetPasteInteractor {
             return;
         }
 
-        if (request.user.id !== paste._authorId) {
-            // eslint-disable-next-line quotes
-            this.presenter.presentFailure( new Forbidden(`You don't have permission to access this paste.`));
+        if (paste.getVisibility() === visibility.PUBLIC) {
+            this.presenter.presentSuccess(this.responseBuilder.build(paste));
+            return;
+        }
+
+        if (request.user.id !== paste.getAuthorId()) {
+            this.presenter.presentFailure( new Forbidden('You don\'t have access to this paste.'));
             return;
         }
 

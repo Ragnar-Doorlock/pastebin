@@ -10,9 +10,8 @@ class PasteRepository {
     }
 
     async findOne({ id, name, authorId }) {
-        let ids;
-        if (id) ids = [id];
-        const result = await this.findAll({ ids, name, authorId }); // if {ids: [id]} then ids are set to [undefined] so i used if in line 14
+        const ids = id && [id];
+        const result = await this.findAll({ ids, name, authorId });
         return result.length > 0 ? result[0] : null;
     }
 

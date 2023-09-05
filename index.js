@@ -37,6 +37,7 @@ const SearchPasteResponseBuilder = require('./app/pastes/search-paste/searchPast
 const CreateUrlResponseBuilder = require('./app/url/create-url/createUrlResponseBuilder');
 const GetPasteByHashResponseBuilder = require('./app/pastes/get-shared-paste/getSharedPasteResponseBuilder');
 const LoginResponseBuilder = require('./app/authorisation/login/loginResponseBuilder');
+const RegisterResponseBuilder = require('./app/authorisation/register-user/registerUserResponseBuilder');
 
 const userFactory = new UserFactory();
 const pasteFactory = new PasteFactory();
@@ -53,6 +54,7 @@ const searchPasteResponseBuilder = new SearchPasteResponseBuilder();
 const createUrlResponseBuilder = new CreateUrlResponseBuilder();
 const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
 const loginResponseBuilder = new LoginResponseBuilder();
+const registerResponseBuilder = new RegisterResponseBuilder();
 
 (async () => {
     const loggerProvider = new LoggerProvider(log4js);
@@ -88,9 +90,9 @@ const loginResponseBuilder = new LoginResponseBuilder();
         jwt,
         createUrlResponseBuilder,
         idGenerator,
-        loggerProvider
+        loggerProvider,
+        pasteFactory
     });
-
     const authRoutes = new AuthRouterBuilder({
         express,
         jwt,
@@ -98,6 +100,7 @@ const loginResponseBuilder = new LoginResponseBuilder();
         userRepository,
         loggerProvider,
         loginResponseBuilder,
+        registerResponseBuilder,
         bcrypt,
         idGenerator
     });
@@ -110,7 +113,7 @@ const loginResponseBuilder = new LoginResponseBuilder();
 
     app.listen(3000, logger.info('App is running.'));
 
-    //console.log(await pasteRepository.findAll({ids: ['paste-1']}));
-    //console.log(await userRepository.findOne({id: 'user-bd68c580-bcd6-4b67-8131-288f2bb6a155', login: 'Ledenec'}));
+    //console.log(await pasteRepository.findOne({ id: 'paste-1' }));
+    //console.log(await userRepository.findOne({login: 'Ledenec'}));
     //console.log(await urlRepository.findOne({pasteId: 'paste-56d7d275-d21b-471a-8343-5c001c6fe0a2'}));
 })();

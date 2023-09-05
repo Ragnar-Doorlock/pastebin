@@ -12,7 +12,8 @@ class UrlRouterBuilder {
         jwt,
         createUrlResponseBuilder,
         idGenerator,
-        loggerProvider
+        loggerProvider,
+        pasteFactory
     }) {
         this.router = express.Router();
         this.urlRepository = urlRepository;
@@ -22,6 +23,7 @@ class UrlRouterBuilder {
         this.createUrlResponseBuilder = createUrlResponseBuilder;
         this.idGenerator = idGenerator;
         this.loggerProvider = loggerProvider;
+        this.pasteFactory = pasteFactory;
     }
 
     createRoutes() {
@@ -37,7 +39,8 @@ class UrlRouterBuilder {
                 jwt: this.jwt,
                 responseBuilder: this.createUrlResponseBuilder,
                 idGenerator: this.idGenerator,
-                loggerProvider: this.loggerProvider
+                loggerProvider: this.loggerProvider,
+                pasteFactory: this.pasteFactory
             });
 
             try {

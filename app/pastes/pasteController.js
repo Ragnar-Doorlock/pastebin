@@ -74,8 +74,7 @@ class PasteRouterBuilder {
                 validator,
                 pasteRepository: this.pasteRepository,
                 responseBuilder: this.getPasteResponseBuilder,
-                loggerProvider: this.loggerProvider,
-                jwt: this.jwt
+                loggerProvider: this.loggerProvider
             });
 
             try {
@@ -85,7 +84,7 @@ class PasteRouterBuilder {
             }
         });
 
-        this.router.post('/', async (request, response) => {
+        this.router.post('/', auth, async (request, response) => {
             const validator = new CreatePasteValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new CreatePasteInteractor({
@@ -120,7 +119,7 @@ class PasteRouterBuilder {
             }
         });
 
-        this.router.put('/:pasteId', async (request, response) => {
+        this.router.put('/:pasteId', auth, async (request, response) => {
             const validator = new UpdatePasteValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new UpdatePasteInteractor({
@@ -138,7 +137,7 @@ class PasteRouterBuilder {
             }
         });
 
-        this.router.delete('/:pasteId', async (request, response) => {
+        this.router.delete('/:pasteId', auth, async (request, response) => {
             const validator = new DeletePasteValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new DeletePasteInteractor({

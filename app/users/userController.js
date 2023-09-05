@@ -11,6 +11,7 @@ const GetUserHttpRequest = require('./get-user/getUserHttpRequest');
 const SearchUserHttpRequest = require('./search-users/searchUserHttpRequest');
 const UpdateUserHttpRequest = require('./update-user/updateUserHttpRequest');
 const DeleteUserHttpRequest = require('./delete-user/deleteUserHttpRequest');
+const auth = require('../authProvider');
 
 class UserRouterBuilder {
     constructor({
@@ -34,7 +35,7 @@ class UserRouterBuilder {
     }
 
     createRoutes() {
-        this.router.get('/:userId', async (request, respone) => {
+        this.router.get('/:userId', auth, async (request, respone) => {
             const validator = new GetUserValidator();
             const presenter = new HttpPresenter(request, respone);
             const interactor = new GetUserInteractor({
@@ -68,7 +69,7 @@ class UserRouterBuilder {
             }
         });
 
-        this.router.put('/:userId', async (request, respone) => {
+        this.router.put('/:userId', auth, async (request, respone) => {
             const validator = new UpdateUserValidator();
             const presenter = new HttpPresenter(request, respone);
             const interactor = new UpdateUserInteractor({
@@ -76,7 +77,8 @@ class UserRouterBuilder {
                 presenter,
                 userFactory: this.userFactory,
                 userRepository: this.userRepository,
-                loggerProvider: this.loggerProvider
+                loggerProvider: this.loggerProvider,
+                bcrypt: this.bcrypt
             });
 
             try {
@@ -86,7 +88,7 @@ class UserRouterBuilder {
             }
         });
 
-        this.router.delete('/:userId', async (request, respone) => {
+        this.router.delete('/:userId', auth, async (request, respone) => {
             const validator = new DeleteUserValidator();
             const presenter = new HttpPresenter(request, respone);
             const interactor = new DeleteUserInteractor({

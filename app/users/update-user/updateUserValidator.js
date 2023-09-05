@@ -1,3 +1,5 @@
+const PASSWORD_VALIDATION_REGEXP = /^(?=.{8,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).*$/;
+
 class UpdateUserValidator {
     validate(request) {
         const errors = [];
@@ -23,6 +25,16 @@ class UpdateUserValidator {
 
             if (request.name.length > 50) {
                 errors.push('Name value is over 50 characters.');
+            }
+        }
+
+        if (request.password) {
+            if (request.password.length < 8) {
+                errors.push('Minimum password length is 8 characters.');
+            }
+
+            if (!PASSWORD_VALIDATION_REGEXP.test(request.password)) {
+                errors.push('The password must contain upper case, lower case letters, number and special character.');
             }
         }
 

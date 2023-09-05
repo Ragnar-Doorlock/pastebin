@@ -1,8 +1,18 @@
-const ApiError = require('../../errors/apiError');
 const ValidationError = require('../../errors/validationError');
+const ApiError = require('../../errors/apiError');
 
 class RegisterUserInteractor {
-    constructor({ presenter, validator, userRepository, userFactory, idGenerator, bcrypt, loggerProvider }) {
+    constructor({
+        presenter,
+        validator,
+        userRepository,
+        userFactory,
+        idGenerator,
+        bcrypt,
+        loggerProvider,
+        responseBuilder,
+        jwt
+    }) {
         this.presenter = presenter;
         this.validator = validator;
         this.userRepository = userRepository;
@@ -10,6 +20,8 @@ class RegisterUserInteractor {
         this.idGenerator = idGenerator;
         this.bcrypt = bcrypt;
         this.logger = loggerProvider.create(RegisterUserInteractor.name);
+        this.responseBuilder = responseBuilder;
+        this.jwt = jwt;
     }
 
     async execute(request) {
@@ -23,16 +35,17 @@ class RegisterUserInteractor {
         const login = await this.userRepository.findOne({ login: request.login });
 
         if (login) {
-            // doesn't show error message
-            this.presenter.presentFailure(new ApiError('This login already exists.'));
+            //this.logger.info(login.getLogin());
+            this.presenter.presentFailure(new ApiError({ message: `User ${request.login} already exists.` }));
             return;
         }
 
-        const saltRounds = 11;
-        const securedPass = await this.bcrypt.hash(request.password, saltRounds);
+        const SALT_ROUNDS = 11;
+        const securedPass = await this.bcrypt.hash(request.password, SALT_ROUNDS);
 
+        const generatedId = this.idGenerator.generate('user');
         const user = this.userFactory.create({
-            id: this.idGenerator.generate('user'),
+            id: generatedId,
             name: request.name,
             login: request.login,
             password: securedPass
@@ -40,7 +53,17 @@ class RegisterUserInteractor {
 
         await this.userRepository.save(user);
 
-        this.presenter.presentSuccess();
+        const token = this.jwt.sign(
+            {
+                id: generatedId
+            },
+            process.env.SECRET_KEY,
+            {
+                expiresIn: process.env.DEFAULT_ACCESS_TOKEN_EXPIRES_AFTER_HOURS
+            }
+        );
+
+        this.presenter.presentSuccess(this.responseBuilder.build(token));
     }
 }
 

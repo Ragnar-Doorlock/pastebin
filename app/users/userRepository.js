@@ -10,9 +10,8 @@ class UserRepository {
     }
 
     async findOne({ id, name, login }) {
-        let ids;
-        if (id) ids = [id];
-        const result = await this.findAll({ ids, name, login }); // if {ids: [id]} then ids are set to [undefined] so i used if in line 14
+        const ids = id && [id];
+        const result = await this.findAll({ ids, name, login });
 
         return result.length > 0 ? result[0] : null;
     }
@@ -48,7 +47,7 @@ class UserRepository {
         await this.dbProvider.execute(`
             insert into users (id, name, login, password) 
             values ('${user.getId()}', '${user.getName()}', '${user.getLogin()}', '${user.getPassword()}') 
-            ON CONFLICT (id) DO UPDATE set name='${user.getName()}', password='${user.getPassword}'
+            ON CONFLICT (id) DO UPDATE set name='${user.getName()}', password='${user.getPassword()}'
         `);
     }
 
