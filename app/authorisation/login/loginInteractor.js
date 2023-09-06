@@ -7,16 +7,16 @@ class LoginInteractor {
         presenter,
         validator,
         userRepository,
-        bcrypt,
+        passwordHashService,
         responseBuilder,
-        jwt
+        authTokenService
     }) {
         this.presenter = presenter;
         this.validator = validator;
         this.userRepository = userRepository;
-        this.bcrypt = bcrypt;
+        this.passwordHashService = passwordHashService;
         this.responseBuilder = responseBuilder;
-        this.jwt = jwt;
+        this.authTokenService = authTokenService;
     }
 
     async execute(request) {
@@ -34,22 +34,14 @@ class LoginInteractor {
             return;
         }
 
-        const match = await this.bcrypt.compare(request.password, user.getPassword());
+        const match = await this.passwordHashService.compare(request.password, user.getPassword());
 
         if (!match) {
             this.presenter.presentFailure(new ApiError({ message: 'Invalid password.' }));
             return;
         }
 
-        const token = this.jwt.sign(
-            {
-                id: user._id
-            },
-            process.env.SECRET_KEY,
-            {
-                expiresIn: process.env.DEFAULT_ACCESS_TOKEN_EXPIRES_AFTER_HOURS
-            }
-        );
+        const token = this.authTokenService.sign({ id: user._id });
 
         this.presenter.presentSuccess(this.responseBuilder.build(token));
     }

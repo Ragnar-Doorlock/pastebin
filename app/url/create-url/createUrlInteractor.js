@@ -1,6 +1,5 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
-const DEFAULT_TOKEN_EXPIRES_AFTER_HOURS= '24 h';
 const visibility = require('../../entities/paste-entity/visibility');
 
 class CreateUrlInteractor {
@@ -9,7 +8,7 @@ class CreateUrlInteractor {
         validator,
         urlRepository,
         urlFactory,
-        jwt,
+        authTokenService,
         pasteRepository,
         responseBuilder,
         idGenerator,
@@ -21,7 +20,7 @@ class CreateUrlInteractor {
         this.urlRepository = urlRepository;
         this.urlFactory = urlFactory;
         this.pasteRepository = pasteRepository;
-        this.jwt = jwt;
+        this.authTokenService = authTokenService;
         this.responseBuilder = responseBuilder;
         this.idGenerator = idGenerator;
         this.logger = loggerProvider.create(CreateUrlInteractor.name);
@@ -44,28 +43,11 @@ class CreateUrlInteractor {
             return;
         }
 
-        const hash = this.jwt.sign(
-            {
-                pasteId: request.pasteId,
-                visibility: paste._visibility
-            },
-            process.env.SECRET_KEY,
-            {
-                expiresIn: DEFAULT_TOKEN_EXPIRES_AFTER_HOURS
-            }
-        );
+        const hash = this.authTokenService.sign({ pasteId: request.pasteId, visibility: paste._visibility });
 
-        // if paste was private -> it changes it's visibility to shared
         if (paste.getVisibility() === visibility.PRIVATE) {
-            const pasteEntity = this.pasteFactory.create({
-                id: paste.getId(),
-                name: paste.getName(),
-                text: paste.getText(),
-                visibility: visibility.SHARED,
-                expiresAfter: new Date(paste.getExpiration()).toUTCString(),
-                authorId: paste.getAuthorId()
-            });
-            await this.pasteRepository.save(pasteEntity);
+            paste.changeVisibility(visibility.SHARED);
+            await this.pasteRepository.save(paste);
         }
 
         const url = this.urlFactory.create({

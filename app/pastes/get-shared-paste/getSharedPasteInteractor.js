@@ -9,7 +9,7 @@ class GetSharedPasteInteractor {
         urlRepository,
         responseBuilder,
         pasteFactory,
-        jwt,
+        authTokenService,
         loggerProvider
     }) {
         this.presenter = presenter;
@@ -18,7 +18,7 @@ class GetSharedPasteInteractor {
         this.urlRepository = urlRepository;
         this.responseBuilder = responseBuilder;
         this.pasteFactory = pasteFactory;
-        this.jwt = jwt;
+        this.authTokenService = authTokenService;
         this.logger = loggerProvider.create(GetSharedPasteInteractor.name);
     }
 
@@ -32,7 +32,7 @@ class GetSharedPasteInteractor {
 
         let decodedToken;
         try {
-            decodedToken = await this.jwt.verify(request.hash, process.env.SECRET_KEY);
+            decodedToken = await this.authTokenService.verify(request.hash);
         } catch (error) {
             this.presenter.presentFailure(new ApiError(error));
             this.logger.error(error);

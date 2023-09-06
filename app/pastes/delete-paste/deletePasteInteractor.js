@@ -1,6 +1,6 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
-const Forbidden = require('../../errors/forbidden');
+const ForbiddenError = require('../../errors/forbidden');
 
 class DeletePasteInteractor {
     constructor({ validator, presenter, pasteRepository, loggerProvider }) {
@@ -26,8 +26,8 @@ class DeletePasteInteractor {
             return;
         }
 
-        if (request.user.id !== paste.getAuthorId()) {
-            this.presenter.presentFailure( new Forbidden('You don\'t have access to this paste.'));
+        if (request.user !== paste.getAuthorId()) {
+            this.presenter.presentFailure( new ForbiddenError('You don\'t have access to this paste.'));
             return;
         }
 

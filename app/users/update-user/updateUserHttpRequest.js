@@ -3,7 +3,7 @@ class UpdateUserHttpRequest {
         this.id = request.params.userId;
         this.name = request.body.name;
         this.password = request.body.password;
-        this.user = request.user;
+        this.user = request.user.id;
     }
 }
 

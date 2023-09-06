@@ -9,23 +9,23 @@ const LoginInteractor = require('./login/loginInteractor');
 class AuthRouterBuilder {
     constructor({
         express,
-        jwt,
+        authTokenService,
         userFactory,
         userRepository,
         loggerProvider,
         loginResponseBuilder,
         registerResponseBuilder,
-        bcrypt,
+        passwordHashService,
         idGenerator
     }) {
         this.router = express.Router();
-        this.jwt = jwt;
+        this.authTokenService = authTokenService;
         this.userFactory = userFactory;
         this.userRepository = userRepository;
         this.loggerProvider = loggerProvider;
         this.loginResponseBuilder = loginResponseBuilder;
         this.registerResponseBuilder = registerResponseBuilder;
-        this.bcrypt = bcrypt;
+        this.passwordHashService = passwordHashService;
         this.idGenerator = idGenerator;
     }
 
@@ -39,10 +39,10 @@ class AuthRouterBuilder {
                 userFactory: this.userFactory,
                 userRepository: this.userRepository,
                 idGenerator: this.idGenerator,
-                bcrypt: this.bcrypt,
+                passwordHashService: this.passwordHashService,
                 loggerProvider: this.loggerProvider,
                 responseBuilder: this.registerResponseBuilder,
-                jwt: this.jwt
+                authTokenService: this.authTokenService
             });
 
             try {
@@ -59,9 +59,9 @@ class AuthRouterBuilder {
                 presenter,
                 validator,
                 userRepository: this.userRepository,
-                bcrypt: this.bcrypt,
+                passwordHashService: this.passwordHashService,
                 responseBuilder: this.loginResponseBuilder,
-                jwt: this.jwt
+                authTokenService: this.authTokenService
             });
 
             try {

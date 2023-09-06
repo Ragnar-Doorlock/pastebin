@@ -9,7 +9,7 @@ class UrlRouterBuilder {
         urlRepository,
         urlFactory,
         pasteRepository,
-        jwt,
+        authTokenService,
         createUrlResponseBuilder,
         idGenerator,
         loggerProvider,
@@ -19,7 +19,7 @@ class UrlRouterBuilder {
         this.urlRepository = urlRepository;
         this.urlFactory = urlFactory;
         this.pasteRepository = pasteRepository;
-        this.jwt = jwt;
+        this.authTokenService = authTokenService;
         this.createUrlResponseBuilder = createUrlResponseBuilder;
         this.idGenerator = idGenerator;
         this.loggerProvider = loggerProvider;
@@ -36,7 +36,7 @@ class UrlRouterBuilder {
                 urlFactory: this.urlFactory,
                 urlRepository: this.urlRepository,
                 pasteRepository: this.pasteRepository,
-                jwt: this.jwt,
+                authTokenService: this.authTokenService,
                 responseBuilder: this.createUrlResponseBuilder,
                 idGenerator: this.idGenerator,
                 loggerProvider: this.loggerProvider,

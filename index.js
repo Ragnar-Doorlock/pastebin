@@ -29,6 +29,8 @@ const UserFactory = require('./app/entities/user-entity/userFactory');
 const PasteFactory = require('./app/entities/paste-entity/pasteFactory');
 const UrlFactory = require('./app/entities/url-entity/urlFactory');
 const LoggerProvider = require('./app/loggerProvider');
+const AuthTokenService = require('./app/authTokenService');
+const PasswordHashService = require('./app/passwordHashService');
 
 const GetUserResponseBuilder = require('./app/users/get-user/getUserResponseBuilder');
 const SearchUserResponseBuilder = require('./app/users/search-users/searchUserResponseBuilder');
@@ -55,6 +57,8 @@ const createUrlResponseBuilder = new CreateUrlResponseBuilder();
 const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
 const loginResponseBuilder = new LoginResponseBuilder();
 const registerResponseBuilder = new RegisterResponseBuilder();
+const authTokenService = new AuthTokenService(jwt);
+const passwordHashService = new PasswordHashService(bcrypt);
 
 (async () => {
     const loggerProvider = new LoggerProvider(log4js);
@@ -67,8 +71,7 @@ const registerResponseBuilder = new RegisterResponseBuilder();
         idGenerator,
         getUserResponseBuilder,
         searchUserResponseBuilder,
-        loggerProvider,
-        bcrypt
+        loggerProvider
     });
     const pasteRoutes = new PasteRouterBuilder({
         express,
@@ -79,7 +82,7 @@ const registerResponseBuilder = new RegisterResponseBuilder();
         searchPasteResponseBuilder,
         urlRepository,
         getPasteByHashResponseBuilder,
-        jwt,
+        authTokenService,
         loggerProvider
     });
     const urlRoutes = new UrlRouterBuilder({
@@ -87,7 +90,7 @@ const registerResponseBuilder = new RegisterResponseBuilder();
         urlRepository,
         urlFactory,
         pasteRepository,
-        jwt,
+        authTokenService,
         createUrlResponseBuilder,
         idGenerator,
         loggerProvider,
@@ -95,13 +98,13 @@ const registerResponseBuilder = new RegisterResponseBuilder();
     });
     const authRoutes = new AuthRouterBuilder({
         express,
-        jwt,
+        authTokenService,
         userFactory,
         userRepository,
         loggerProvider,
         loginResponseBuilder,
         registerResponseBuilder,
-        bcrypt,
+        passwordHashService,
         idGenerator
     });
 

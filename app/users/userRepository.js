@@ -24,13 +24,9 @@ class UserRepository {
             itemsToFind.push(`id in (${stringIds.join(', ')})`);
         }
 
-        if ( name ) {
-            itemsToFind.push(`name='${name}'`);
-        }
+        if ( name ) itemsToFind.push(`name='${name}'`);
 
-        if ( login ) {
-            itemsToFind.push(`login='${login}'`);
-        }
+        if ( login ) itemsToFind.push(`login='${login}'`);
 
         //console.log(`SELECT * FROM users WHERE ${itemsToFind.join(' AND ')}`);
         const queryResult = await this.dbProvider.execute(`SELECT * FROM users WHERE ${itemsToFind.join(' AND ')}`);

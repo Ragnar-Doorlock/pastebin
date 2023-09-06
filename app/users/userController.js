@@ -21,8 +21,7 @@ class UserRouterBuilder {
         idGenerator,
         getUserResponseBuilder,
         searchUserResponseBuilder,
-        loggerProvider,
-        bcrypt
+        loggerProvider
     }) {
         this.router = express.Router();
         this.userRepository = userRepository;
@@ -31,7 +30,6 @@ class UserRouterBuilder {
         this.getUserResponseBuilder = getUserResponseBuilder;
         this.searchUserResponseBuilder = searchUserResponseBuilder;
         this.loggerProvider = loggerProvider;
-        this.bcrypt = bcrypt;
     }
 
     createRoutes() {
@@ -59,7 +57,8 @@ class UserRouterBuilder {
             const interactor = new SearchUserInteractor({
                 validator,
                 userRepository: this.userRepository,
-                presenter, responseBuilder: this.searchUserResponseBuilder
+                presenter,
+                responseBuilder: this.searchUserResponseBuilder
             });
 
             try {
@@ -77,8 +76,7 @@ class UserRouterBuilder {
                 presenter,
                 userFactory: this.userFactory,
                 userRepository: this.userRepository,
-                loggerProvider: this.loggerProvider,
-                bcrypt: this.bcrypt
+                loggerProvider: this.loggerProvider
             });
 
             try {

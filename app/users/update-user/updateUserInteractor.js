@@ -1,15 +1,14 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
-const Forbidden = require('../../errors/forbidden');
+const ForbiddenError = require('../../errors/forbidden');
 
 class UpdateUserInteractor {
-    constructor({ presenter, validator, userFactory, userRepository, loggerProvider, bcrypt }) {
+    constructor({ presenter, validator, userFactory, userRepository, loggerProvider }) {
         this.presenter = presenter;
         this.validator = validator;
         this.userFactory = userFactory;
         this.userRepository = userRepository;
         this.logger = loggerProvider.create(UpdateUserInteractor.name);
-        this.bcrypt = bcrypt;
     }
 
     async execute(request) {
@@ -20,8 +19,8 @@ class UpdateUserInteractor {
             return;
         }
 
-        if (request.id !== request.user.id) {
-            this.presenter.presentFailure( new Forbidden('Access denied.') );
+        if (request.id !== request.user) {
+            this.presenter.presentFailure( new ForbiddenError('Access denied.') );
             return;
         }
 
@@ -33,15 +32,7 @@ class UpdateUserInteractor {
             return;
         }
 
-        let password;
-        if (!request.password) {
-            password = user.getPassword();
-        } else {
-            const SALT_ROUNDS = 11;
-            password = await this.bcrypt.hash(request.password, SALT_ROUNDS);
-        }
-
-        const userEntity = this.userFactory.create({ id: request.id, name: request.name, password });
+        const userEntity = this.userFactory.create({ id: request.id, name: request.name, password: user.getPassword() });
         await this.userRepository.save(userEntity);
         this.presenter.presentSuccess();
     }

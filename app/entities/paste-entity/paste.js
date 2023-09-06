@@ -24,7 +24,7 @@ class Paste {
     }
 
     getExpiration() {
-        return this._expiresAfter;
+        return new Date(this._expiresAfter).toUTCString();
     }
 
     getVisibility() {
@@ -45,6 +45,10 @@ class Paste {
 
     getDeletedAt() {
         return this._deletedAt;
+    }
+
+    changeVisibility(newValue) {
+        this._visibility = newValue;
     }
 }
 

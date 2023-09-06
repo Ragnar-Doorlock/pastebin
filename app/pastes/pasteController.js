@@ -29,7 +29,7 @@ class PasteRouterBuilder {
         searchPasteResponseBuilder,
         getPasteByHashResponseBuilder,
         urlRepository,
-        jwt,
+        authTokenService,
         loggerProvider
     }) {
         this.router = express.Router();
@@ -40,7 +40,7 @@ class PasteRouterBuilder {
         this.searchPasteResponseBuilder = searchPasteResponseBuilder;
         this.getPasteByHashResponseBuilder = getPasteByHashResponseBuilder;
         this.urlRepository = urlRepository;
-        this.jwt = jwt;
+        this.authTokenService = authTokenService;
         this.loggerProvider = loggerProvider;
     }
 
@@ -55,7 +55,7 @@ class PasteRouterBuilder {
                 urlRepository: this.urlRepository,
                 responseBuilder: this.getPasteByHashResponseBuilder,
                 pasteFactory: this.pasteFactory,
-                jwt: this.jwt,
+                authTokenService: this.authTokenService,
                 loggerProvider: this.loggerProvider
             });
 

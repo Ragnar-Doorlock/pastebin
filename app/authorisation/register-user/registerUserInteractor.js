@@ -8,20 +8,20 @@ class RegisterUserInteractor {
         userRepository,
         userFactory,
         idGenerator,
-        bcrypt,
+        passwordHashService,
         loggerProvider,
         responseBuilder,
-        jwt
+        authTokenService
     }) {
         this.presenter = presenter;
         this.validator = validator;
         this.userRepository = userRepository;
         this.userFactory = userFactory;
         this.idGenerator = idGenerator;
-        this.bcrypt = bcrypt;
+        this.passwordHashService = passwordHashService;
         this.logger = loggerProvider.create(RegisterUserInteractor.name);
         this.responseBuilder = responseBuilder;
-        this.jwt = jwt;
+        this.authTokenService = authTokenService;
     }
 
     async execute(request) {
@@ -35,13 +35,11 @@ class RegisterUserInteractor {
         const login = await this.userRepository.findOne({ login: request.login });
 
         if (login) {
-            //this.logger.info(login.getLogin());
             this.presenter.presentFailure(new ApiError({ message: `User ${request.login} already exists.` }));
             return;
         }
 
-        const SALT_ROUNDS = 11;
-        const securedPass = await this.bcrypt.hash(request.password, SALT_ROUNDS);
+        const securedPass = await this.passwordHashService.hash(request.password);
 
         const generatedId = this.idGenerator.generate('user');
         const user = this.userFactory.create({
@@ -53,15 +51,7 @@ class RegisterUserInteractor {
 
         await this.userRepository.save(user);
 
-        const token = this.jwt.sign(
-            {
-                id: generatedId
-            },
-            process.env.SECRET_KEY,
-            {
-                expiresIn: process.env.DEFAULT_ACCESS_TOKEN_EXPIRES_AFTER_HOURS
-            }
-        );
+        const token = this.authTokenService.sign({ id: generatedId });
 
         this.presenter.presentSuccess(this.responseBuilder.build(token));
     }

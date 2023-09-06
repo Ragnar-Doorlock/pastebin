@@ -1,5 +1,5 @@
 const ValidationError = require('../../errors/validationError');
-const Forbidden = require('../../errors/forbidden');
+const ForbiddenError = require('../../errors/forbidden');
 
 class CreatePasteInteractor {
     constructor({ presenter, validator, pasteRepository, pasteFactory, idGenerator }) {
@@ -18,9 +18,8 @@ class CreatePasteInteractor {
             return;
         }
 
-        if (request.user.id !== request.authorId) {
-            // probably it's better to change error text
-            this.presenter.presentFailure( new Forbidden('You can\'t create this paste.'));
+        if (request.user !== request.authorId) {
+            this.presenter.presentFailure( new ForbiddenError('You can\'t create this paste.'));
             return;
         }
 
