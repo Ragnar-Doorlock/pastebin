@@ -33,7 +33,7 @@ class GetPasteInteractor {
             return;
         }
 
-        if (request.user !== paste.getAuthorId()) {
+        if (request.userId !== paste.getAuthorId()) {
             this.presenter.presentFailure( new ForbiddenError('You don\'t have access to this paste.'));
             return;
         }

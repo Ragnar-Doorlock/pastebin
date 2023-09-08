@@ -19,7 +19,7 @@ class UpdateUserInteractor {
             return;
         }
 
-        if (request.id !== request.user) {
+        if (request.id !== request.userId) {
             this.presenter.presentFailure( new ForbiddenError('Access denied.') );
             return;
         }

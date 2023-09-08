@@ -1,7 +1,7 @@
 class DeleteUserHttpRequest {
     constructor(request) {
         this.id = request.params.userId;
-        this.user = request.user.id;
+        this.userId = request.user.id;
     }
 }
 

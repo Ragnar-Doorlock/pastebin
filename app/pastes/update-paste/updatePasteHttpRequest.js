@@ -4,7 +4,7 @@ class UpdatePasteHttpRequest {
         this.name = request.body.name;
         this.text = request.body.text;
         this.visibility = request.body.visibility;
-        this.user = request.user.id;
+        this.userId = request.user.id;
     }
 }
 

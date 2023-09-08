@@ -6,11 +6,11 @@ class PasswordHashService {
     }
 
     async hash(password) {
-        return await this.bcrypt.hash(password, SALT_ROUNDS);
+        return this.bcrypt.hash(password, SALT_ROUNDS);
     }
 
     async compare(password, hash) {
-        return await this.bcrypt.compare(password, hash);
+        return this.bcrypt.compare(password, hash);
     }
 }
 

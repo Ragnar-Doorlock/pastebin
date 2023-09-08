@@ -11,6 +11,12 @@ const GetUserHttpRequest = require('./get-user/getUserHttpRequest');
 const SearchUserHttpRequest = require('./search-users/searchUserHttpRequest');
 const UpdateUserHttpRequest = require('./update-user/updateUserHttpRequest');
 const DeleteUserHttpRequest = require('./delete-user/deleteUserHttpRequest');
+const LoginValidator = require('./login/loginValidator');
+const LoginInteractor = require('./login/loginInteractor');
+const LoginHttpRequest = require('./login/loginHttpRequest');
+const RegisterUserValidator = require('./register-user/registerUserValidator');
+const RegisterUserInteractor = require('./register-user/registerUserInteractor');
+const RegisterUserHttpRequest = require('./register-user/registerUserHttpRequest');
 const auth = require('../authProvider');
 
 class UserRouterBuilder {
@@ -21,7 +27,11 @@ class UserRouterBuilder {
         idGenerator,
         getUserResponseBuilder,
         searchUserResponseBuilder,
-        loggerProvider
+        loginResponseBuilder,
+        registerResponseBuilder,
+        loggerProvider,
+        passwordHashService,
+        authTokenService
     }) {
         this.router = express.Router();
         this.userRepository = userRepository;
@@ -29,7 +39,11 @@ class UserRouterBuilder {
         this.idGenerator = idGenerator;
         this.getUserResponseBuilder = getUserResponseBuilder;
         this.searchUserResponseBuilder = searchUserResponseBuilder;
+        this.loginResponseBuilder = loginResponseBuilder;
+        this.registerResponseBuilder = registerResponseBuilder;
         this.loggerProvider = loggerProvider;
+        this.passwordHashService = passwordHashService;
+        this.authTokenService = authTokenService;
     }
 
     createRoutes() {
@@ -98,6 +112,47 @@ class UserRouterBuilder {
 
             try {
                 await interactor.execute(new DeleteUserHttpRequest(request));
+            } catch (error) {
+                presenter.presentFailure(error);
+            }
+        });
+
+        this.router.post('/register', async (request, response) => {
+            const validator = new RegisterUserValidator();
+            const presenter = new HttpPresenter(request, response);
+            const interactor = new RegisterUserInteractor({
+                presenter,
+                validator,
+                userFactory: this.userFactory,
+                userRepository: this.userRepository,
+                idGenerator: this.idGenerator,
+                passwordHashService: this.passwordHashService,
+                loggerProvider: this.loggerProvider,
+                responseBuilder: this.registerResponseBuilder,
+                authTokenService: this.authTokenService
+            });
+
+            try {
+                await interactor.execute(new RegisterUserHttpRequest(request));
+            } catch (error) {
+                presenter.presentFailure(error);
+            }
+        });
+
+        this.router.post('/login', async (request, response) => {
+            const validator = new LoginValidator();
+            const presenter = new HttpPresenter(request, response);
+            const interactor = new LoginInteractor({
+                presenter,
+                validator,
+                userRepository: this.userRepository,
+                passwordHashService: this.passwordHashService,
+                responseBuilder: this.loginResponseBuilder,
+                authTokenService: this.authTokenService
+            });
+
+            try {
+                await interactor.execute(new LoginHttpRequest(request));
             } catch (error) {
                 presenter.presentFailure(error);
             }

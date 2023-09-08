@@ -4,7 +4,6 @@ const app = express();
 const UserRouterBuilder = require('./app/users/userController');
 const PasteRouterBuilder = require('./app/pastes/pasteController');
 const UrlRouterBuilder = require('./app/url/urlController');
-const AuthRouterBuilder = require('./app/authorisation/authController');
 const PostgresPoolConnection = require('./db/postgresPoolConnection');
 const pool = PostgresPoolConnection.getInstance();
 const { v4: uuidv4 } = require('uuid');
@@ -38,8 +37,8 @@ const GetPasteResponseBuilder = require('./app/pastes/get-paste/getPasteResponse
 const SearchPasteResponseBuilder = require('./app/pastes/search-paste/searchPasteResponseBuilder');
 const CreateUrlResponseBuilder = require('./app/url/create-url/createUrlResponseBuilder');
 const GetPasteByHashResponseBuilder = require('./app/pastes/get-shared-paste/getSharedPasteResponseBuilder');
-const LoginResponseBuilder = require('./app/authorisation/login/loginResponseBuilder');
-const RegisterResponseBuilder = require('./app/authorisation/register-user/registerUserResponseBuilder');
+const LoginResponseBuilder = require('./app/users/login/loginResponseBuilder');
+const RegisterResponseBuilder = require('./app/users/register-user/registerUserResponseBuilder');
 
 const userFactory = new UserFactory();
 const pasteFactory = new PasteFactory();
@@ -71,7 +70,11 @@ const passwordHashService = new PasswordHashService(bcrypt);
         idGenerator,
         getUserResponseBuilder,
         searchUserResponseBuilder,
-        loggerProvider
+        loginResponseBuilder,
+        registerResponseBuilder,
+        loggerProvider,
+        passwordHashService,
+        authTokenService
     });
     const pasteRoutes = new PasteRouterBuilder({
         express,
@@ -96,23 +99,11 @@ const passwordHashService = new PasswordHashService(bcrypt);
         loggerProvider,
         pasteFactory
     });
-    const authRoutes = new AuthRouterBuilder({
-        express,
-        authTokenService,
-        userFactory,
-        userRepository,
-        loggerProvider,
-        loginResponseBuilder,
-        registerResponseBuilder,
-        passwordHashService,
-        idGenerator
-    });
 
     app.use(express.json());
     app.use('/user', userRoutes.createRoutes());
     app.use('/paste', pasteRoutes.createRoutes());
     app.use('/url', urlRoutes.createRoutes());
-    app.use('/auth', authRoutes.createRoutes());
 
     app.listen(3000, logger.info('App is running.'));
 

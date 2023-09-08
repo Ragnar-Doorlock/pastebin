@@ -3,8 +3,8 @@ class AuthTokenService {
         this.jwt = jwt;
     }
 
-    sign(data) {
-        const token = this.jwt.sign(
+    async sign(data) {
+        const token = await this.jwt.sign(
             data,
             process.env.SECRET_KEY,
             {
@@ -15,8 +15,8 @@ class AuthTokenService {
         return token;
     }
 
-    verify(token) {
-        return this.jwt.verify(token, process.env.SECRET_KEY);
+    async verify(token) {
+        return await this.jwt.verify(token, process.env.SECRET_KEY);
     }
 }
 

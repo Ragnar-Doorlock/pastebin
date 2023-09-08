@@ -24,7 +24,7 @@ class Paste {
     }
 
     getExpiration() {
-        return new Date(this._expiresAfter).toUTCString();
+        return this._expiresAfter;
     }
 
     getVisibility() {

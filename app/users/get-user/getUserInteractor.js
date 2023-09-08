@@ -1,6 +1,5 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
-const ForbiddenError = require('../../errors/forbidden');
 
 class GetUserInteractor {
     constructor({ presenter, validator, userRepository, responseBuilder, loggerProvider }) {
@@ -16,11 +15,6 @@ class GetUserInteractor {
 
         if (errors.length > 0) {
             this.presenter.presentFailure( new ValidationError(errors) );
-            return;
-        }
-
-        if (request.id !== request.user) {
-            this.presenter.presentFailure( new ForbiddenError('Access denied.') );
             return;
         }
 

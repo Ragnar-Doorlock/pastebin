@@ -27,7 +27,7 @@ class UpdatePasteInteractor {
             return;
         }
 
-        if (request.user !== paste.getAuthorId()) {
+        if (request.userId !== paste.getAuthorId()) {
             this.presenter.presentFailure( new ForbiddenError('You don\'t have access to this paste.'));
             return;
         }
@@ -38,7 +38,7 @@ class UpdatePasteInteractor {
             text: request.text,
             visibility: request.visibility,
             authorId: paste.getAuthorId(),
-            expiresAfter: new Date(paste.getExpiration()).toUTCString()
+            expiresAfter: paste.getExpiration()
         });
         await this.pasteRepository.save(pasteEntity);
         this.presenter.presentSuccess();

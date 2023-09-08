@@ -1,7 +1,7 @@
 class GetPasteHttpRequest {
     constructor(request) {
         this.id = request.params.pasteId;
-        this.user = request.user.id;
+        this.userId = request.user.id;
     }
 }
 
