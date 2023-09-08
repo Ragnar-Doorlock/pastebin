@@ -10,7 +10,8 @@ class PasteRepository {
     }
 
     async findOne({ id, name, authorId }) {
-        const result = await this.findAll({ ids: [id], name, authorId }); // []
+        const ids = id && [id];
+        const result = await this.findAll({ ids, name, authorId });
         return result.length > 0 ? result[0] : null;
     }
 
@@ -54,9 +55,10 @@ class PasteRepository {
     }
 
     async save(paste) {
+        const expiration = new Date(paste.getExpiration()).toUTCString();
         await this.dbProvider.execute(`
             insert into paste (id, name, text, expires_after, visibility, author_id, created_at) 
-            values ('${paste.getId()}', '${paste.getName()}', '${paste.getText()}', '${paste.getExpiration()}', '${paste.getVisibility()}', '${paste.getAuthorId()}', current_timestamp) 
+            values ('${paste.getId()}', '${paste.getName()}', '${paste.getText()}', '${expiration}', '${paste.getVisibility()}', '${paste.getAuthorId()}', current_timestamp) 
             ON conflict (id) DO update set name='${paste.getName()}', 
             text='${paste.getText()}', 
             visibility='${paste.getVisibility()}', 

@@ -17,6 +17,8 @@ const DeletePasteHttpRequest = require('./delete-paste/deletePasteHttpRequest');
 const GetSharedPasteHttpRequest = require('./get-shared-paste/getSharedPasteHttpRequest');
 const GetSharedPasteValidator = require('./get-shared-paste/getSharedPasteValidator');
 const GetSharedPasteInteractor = require('./get-shared-paste/getSharedPasteInteractor');
+const auth = require('../authProvider');
+const ApiError = require('../errors/apiError');
 
 class PasteRouterBuilder {
     constructor({
@@ -28,7 +30,7 @@ class PasteRouterBuilder {
         searchPasteResponseBuilder,
         getPasteByHashResponseBuilder,
         urlRepository,
-        jwt,
+        authTokenService,
         loggerProvider
     }) {
         this.router = express.Router();
@@ -39,7 +41,7 @@ class PasteRouterBuilder {
         this.searchPasteResponseBuilder = searchPasteResponseBuilder;
         this.getPasteByHashResponseBuilder = getPasteByHashResponseBuilder;
         this.urlRepository = urlRepository;
-        this.jwt = jwt;
+        this.authTokenService = authTokenService;
         this.loggerProvider = loggerProvider;
     }
 
@@ -54,18 +56,18 @@ class PasteRouterBuilder {
                 urlRepository: this.urlRepository,
                 responseBuilder: this.getPasteByHashResponseBuilder,
                 pasteFactory: this.pasteFactory,
-                jwt: this.jwt,
+                authTokenService: this.authTokenService,
                 loggerProvider: this.loggerProvider
             });
 
             try {
                 await interactor.execute(new GetSharedPasteHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
-        this.router.get('/:pasteId', async (request, response) => {
+        this.router.get('/:pasteId', auth, async (request, response) => {
             const validator = new GetPasteValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new GetPasteInteractor({
@@ -79,11 +81,11 @@ class PasteRouterBuilder {
             try {
                 await interactor.execute(new GetPasteHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
-        this.router.post('/', async (request, response) => {
+        this.router.post('/', auth, async (request, response) => {
             const validator = new CreatePasteValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new CreatePasteInteractor({
@@ -97,7 +99,7 @@ class PasteRouterBuilder {
             try {
                 await interactor.execute(new CreatePasteHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
@@ -114,11 +116,11 @@ class PasteRouterBuilder {
             try {
                 await interactor.execute(new SearchPasteHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
-        this.router.put('/:pasteId', async (request, response) => {
+        this.router.put('/:pasteId', auth, async (request, response) => {
             const validator = new UpdatePasteValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new UpdatePasteInteractor({
@@ -132,11 +134,11 @@ class PasteRouterBuilder {
             try {
                 await interactor.execute(new UpdatePasteHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
-        this.router.delete('/:pasteId', async (request, response) => {
+        this.router.delete('/:pasteId', auth, async (request, response) => {
             const validator = new DeletePasteValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new DeletePasteInteractor({
@@ -149,7 +151,7 @@ class PasteRouterBuilder {
             try {
                 await interactor.execute(new DeletePasteHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 

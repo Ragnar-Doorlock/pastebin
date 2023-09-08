@@ -4,7 +4,7 @@ class CreatePasteHttpRequest {
         this.text = request.body.text;
         this.expiresAfter = request.body.expiresAfter;
         this.visibility = request.body.visibility;
-        this.authorId = request.body.authorId;
+        this.userId = request.user.id;
     }
 }
 

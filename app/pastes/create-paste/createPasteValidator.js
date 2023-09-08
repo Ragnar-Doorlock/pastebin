@@ -1,4 +1,5 @@
 const visibilityAcceptedValues = require('../../entities/paste-entity/visibility');
+const EXPIRES_AFTER_REGEX = /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(.\d\d\d)?/;
 
 class CreatePasteValidator {
     validate(request) {
@@ -22,15 +23,9 @@ class CreatePasteValidator {
             errors.push('Invalid visibility values.');
         }
 
-        if (!request.authorId) {
-            errors.push('Author ID is required.');
-        } else if (!/^user-/.test(request.authorId)) {
-            errors.push('Invalid author ID value.');
-        }
-
         if (!request.expiresAfter) {
             errors.push('Expiration time is required');
-        } else if (!/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(.\d\d\d)?/.test(request.expiresAfter)) {
+        } else if (!EXPIRES_AFTER_REGEX.test(request.expiresAfter)) {
             errors.push('Incorrect visibility timestamp value, please use "YYYY-MM-DD hh:mm:ss"');
         }
 

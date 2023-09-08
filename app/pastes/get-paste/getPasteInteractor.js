@@ -1,5 +1,6 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
+const ForbiddenError = require('../../errors/forbidden');
 
 class GetPasteInteractor {
     constructor({ presenter, validator, pasteRepository, responseBuilder, loggerProvider }) {
@@ -23,6 +24,16 @@ class GetPasteInteractor {
         if (!paste) {
             this.presenter.presentFailure( new NotFound(`Paste with ${request.id} was not found.`));
             this.logger.error(`Not found: Paste with ID ${request.id} was not found.`);
+            return;
+        }
+
+        if (paste.isPublic()) {
+            this.presenter.presentSuccess(this.responseBuilder.build(paste));
+            return;
+        }
+
+        if (request.userId !== paste.getAuthorId()) {
+            this.presenter.presentFailure( new ForbiddenError('You don\'t have access to this paste.'));
             return;
         }
 

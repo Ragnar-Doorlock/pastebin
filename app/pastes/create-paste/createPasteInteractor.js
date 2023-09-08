@@ -23,7 +23,7 @@ class CreatePasteInteractor {
             text: request.text,
             visibility: request.visibility,
             expiresAfter: request.expiresAfter,
-            authorId: request.authorId
+            authorId: request.userId
         });
         await this.pasteRepository.save(paste);
 

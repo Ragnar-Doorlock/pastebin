@@ -1,3 +1,5 @@
+const visibility = require('./visibility');
+
 class Paste {
     constructor(data) {
         this._id = data.id;
@@ -45,6 +47,18 @@ class Paste {
 
     getDeletedAt() {
         return this._deletedAt;
+    }
+
+    changeVisibility(newValue) {
+        this._visibility = newValue;
+    }
+
+    isPublic() {
+        return Boolean(this.getVisibility() === visibility.PUBLIC);
+    }
+
+    isPrivate() {
+        return Boolean(this.getVisibility() === visibility.PRIVATE);
     }
 }
 

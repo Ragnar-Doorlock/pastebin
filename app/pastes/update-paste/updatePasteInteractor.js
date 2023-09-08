@@ -1,5 +1,6 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
+const ForbiddenError = require('../../errors/forbidden');
 
 class UpdatePasteInteractor {
     constructor({ presenter, validator, pasteFactory, pasteRepository, loggerProvider }) {
@@ -26,13 +27,18 @@ class UpdatePasteInteractor {
             return;
         }
 
+        if (request.userId !== paste.getAuthorId()) {
+            this.presenter.presentFailure( new ForbiddenError('You don\'t have access to this paste.'));
+            return;
+        }
+
         const pasteEntity = this.pasteFactory.create({
             id: request.id,
             name: request.name,
             text: request.text,
             visibility: request.visibility,
             authorId: paste.getAuthorId(),
-            expiresAfter: new Date(paste.getExpiration()).toUTCString()
+            expiresAfter: paste.getExpiration()
         });
         await this.pasteRepository.save(pasteEntity);
         this.presenter.presentSuccess();

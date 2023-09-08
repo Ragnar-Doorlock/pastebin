@@ -8,6 +8,7 @@ const PostgresPoolConnection = require('./db/postgresPoolConnection');
 const pool = PostgresPoolConnection.getInstance();
 const { v4: uuidv4 } = require('uuid');
 const IdGenerator = require('./app/idGenerator');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const log4js = require('log4js');
 log4js.configure({
@@ -27,6 +28,8 @@ const UserFactory = require('./app/entities/user-entity/userFactory');
 const PasteFactory = require('./app/entities/paste-entity/pasteFactory');
 const UrlFactory = require('./app/entities/url-entity/urlFactory');
 const LoggerProvider = require('./app/loggerProvider');
+const AuthTokenService = require('./app/authTokenService');
+const PasswordHashService = require('./app/passwordHashService');
 
 const GetUserResponseBuilder = require('./app/users/get-user/getUserResponseBuilder');
 const SearchUserResponseBuilder = require('./app/users/search-users/searchUserResponseBuilder');
@@ -34,6 +37,8 @@ const GetPasteResponseBuilder = require('./app/pastes/get-paste/getPasteResponse
 const SearchPasteResponseBuilder = require('./app/pastes/search-paste/searchPasteResponseBuilder');
 const CreateUrlResponseBuilder = require('./app/url/create-url/createUrlResponseBuilder');
 const GetPasteByHashResponseBuilder = require('./app/pastes/get-shared-paste/getSharedPasteResponseBuilder');
+const LoginResponseBuilder = require('./app/users/login/loginResponseBuilder');
+const RegisterResponseBuilder = require('./app/users/register-user/registerUserResponseBuilder');
 
 const userFactory = new UserFactory();
 const pasteFactory = new PasteFactory();
@@ -49,6 +54,10 @@ const getPasteResponseBuilder = new GetPasteResponseBuilder();
 const searchPasteResponseBuilder = new SearchPasteResponseBuilder();
 const createUrlResponseBuilder = new CreateUrlResponseBuilder();
 const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
+const loginResponseBuilder = new LoginResponseBuilder();
+const registerResponseBuilder = new RegisterResponseBuilder();
+const authTokenService = new AuthTokenService(jwt);
+const passwordHashService = new PasswordHashService(bcrypt);
 
 (async () => {
     const loggerProvider = new LoggerProvider(log4js);
@@ -61,7 +70,11 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
         idGenerator,
         getUserResponseBuilder,
         searchUserResponseBuilder,
-        loggerProvider
+        loginResponseBuilder,
+        registerResponseBuilder,
+        loggerProvider,
+        passwordHashService,
+        authTokenService
     });
     const pasteRoutes = new PasteRouterBuilder({
         express,
@@ -72,7 +85,7 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
         searchPasteResponseBuilder,
         urlRepository,
         getPasteByHashResponseBuilder,
-        jwt,
+        authTokenService,
         loggerProvider
     });
     const urlRoutes = new UrlRouterBuilder({
@@ -80,10 +93,11 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
         urlRepository,
         urlFactory,
         pasteRepository,
-        jwt,
+        authTokenService,
         createUrlResponseBuilder,
         idGenerator,
-        loggerProvider
+        loggerProvider,
+        pasteFactory
     });
 
     app.use(express.json());
@@ -93,7 +107,7 @@ const getPasteByHashResponseBuilder = new GetPasteByHashResponseBuilder();
 
     app.listen(3000, logger.info('App is running.'));
 
-    //console.log(await pasteRepository.findAll({ids: ['paste-1']}));
-    //console.log(await userRepository.findAll({ids: ['user-3']}));
+    //console.log(await pasteRepository.findOne({ id: 'paste-1' }));
+    //console.log(await userRepository.findOne({login: 'Ledenec'}));
     //console.log(await urlRepository.findOne({pasteId: 'paste-56d7d275-d21b-471a-8343-5c001c6fe0a2'}));
 })();

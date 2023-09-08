@@ -1,5 +1,6 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
+const ForbiddenError = require('../../errors/forbidden');
 
 class DeleteUserInteractor {
     constructor({ validator, presenter, userRepository, loggerProvider }) {
@@ -14,6 +15,11 @@ class DeleteUserInteractor {
 
         if (errors.length > 0) {
             this.presenter.presentFailure( new ValidationError(errors) );
+            return;
+        }
+
+        if (request.id !== request.userId) {
+            this.presenter.presentFailure( new ForbiddenError('Access denied.') );
             return;
         }
 

@@ -1,5 +1,6 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
+const ForbiddenError = require('../../errors/forbidden');
 
 class UpdateUserInteractor {
     constructor({ presenter, validator, userFactory, userRepository, loggerProvider }) {
@@ -18,6 +19,11 @@ class UpdateUserInteractor {
             return;
         }
 
+        if (request.id !== request.userId) {
+            this.presenter.presentFailure( new ForbiddenError('Access denied.') );
+            return;
+        }
+
         const user = await this.userRepository.findByID({ id: request.id });
 
         if (!user) {
@@ -26,7 +32,7 @@ class UpdateUserInteractor {
             return;
         }
 
-        const userEntity = this.userFactory.create({ id: request.id, name: request.name });
+        const userEntity = this.userFactory.create({ id: request.id, name: request.name, password: user.getPassword() });
         await this.userRepository.save(userEntity);
         this.presenter.presentSuccess();
     }
