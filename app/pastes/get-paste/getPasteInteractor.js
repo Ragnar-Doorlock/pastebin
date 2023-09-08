@@ -1,7 +1,6 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
 const ForbiddenError = require('../../errors/forbidden');
-const visibility = require('../../entities/paste-entity/visibility');
 
 class GetPasteInteractor {
     constructor({ presenter, validator, pasteRepository, responseBuilder, loggerProvider }) {
@@ -28,7 +27,7 @@ class GetPasteInteractor {
             return;
         }
 
-        if (paste.getVisibility() === visibility.PUBLIC) {
+        if (paste.isPublic()) {
             this.presenter.presentSuccess(this.responseBuilder.build(paste));
             return;
         }

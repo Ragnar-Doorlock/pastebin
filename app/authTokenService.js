@@ -16,7 +16,7 @@ class AuthTokenService {
     }
 
     async verify(token) {
-        return await this.jwt.verify(token, process.env.SECRET_KEY);
+        return this.jwt.verify(token, process.env.SECRET_KEY);
     }
 }
 

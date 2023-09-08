@@ -18,6 +18,7 @@ const GetSharedPasteHttpRequest = require('./get-shared-paste/getSharedPasteHttp
 const GetSharedPasteValidator = require('./get-shared-paste/getSharedPasteValidator');
 const GetSharedPasteInteractor = require('./get-shared-paste/getSharedPasteInteractor');
 const auth = require('../authProvider');
+const ApiError = require('../errors/apiError');
 
 class PasteRouterBuilder {
     constructor({
@@ -62,7 +63,7 @@ class PasteRouterBuilder {
             try {
                 await interactor.execute(new GetSharedPasteHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
@@ -80,7 +81,7 @@ class PasteRouterBuilder {
             try {
                 await interactor.execute(new GetPasteHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
@@ -98,7 +99,7 @@ class PasteRouterBuilder {
             try {
                 await interactor.execute(new CreatePasteHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
@@ -115,7 +116,7 @@ class PasteRouterBuilder {
             try {
                 await interactor.execute(new SearchPasteHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
@@ -133,7 +134,7 @@ class PasteRouterBuilder {
             try {
                 await interactor.execute(new UpdatePasteHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
@@ -150,7 +151,7 @@ class PasteRouterBuilder {
             try {
                 await interactor.execute(new DeletePasteHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 

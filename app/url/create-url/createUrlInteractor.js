@@ -45,7 +45,7 @@ class CreateUrlInteractor {
 
         const hash = await this.authTokenService.sign({ pasteId: request.pasteId, visibility: paste.getVisibility() });
 
-        if (paste.getVisibility() === visibility.PRIVATE) {
+        if (paste.isPrivate()) {
             paste.changeVisibility(visibility.SHARED);
             await this.pasteRepository.save(paste);
         }

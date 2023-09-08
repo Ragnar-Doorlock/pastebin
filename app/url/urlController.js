@@ -2,6 +2,7 @@ const HttpPresenter = require('../httpPresenter');
 const CreateUrlValidator = require('./create-url/createUrlValidator');
 const CreateUrlInteractor = require('./create-url/createUrlInteractor');
 const CreateUrlHttpRequest = require('./create-url/createUrlHttpRequest');
+const ApiError = require('../errors/apiError');
 
 class UrlRouterBuilder {
     constructor({
@@ -46,7 +47,7 @@ class UrlRouterBuilder {
             try {
                 await interactor.execute(new CreateUrlHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 

@@ -18,6 +18,7 @@ const RegisterUserValidator = require('./register-user/registerUserValidator');
 const RegisterUserInteractor = require('./register-user/registerUserInteractor');
 const RegisterUserHttpRequest = require('./register-user/registerUserHttpRequest');
 const auth = require('../authProvider');
+const ApiError = require('../errors/apiError');
 
 class UserRouterBuilder {
     constructor({
@@ -61,7 +62,7 @@ class UserRouterBuilder {
             try {
                 await interactor.execute(new GetUserHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
@@ -78,7 +79,7 @@ class UserRouterBuilder {
             try {
                 await interactor.execute(new SearchUserHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
@@ -96,7 +97,7 @@ class UserRouterBuilder {
             try {
                 await interactor.execute(new UpdateUserHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
@@ -113,7 +114,7 @@ class UserRouterBuilder {
             try {
                 await interactor.execute(new DeleteUserHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
@@ -135,7 +136,7 @@ class UserRouterBuilder {
             try {
                 await interactor.execute(new RegisterUserHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 
@@ -154,7 +155,7 @@ class UserRouterBuilder {
             try {
                 await interactor.execute(new LoginHttpRequest(request));
             } catch (error) {
-                presenter.presentFailure(error);
+                presenter.presentFailure(new ApiError(error));
             }
         });
 

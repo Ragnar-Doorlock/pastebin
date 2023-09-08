@@ -23,12 +23,6 @@ class CreatePasteValidator {
             errors.push('Invalid visibility values.');
         }
 
-        /* if (!request.authorId) {
-            errors.push('Author ID is required.');
-        } else if (!/^user-/.test(request.authorId)) {
-            errors.push('Invalid author ID value.');
-        } */
-
         if (!request.expiresAfter) {
             errors.push('Expiration time is required');
         } else if (!EXPIRES_AFTER_REGEX.test(request.expiresAfter)) {

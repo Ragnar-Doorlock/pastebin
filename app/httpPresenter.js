@@ -14,7 +14,6 @@ class HttpPresenter {
     }
 
     presentFailure(error) {
-        // error.httpCode = undefined in case something went wrong in code and i get typeError or other errors
         this.response.status(error.httpCode).send({ message: error.message });
     }
 }
