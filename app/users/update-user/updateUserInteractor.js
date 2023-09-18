@@ -32,7 +32,12 @@ class UpdateUserInteractor {
             return;
         }
 
-        const userEntity = this.userFactory.create({ id: request.id, name: request.name, password: user.getPassword() });
+        const userEntity = this.userFactory.create({
+            id: request.id,
+            name: request.name,
+            password: user.getPassword(),
+            pastesCreatedCount: user.getPastesCreatedCount()
+        });
         await this.userRepository.save(userEntity);
         this.presenter.presentSuccess();
     }

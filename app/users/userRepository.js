@@ -35,16 +35,21 @@ class UserRepository {
             return null;
         }
 
-        const result = queryResult.map(x => this.userFactory.create( x ));
+        const result = queryResult.map(x => this.userFactory.create({
+            id: x.id,
+            name: x.name,
+            password: x.password,
+            pastesCreatedCount: x.pastes_created_count
+        }));
         return result;
     }
 
     async save(user) {
-        await this.dbProvider.execute(`
-            insert into users (id, name, login, password) 
-            values ('${user.getId()}', '${user.getName()}', '${user.getLogin()}', '${user.getPassword()}') 
-            ON CONFLICT (id) DO UPDATE set name='${user.getName()}', password='${user.getPassword()}'
-        `);
+        const query = `
+        insert into users (id, name, login, password) 
+        values ('${user.getId()}', '${user.getName()}', '${user.getLogin()}', '${user.getPassword()}') 
+        ON CONFLICT (id) DO UPDATE set name='${user.getName()}', password='${user.getPassword()}', pastes_created_count='${user.getPastesCreatedCount()}'`;
+        await this.dbProvider.execute(query);
     }
 
     async delete(id) {

@@ -1,7 +1,8 @@
 class PasteRepository {
-    constructor({ dbProvider, pasteFactory }) {
+    constructor({ dbProvider, pasteFactory, cacheProvider }) {
         this.dbProvider = dbProvider;
         this.pasteFactory = pasteFactory;
+        this.cacheProvider = cacheProvider;
     }
 
     async findById({ id }) {
@@ -16,6 +17,22 @@ class PasteRepository {
     }
 
     async findAll({ ids, name, authorId }) {
+        if (await this.cacheProvider.exists(`${ids}_${name}_${authorId}`)) {
+            const cachedData = await this.cacheProvider.get(`${ids}_${name}_${authorId}`);
+            const result = cachedData.map(x => this.pasteFactory.create({
+                id: x.id,
+                name: x.name,
+                text: x.text,
+                expiresAfter: x.expires_after,
+                visibility: x.visibility,
+                authorId: x.author_id,
+                createdAt: x.created_at,
+                updatedAt: x.updated_at,
+                deletedAt: x.deleted_at,
+                totalViews: x.total_views
+            }));
+            return result;
+        }
 
         const itemsToFind = [];
 
@@ -32,23 +49,26 @@ class PasteRepository {
             itemsToFind.push(`author_id='${authorId}'`);
         }
 
-        //console.log(`SELECT * FROM paste WHERE ${itemsToFind.join(' AND ')}`);
-        const queryResult = await this.dbProvider.execute(`SELECT * FROM paste WHERE ${itemsToFind.join(' AND ')}`);
+        //console.log(`SELECT * FROM paste WHERE ${itemsToFind.join(' AND ')} AND deleted_at is null`);
+        const queryResult = await this.dbProvider.execute(`SELECT * FROM paste WHERE ${itemsToFind.join(' AND ')} AND deleted_at is null`);
 
         if (!queryResult) {
             return null;
         }
 
+        await this.cacheProvider.set(`${ids}_${name}_${authorId}`, queryResult);
+
         const result = queryResult.map(x => this.pasteFactory.create({
             id: x.id,
             name: x.name,
-            text: x.name,
+            text: x.text,
             expiresAfter: x.expires_after,
             visibility: x.visibility,
             authorId: x.author_id,
             createdAt: x.created_at,
             updatedAt: x.updated_at,
-            deletedAt: x.deleted_at
+            deletedAt: x.deleted_at,
+            totalViews: x.total_views
         }));
 
         return result;
@@ -56,18 +76,25 @@ class PasteRepository {
 
     async save(paste) {
         const expiration = new Date(paste.getExpiration()).toUTCString();
-        await this.dbProvider.execute(`
-            insert into paste (id, name, text, expires_after, visibility, author_id, created_at) 
-            values ('${paste.getId()}', '${paste.getName()}', '${paste.getText()}', '${expiration}', '${paste.getVisibility()}', '${paste.getAuthorId()}', current_timestamp) 
-            ON conflict (id) DO update set name='${paste.getName()}', 
-            text='${paste.getText()}', 
-            visibility='${paste.getVisibility()}', 
-            updated_at=current_timestamp`
-        );
+
+        const query = `
+        insert into paste (id, name, text, expires_after, visibility, author_id, created_at, total_views) 
+        values ('${paste.getId()}', '${paste.getName()}', '${paste.getText()}', '${expiration}', '${paste.getVisibility()}',
+        '${paste.getAuthorId()}', current_timestamp, '${paste.getTotalViews()}') 
+        ON conflict (id) DO update set name='${paste.getName()}', 
+        text='${paste.getText()}', 
+        visibility='${paste.getVisibility()}', 
+        updated_at=current_timestamp,
+        total_views='${paste.getTotalViews()}'`;
+
+        await this.dbProvider.execute(query);
+
+        await this.cacheProvider.clear();
     }
 
     async delete(id) {
         await this.dbProvider.execute(`update paste set deleted_at=current_timestamp where id='${id}';`);
+        await this.cacheProvider.clear();
     }
 }
 

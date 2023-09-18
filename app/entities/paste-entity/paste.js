@@ -11,6 +11,7 @@ class Paste {
         this._createdAt = data.createdAt;
         this._updatedAt = data.updatedAt;
         this._deletedAt = data.deletedAt;
+        this._totalViews = data.totalViews;
     }
 
     getId() {
@@ -47,6 +48,10 @@ class Paste {
 
     getDeletedAt() {
         return this._deletedAt;
+    }
+
+    getTotalViews() {
+        return this._totalViews;
     }
 
     changeVisibility(newValue) {

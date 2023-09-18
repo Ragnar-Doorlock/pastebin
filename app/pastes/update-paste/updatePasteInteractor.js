@@ -38,7 +38,8 @@ class UpdatePasteInteractor {
             text: request.text,
             visibility: request.visibility,
             authorId: paste.getAuthorId(),
-            expiresAfter: paste.getExpiration()
+            expiresAfter: paste.getExpiration(),
+            totalViews: paste.getTotalViews()
         });
         await this.pasteRepository.save(pasteEntity);
         this.presenter.presentSuccess();
