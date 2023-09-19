@@ -1,29 +1,26 @@
 class CacheProvider {
-    constructor({ client, pasteFactory }) {
-        this.client = client;
-        this.pasteFactory = pasteFactory;
+    constructor(client) {
+        this.cache = client;
     }
 
     async set(key, value) {
-        await this.client.set(key, JSON.stringify(value), 'EX', 3600);
+        await this.cache.set(key, value);
     }
 
     async get(key) {
-        return JSON.parse(await this.client.get(key));
+        return await this.cache.get(key);
     }
 
     async exists(key) {
-        return await this.client.exists(key);
+        return await this.cache.exists(key);
     }
 
     async clear() {
-        // seems like this shit works. Finally
-        await this.client.FLUSHALL();
+        await this.cache.clear();
     }
 
     async deleteKey(key) {
-        // temporary solution while figuring out for full cache flush
-        await this.client.del(key);
+        await this.cache.deleteKey(key);
     }
 }
 
