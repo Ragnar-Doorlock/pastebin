@@ -31,13 +31,8 @@ class CreatePasteInteractor {
         await this.pasteRepository.save(paste);
 
         const user = await this.userRepository.findByID({ id: request.userId });
-        const userEntity = this.userFactory.create({
-            id: user.getId(),
-            name: user.getName(),
-            password: user.getPassword(),
-            pastesCreatedCount: user.getPastesCreatedCount() + 1
-        });
-        await this.userRepository.save(userEntity);
+        user.increasePastesCreatedCount();
+        await this.userRepository.save(user);
 
         this.presenter.presentSuccess();
     }

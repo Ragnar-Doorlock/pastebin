@@ -26,6 +26,14 @@ class User {
     getPastesCreatedCount() {
         return this._pastesCreatedCount;
     }
+
+    increasePastesCreatedCount() {
+        this._pastesCreatedCount += 1;
+    }
+
+    changeName(newName) {
+        this._name = newName;
+    }
 }
 
 module.exports = User;

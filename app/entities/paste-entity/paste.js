@@ -65,6 +65,10 @@ class Paste {
     isPrivate() {
         return Boolean(this.getVisibility() === visibility.PRIVATE);
     }
+
+    increaseTotalViewsCount() {
+        this._totalViews += 1;
+    }
 }
 
 module.exports = Paste;

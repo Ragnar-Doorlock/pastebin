@@ -35,6 +35,7 @@ const UrlFactory = require('./app/entities/url-entity/urlFactory');
 const LoggerProvider = require('./app/loggerProvider');
 const AuthTokenService = require('./app/authTokenService');
 const PasswordHashService = require('./app/passwordHashService');
+const RedisProvider = require('./app/redis-provider/redisProvider');
 const CacheProvider = require('./app/cache-provider/cacheProvider');
 
 const GetUserResponseBuilder = require('./app/users/get-user/getUserResponseBuilder');
@@ -48,7 +49,8 @@ const RegisterResponseBuilder = require('./app/users/register-user/registerUserR
 
 const userFactory = new UserFactory();
 const pasteFactory = new PasteFactory();
-const cacheProvider = new CacheProvider({ client: redisClient, pasteFactory });
+const redisProvider = new RedisProvider(redisClient);
+const cacheProvider = new CacheProvider(redisProvider);
 const urlFactory = new UrlFactory();
 const dbProvider = new DBProvider({ pool });
 const userRepository = new UserRepository({ dbProvider, userFactory });

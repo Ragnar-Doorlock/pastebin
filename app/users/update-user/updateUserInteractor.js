@@ -32,13 +32,8 @@ class UpdateUserInteractor {
             return;
         }
 
-        const userEntity = this.userFactory.create({
-            id: request.id,
-            name: request.name,
-            password: user.getPassword(),
-            pastesCreatedCount: user.getPastesCreatedCount()
-        });
-        await this.userRepository.save(userEntity);
+        user.changeName(request.name);
+        await this.userRepository.save(user);
         this.presenter.presentSuccess();
     }
 }

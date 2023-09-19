@@ -17,21 +17,10 @@ class PasteRepository {
     }
 
     async findAll({ ids, name, authorId }) {
-        if (await this.cacheProvider.exists(`${ids}_${name}_${authorId}`)) {
+        const isPasteCached = await this.cacheProvider.exists(`${ids}_${name}_${authorId}`);
+        if (isPasteCached) {
             const cachedData = await this.cacheProvider.get(`${ids}_${name}_${authorId}`);
-            const result = cachedData.map(x => this.pasteFactory.create({
-                id: x.id,
-                name: x.name,
-                text: x.text,
-                expiresAfter: x.expires_after,
-                visibility: x.visibility,
-                authorId: x.author_id,
-                createdAt: x.created_at,
-                updatedAt: x.updated_at,
-                deletedAt: x.deleted_at,
-                totalViews: x.total_views
-            }));
-            return result;
+            return this._createPasteEntity(cachedData);
         }
 
         const itemsToFind = [];
@@ -58,7 +47,11 @@ class PasteRepository {
 
         await this.cacheProvider.set(`${ids}_${name}_${authorId}`, queryResult);
 
-        const result = queryResult.map(x => this.pasteFactory.create({
+        return this._createPasteEntity(queryResult);
+    }
+
+    _createPasteEntity(data) {
+        const result = data.map(x => this.pasteFactory.create({
             id: x.id,
             name: x.name,
             text: x.text,

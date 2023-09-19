@@ -38,6 +38,7 @@ class UserRepository {
         const result = queryResult.map(x => this.userFactory.create({
             id: x.id,
             name: x.name,
+            login: x.login,
             password: x.password,
             pastesCreatedCount: x.pastes_created_count
         }));

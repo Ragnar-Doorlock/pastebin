@@ -47,16 +47,8 @@ class GetSharedPasteInteractor {
 
         const paste = await this.pasteRepository.findById({ id: decodedToken.pasteId });
 
-        const pasteEntity = this.pasteFactory.create({
-            id: paste.getId(),
-            name: paste.getName(),
-            text: paste.getText(),
-            visibility: paste.getVisibility(),
-            authorId: paste.getAuthorId(),
-            expiresAfter: paste.getExpiration(),
-            totalViews: paste.getTotalViews() + 1
-        });
-        await this.pasteRepository.save(pasteEntity);
+        paste.increaseTotalViewsCount();
+        await this.pasteRepository.save(paste);
 
         this.presenter.presentSuccess(this.responseBuilder.build(paste));
     }
