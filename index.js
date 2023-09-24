@@ -37,6 +37,7 @@ const AuthTokenService = require('./app/authTokenService');
 const PasswordHashService = require('./app/passwordHashService');
 const RedisProvider = require('./app/redis-provider/redisProvider');
 const CacheProvider = require('./app/cache-provider/cacheProvider');
+const PasteStatisticsService = require('./app/pastes/pasteStatisticsService');
 
 const GetUserResponseBuilder = require('./app/users/get-user/getUserResponseBuilder');
 const SearchUserResponseBuilder = require('./app/users/search-users/searchUserResponseBuilder');
@@ -67,6 +68,7 @@ const loginResponseBuilder = new LoginResponseBuilder();
 const registerResponseBuilder = new RegisterResponseBuilder();
 const authTokenService = new AuthTokenService(jwt);
 const passwordHashService = new PasswordHashService(bcrypt);
+const pasteStatisticsService = new PasteStatisticsService(pasteRepository);
 
 (async () => {
     const loggerProvider = new LoggerProvider(log4js);
@@ -98,7 +100,8 @@ const passwordHashService = new PasswordHashService(bcrypt);
         authTokenService,
         loggerProvider,
         userFactory,
-        userRepository
+        userRepository,
+        pasteStatisticsService
     });
     const urlRoutes = new UrlRouterBuilder({
         express,

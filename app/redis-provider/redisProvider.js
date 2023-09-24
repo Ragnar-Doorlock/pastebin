@@ -12,11 +12,11 @@ class RedisProvider {
     }
 
     async exists(key) {
-        return await this.client.exists(key);
+        return this.client.exists(key);
     }
 
     async clear() {
-        await this.client.FLUSHALL();
+        await this.client.FLUSHDB();
     }
 
     async deleteKey(key) {

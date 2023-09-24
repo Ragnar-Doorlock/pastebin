@@ -8,11 +8,11 @@ class CacheProvider {
     }
 
     async get(key) {
-        return await this.cache.get(key);
+        return this.cache.get(key);
     }
 
     async exists(key) {
-        return await this.cache.exists(key);
+        return this.cache.exists(key);
     }
 
     async clear() {

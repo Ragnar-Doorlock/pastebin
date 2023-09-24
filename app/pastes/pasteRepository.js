@@ -6,6 +6,7 @@ class PasteRepository {
     }
 
     async findById({ id }) {
+        // move cache here
         const result = await this.findOne({ id });
         return result;
     }
@@ -17,9 +18,13 @@ class PasteRepository {
     }
 
     async findAll({ ids, name, authorId }) {
+        //remove cache from here
+
+        //await this.cacheProvider.clear();
         const isPasteCached = await this.cacheProvider.exists(`${ids}_${name}_${authorId}`);
         if (isPasteCached) {
             const cachedData = await this.cacheProvider.get(`${ids}_${name}_${authorId}`);
+            //console.log('cache is used');
             return this._createPasteEntity(cachedData);
         }
 
@@ -83,6 +88,12 @@ class PasteRepository {
         await this.dbProvider.execute(query);
 
         await this.cacheProvider.clear();
+    }
+
+    async updateViews(paste) {
+        // increase by 1, without knowing what was before in db
+        const query = `update paste set total_views = '${paste.getTotalViews()}' where id='${paste.getId()}'`;
+        await this.dbProvider.execute(query);
     }
 
     async delete(id) {
