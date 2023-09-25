@@ -50,9 +50,7 @@ class GetSharedPasteInteractor {
         const paste = await this.pasteRepository.findById({ id: decodedToken.pasteId });
 
         paste.increaseTotalViewsCount();
-        // paste repo undefined
-        await this.pasteStatisticsService.increaseViews(paste.getID());
-        //await this.pasteRepository.updateViews(paste);
+        await this.pasteStatisticsService.increaseViews(paste.getId());
 
         this.presenter.presentSuccess(this.responseBuilder.build(paste));
     }

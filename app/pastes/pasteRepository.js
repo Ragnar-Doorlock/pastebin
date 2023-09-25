@@ -6,8 +6,27 @@ class PasteRepository {
     }
 
     async findById({ id }) {
-        // move cache here
+        const isPasteCached = await this.cacheProvider.exists(`cached_${id}`);
+        if (isPasteCached) {
+            const cachedData = JSON.parse(await this.cacheProvider.get(`cached_${id}`));
+            //console.log('cache is used');
+            return this.pasteFactory.create({
+                id: cachedData._id,
+                name: cachedData._name,
+                text: cachedData._text,
+                expiresAfter: cachedData._expiresAfter,
+                visibility: cachedData._visibility,
+                authorId: cachedData._authorId,
+                createdAt: cachedData._createdAt,
+                updatedAt: cachedData._updatedAt,
+                deletedAt: cachedData._deletedAt,
+                totalViews: cachedData._totalViews
+            });
+        }
+
         const result = await this.findOne({ id });
+
+        await this.cacheProvider.set(`cached_${id}`, JSON.stringify(result));
         return result;
     }
 
@@ -18,16 +37,6 @@ class PasteRepository {
     }
 
     async findAll({ ids, name, authorId }) {
-        //remove cache from here
-
-        //await this.cacheProvider.clear();
-        const isPasteCached = await this.cacheProvider.exists(`${ids}_${name}_${authorId}`);
-        if (isPasteCached) {
-            const cachedData = await this.cacheProvider.get(`${ids}_${name}_${authorId}`);
-            //console.log('cache is used');
-            return this._createPasteEntity(cachedData);
-        }
-
         const itemsToFind = [];
 
         if ( ids ) {
@@ -49,8 +58,6 @@ class PasteRepository {
         if (!queryResult) {
             return null;
         }
-
-        await this.cacheProvider.set(`${ids}_${name}_${authorId}`, queryResult);
 
         return this._createPasteEntity(queryResult);
     }
@@ -90,9 +97,8 @@ class PasteRepository {
         await this.cacheProvider.clear();
     }
 
-    async updateViews(paste) {
-        // increase by 1, without knowing what was before in db
-        const query = `update paste set total_views = '${paste.getTotalViews()}' where id='${paste.getId()}'`;
+    async updateViews(pasteId) {
+        const query = `update paste set total_views = total_views + 1 where id='${pasteId}'`;
         await this.dbProvider.execute(query);
     }
 

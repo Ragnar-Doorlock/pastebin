@@ -83,7 +83,8 @@ class PasteRouterBuilder {
                 pasteRepository: this.pasteRepository,
                 responseBuilder: this.getPasteResponseBuilder,
                 loggerProvider: this.loggerProvider,
-                pasteFactory: this.pasteFactory
+                pasteFactory: this.pasteFactory,
+                pasteStatisticsService: this.pasteStatisticsService
             });
 
             try {
