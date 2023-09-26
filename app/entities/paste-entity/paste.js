@@ -59,11 +59,19 @@ class Paste {
     }
 
     isPublic() {
-        return Boolean(this.getVisibility() === visibility.PUBLIC);
+        return this.getVisibility() === visibility.PUBLIC;
     }
 
     isPrivate() {
-        return Boolean(this.getVisibility() === visibility.PRIVATE);
+        return this.getVisibility() === visibility.PRIVATE;
+    }
+
+    changeName(newValue) {
+        this._name = newValue;
+    }
+
+    changeText(newValue) {
+        this._text = newValue;
     }
 
     increaseTotalViewsCount() {

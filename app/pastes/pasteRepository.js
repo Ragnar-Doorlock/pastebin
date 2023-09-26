@@ -8,20 +8,10 @@ class PasteRepository {
     async findById({ id }) {
         const isPasteCached = await this.cacheProvider.exists(`cached_${id}`);
         if (isPasteCached) {
-            const cachedData = JSON.parse(await this.cacheProvider.get(`cached_${id}`));
+            const cachedData = await this.cacheProvider.get(`cached_${id}`);
+            const parsedCachedData = JSON.parse(cachedData);
             //console.log('cache is used');
-            return this.pasteFactory.create({
-                id: cachedData._id,
-                name: cachedData._name,
-                text: cachedData._text,
-                expiresAfter: cachedData._expiresAfter,
-                visibility: cachedData._visibility,
-                authorId: cachedData._authorId,
-                createdAt: cachedData._createdAt,
-                updatedAt: cachedData._updatedAt,
-                deletedAt: cachedData._deletedAt,
-                totalViews: cachedData._totalViews
-            });
+            return this._createPasteEntity(parsedCachedData);
         }
 
         const result = await this.findOne({ id });
@@ -63,19 +53,34 @@ class PasteRepository {
     }
 
     _createPasteEntity(data) {
-        const result = data.map(x => this.pasteFactory.create({
-            id: x.id,
-            name: x.name,
-            text: x.text,
-            expiresAfter: x.expires_after,
-            visibility: x.visibility,
-            authorId: x.author_id,
-            createdAt: x.created_at,
-            updatedAt: x.updated_at,
-            deletedAt: x.deleted_at,
-            totalViews: x.total_views
-        }));
-
+        let result;
+        if (Array.isArray(data)) {
+            result = data.map(x => this.pasteFactory.create({
+                id: x.id,
+                name: x.name,
+                text: x.text,
+                expiresAfter: x.expires_after,
+                visibility: x.visibility,
+                authorId: x.author_id,
+                createdAt: x.created_at,
+                updatedAt: x.updated_at,
+                deletedAt: x.deleted_at,
+                totalViews: x.total_views
+            }));
+        } else {
+            result = this.pasteFactory.create({
+                id: data._id,
+                name: data._name,
+                text: data._text,
+                expiresAfter: data._expiresAfter,
+                visibility: data._visibility,
+                authorId: data._authorId,
+                createdAt: data._createdAt,
+                updatedAt: data._updatedAt,
+                deletedAt: data._deletedAt,
+                totalViews: data._totalViews
+            });
+        }
         return result;
     }
 
