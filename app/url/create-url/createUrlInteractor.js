@@ -39,7 +39,7 @@ class CreateUrlInteractor {
 
         if (!paste) {
             this.presenter.presentFailure(new NotFound(`Paste with id ${request.pasteId} doesn't exist`));
-            this.logger.error(`Not found: Paste with ID ${request.id} was not found.`);
+            this.logger.error(`Not found: Paste with ID ${request.pasteId} was not found.`);
             return;
         }
 

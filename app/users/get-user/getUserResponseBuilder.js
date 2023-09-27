@@ -1,6 +1,9 @@
 class GetUserResponseBuilder {
     build(entity) {
-        return { id: entity.getId(), name: entity.getName() };
+        return {
+            name: entity.getName(),
+            pastesCreated: entity.getPastesCreatedCount()
+        };
     }
 }
 

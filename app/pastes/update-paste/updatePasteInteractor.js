@@ -32,15 +32,10 @@ class UpdatePasteInteractor {
             return;
         }
 
-        const pasteEntity = this.pasteFactory.create({
-            id: request.id,
-            name: request.name,
-            text: request.text,
-            visibility: request.visibility,
-            authorId: paste.getAuthorId(),
-            expiresAfter: paste.getExpiration()
-        });
-        await this.pasteRepository.save(pasteEntity);
+        paste.changeName(request.name);
+        paste.changeText(request.text);
+        paste.changeVisibility(request.visibility);
+        await this.pasteRepository.save(paste);
         this.presenter.presentSuccess();
     }
 }

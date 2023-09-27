@@ -4,6 +4,7 @@ class User {
         this._name = data.name;
         this._login = data.login;
         this._password = data.password;
+        this._pastesCreatedCount = data.pastesCreatedCount;
     }
 
     getId() {
@@ -20,6 +21,18 @@ class User {
 
     getPassword() {
         return this._password;
+    }
+
+    getPastesCreatedCount() {
+        return this._pastesCreatedCount;
+    }
+
+    increasePastesCreatedCount() {
+        this._pastesCreatedCount += 1;
+    }
+
+    changeName(newName) {
+        this._name = newName;
     }
 }
 

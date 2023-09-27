@@ -31,7 +31,10 @@ class PasteRouterBuilder {
         getPasteByHashResponseBuilder,
         urlRepository,
         authTokenService,
-        loggerProvider
+        loggerProvider,
+        userRepository,
+        userFactory,
+        pasteStatisticsService
     }) {
         this.router = express.Router();
         this.pasteRepository = pasteRepository;
@@ -43,6 +46,9 @@ class PasteRouterBuilder {
         this.urlRepository = urlRepository;
         this.authTokenService = authTokenService;
         this.loggerProvider = loggerProvider;
+        this.userRepository = userRepository;
+        this.userFactory = userFactory;
+        this.pasteStatisticsService = pasteStatisticsService;
     }
 
     createRoutes() {
@@ -57,7 +63,8 @@ class PasteRouterBuilder {
                 responseBuilder: this.getPasteByHashResponseBuilder,
                 pasteFactory: this.pasteFactory,
                 authTokenService: this.authTokenService,
-                loggerProvider: this.loggerProvider
+                loggerProvider: this.loggerProvider,
+                pasteStatisticsService: this.pasteStatisticsService
             });
 
             try {
@@ -75,7 +82,9 @@ class PasteRouterBuilder {
                 validator,
                 pasteRepository: this.pasteRepository,
                 responseBuilder: this.getPasteResponseBuilder,
-                loggerProvider: this.loggerProvider
+                loggerProvider: this.loggerProvider,
+                pasteFactory: this.pasteFactory,
+                pasteStatisticsService: this.pasteStatisticsService
             });
 
             try {
@@ -93,7 +102,9 @@ class PasteRouterBuilder {
                 validator,
                 pasteFactory: this.pasteFactory,
                 pasteRepository: this.pasteRepository,
-                idGenerator: this.idGenerator
+                idGenerator: this.idGenerator,
+                userFactory: this.userFactory,
+                userRepository: this.userRepository
             });
 
             try {

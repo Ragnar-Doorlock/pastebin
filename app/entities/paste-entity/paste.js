@@ -11,6 +11,7 @@ class Paste {
         this._createdAt = data.createdAt;
         this._updatedAt = data.updatedAt;
         this._deletedAt = data.deletedAt;
+        this._totalViews = data.totalViews;
     }
 
     getId() {
@@ -49,16 +50,32 @@ class Paste {
         return this._deletedAt;
     }
 
+    getTotalViews() {
+        return this._totalViews;
+    }
+
     changeVisibility(newValue) {
         this._visibility = newValue;
     }
 
     isPublic() {
-        return Boolean(this.getVisibility() === visibility.PUBLIC);
+        return this.getVisibility() === visibility.PUBLIC;
     }
 
     isPrivate() {
-        return Boolean(this.getVisibility() === visibility.PRIVATE);
+        return this.getVisibility() === visibility.PRIVATE;
+    }
+
+    changeName(newValue) {
+        this._name = newValue;
+    }
+
+    changeText(newValue) {
+        this._text = newValue;
+    }
+
+    increaseTotalViewsCount() {
+        this._totalViews += 1;
     }
 }
 

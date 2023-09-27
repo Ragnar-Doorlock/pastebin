@@ -1,12 +1,14 @@
 const ValidationError = require('../../errors/validationError');
 
 class CreatePasteInteractor {
-    constructor({ presenter, validator, pasteRepository, pasteFactory, idGenerator }) {
+    constructor({ presenter, validator, pasteRepository, pasteFactory, idGenerator, userFactory, userRepository }) {
         this.presenter = presenter;
         this.validator = validator;
         this.pasteRepository = pasteRepository;
         this.pasteFactory = pasteFactory;
         this.idGenerator = idGenerator;
+        this.userFactory = userFactory;
+        this.userRepository = userRepository;
     }
 
     async execute(request) {
@@ -23,9 +25,14 @@ class CreatePasteInteractor {
             text: request.text,
             visibility: request.visibility,
             expiresAfter: request.expiresAfter,
-            authorId: request.userId
+            authorId: request.userId,
+            totalViews: 0
         });
         await this.pasteRepository.save(paste);
+
+        const user = await this.userRepository.findByID({ id: request.userId });
+        user.increasePastesCreatedCount();
+        await this.userRepository.save(user);
 
         this.presenter.presentSuccess();
     }

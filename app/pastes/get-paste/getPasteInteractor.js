@@ -3,12 +3,22 @@ const ValidationError = require('../../errors/validationError');
 const ForbiddenError = require('../../errors/forbidden');
 
 class GetPasteInteractor {
-    constructor({ presenter, validator, pasteRepository, responseBuilder, loggerProvider }) {
+    constructor({
+        presenter,
+        validator,
+        pasteRepository,
+        responseBuilder,
+        loggerProvider,
+        pasteFactory,
+        pasteStatisticsService
+    }) {
         this.presenter = presenter;
         this.validator = validator;
         this.pasteRepository = pasteRepository;
         this.responseBuilder = responseBuilder;
         this.logger = loggerProvider.create(GetPasteInteractor.name);
+        this.pasteFactory = pasteFactory;
+        this.pasteStatisticsService = pasteStatisticsService;
     }
 
     async execute(request) {
@@ -28,6 +38,8 @@ class GetPasteInteractor {
         }
 
         if (paste.isPublic()) {
+            paste.increaseTotalViewsCount();
+            await this.pasteStatisticsService.increaseViews(paste.getId());
             this.presenter.presentSuccess(this.responseBuilder.build(paste));
             return;
         }
@@ -36,6 +48,9 @@ class GetPasteInteractor {
             this.presenter.presentFailure( new ForbiddenError('You don\'t have access to this paste.'));
             return;
         }
+
+        paste.increaseTotalViewsCount();
+        await this.pasteStatisticsService.increaseViews(paste.getId());
 
         this.presenter.presentSuccess(this.responseBuilder.build(paste));
     }
