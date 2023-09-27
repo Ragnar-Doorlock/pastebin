@@ -6,7 +6,7 @@ class PasteRepository {
     }
 
     async findById({ id }) {
-        const isPasteCached = await this.cacheProvider.exists(`cached_${id}`);
+        const isPasteCached = await this.cacheProvider.exists(this._createCachedId(id));
         if (isPasteCached) {
             const cachedData = await this.cacheProvider.get(`cached_${id}`);
             const parsedCachedData = JSON.parse(cachedData);
@@ -16,7 +16,7 @@ class PasteRepository {
 
         const result = await this.findOne({ id });
 
-        await this.cacheProvider.set(`cached_${id}`, JSON.stringify(result));
+        await this.cacheProvider.set(this._createCachedId(id), JSON.stringify(result));
         return result;
     }
 
@@ -82,6 +82,10 @@ class PasteRepository {
             });
         }
         return result;
+    }
+
+    _createCachedId(id) {
+        return `cached_${id}`;
     }
 
     async save(paste) {
