@@ -1,11 +1,13 @@
 class PasteRepository {
-    constructor({ dbProvider, pasteFactory, cacheProvider }) {
+    constructor({ dbProvider, pasteFactory, cacheProvider, pasteTextStorage }) {
         this.dbProvider = dbProvider;
         this.pasteFactory = pasteFactory;
         this.cacheProvider = cacheProvider;
+        this.textStorage = pasteTextStorage;
     }
 
     async findById({ id }) {
+        //await this.cacheProvider.clear();
         const isPasteCached = await this.cacheProvider.exists(this._createCachedId(id));
         if (isPasteCached) {
             const cachedData = await this.cacheProvider.get(`cached_${id}`);
@@ -15,6 +17,11 @@ class PasteRepository {
         }
 
         const result = await this.findOne({ id });
+        // added text here, not in findAll method, because findAll seems like a general search for pastes and
+        // we get text only when we open specific paste.
+        // Also here because i was thinking how to implement it in findAll and it was shit
+        const text = await this.textStorage.getText(result._id);
+        result._text = text;
 
         await this.cacheProvider.set(this._createCachedId(id), JSON.stringify(result));
         return result;
@@ -92,17 +99,16 @@ class PasteRepository {
         const expiration = new Date(paste.getExpiration()).toUTCString();
 
         const query = `
-        insert into paste (id, name, text, expires_after, visibility, author_id, created_at, total_views) 
-        values ('${paste.getId()}', '${paste.getName()}', '${paste.getText()}', '${expiration}', '${paste.getVisibility()}',
+        insert into paste (id, name, expires_after, visibility, author_id, created_at, total_views) 
+        values ('${paste.getId()}', '${paste.getName()}', '${expiration}', '${paste.getVisibility()}',
         '${paste.getAuthorId()}', current_timestamp, '${paste.getTotalViews()}') 
         ON conflict (id) DO update set name='${paste.getName()}', 
-        text='${paste.getText()}', 
         visibility='${paste.getVisibility()}', 
         updated_at=current_timestamp,
         total_views='${paste.getTotalViews()}'`;
 
         await this.dbProvider.execute(query);
-
+        await this.textStorage.saveText(paste.getId(), paste.getText());
         await this.cacheProvider.clear();
     }
 
@@ -113,6 +119,7 @@ class PasteRepository {
 
     async delete(id) {
         await this.dbProvider.execute(`update paste set deleted_at=current_timestamp where id='${id}';`);
+        await this.textStorage.deleteText(id);
         await this.cacheProvider.clear();
     }
 }
