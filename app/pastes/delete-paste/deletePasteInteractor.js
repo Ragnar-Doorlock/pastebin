@@ -3,11 +3,12 @@ const ValidationError = require('../../errors/validationError');
 const ForbiddenError = require('../../errors/forbidden');
 
 class DeletePasteInteractor {
-    constructor({ validator, presenter, pasteRepository, loggerProvider }) {
+    constructor({ validator, presenter, pasteRepository, loggerProvider, pasteTextStorage }) {
         this.validator = validator;
         this.presenter = presenter;
         this.pasteRepository = pasteRepository;
         this.logger = loggerProvider.create(DeletePasteInteractor.name);
+        this.textStorage = pasteTextStorage;
     }
 
     async execute(request) {
@@ -32,6 +33,7 @@ class DeletePasteInteractor {
         }
 
         await this.pasteRepository.delete(request.id);
+        await this.textStorage.deleteText(request.id);
         this.presenter.presentSuccess();
     }
 }

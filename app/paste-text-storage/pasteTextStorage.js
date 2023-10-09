@@ -8,7 +8,7 @@ class PasteTextStorage {
     }
 
     async getText(id) {
-        return await this.storage.getObject(id);
+        return this.storage.getObject(id);
     }
 
     async deleteText(id) {

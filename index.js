@@ -73,7 +73,7 @@ const RegisterResponseBuilder = require('./app/users/register-user/registerUserR
     const urlFactory = new UrlFactory();
     const dbProvider = new DBProvider({ pool });
     const userRepository = new UserRepository({ dbProvider, userFactory });
-    const pasteRepository = new PasteRepository({ dbProvider, pasteFactory, cacheProvider, pasteTextStorage });
+    const pasteRepository = new PasteRepository({ dbProvider, pasteFactory, cacheProvider });
     const urlRepository = new UrlRepository({ dbProvider, urlFactory });
     const idGenerator = new IdGenerator({ uuid: uuidv4 });
     const getUserResponseBuilder = new GetUserResponseBuilder();
@@ -117,7 +117,8 @@ const RegisterResponseBuilder = require('./app/users/register-user/registerUserR
         loggerProvider,
         userFactory,
         userRepository,
-        pasteStatisticsService
+        pasteStatisticsService,
+        pasteTextStorage
     });
     const urlRoutes = new UrlRouterBuilder({
         express,

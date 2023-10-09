@@ -4,23 +4,22 @@ class S3Provider {
         this.logger = loggerProvider.create(S3Provider.name);
     }
 
-    async putObject(Key, Body) {
+    async putObject(key, body) {
         try {
-            await this.client.putObject({ Bucket: 'pastebin', Key, Body });
+            await this.client.putObject({ Bucket: 'pastebin', Key: key, Body: body });
         } catch (error) {
             this.logger.error(error);
         }
     }
 
-    async getObject(Key) {
-        // not really sure if that is a good approach but it works ( .Body.transformToString(); )
-        const data = await this.client.getObject({ Bucket: 'pastebin', Key });
+    async getObject(key) {
+        const data = await this.client.getObject({ Bucket: 'pastebin', Key: key });
         const result = data.Body.transformToString();
         return result;
     }
 
-    async deleteObject(Key) {
-        await this.client.deleteObject({ Bucket: 'pastebin', Key });
+    async deleteObject(key) {
+        await this.client.deleteObject({ Bucket: 'pastebin', Key: key });
     }
 }
 

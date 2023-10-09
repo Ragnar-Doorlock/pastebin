@@ -1,9 +1,8 @@
 class PasteRepository {
-    constructor({ dbProvider, pasteFactory, cacheProvider, pasteTextStorage }) {
+    constructor({ dbProvider, pasteFactory, cacheProvider }) {
         this.dbProvider = dbProvider;
         this.pasteFactory = pasteFactory;
         this.cacheProvider = cacheProvider;
-        this.textStorage = pasteTextStorage;
     }
 
     async findById({ id }) {
@@ -17,12 +16,6 @@ class PasteRepository {
         }
 
         const result = await this.findOne({ id });
-        // added text here, not in findAll method, because findAll seems like a general search for pastes and
-        // we get text only when we open specific paste.
-        // Also here because i was thinking how to implement it in findAll and it was shit
-        const text = await this.textStorage.getText(result._id);
-        result._text = text;
-
         await this.cacheProvider.set(this._createCachedId(id), JSON.stringify(result));
         return result;
     }
@@ -108,7 +101,6 @@ class PasteRepository {
         total_views='${paste.getTotalViews()}'`;
 
         await this.dbProvider.execute(query);
-        await this.textStorage.saveText(paste.getId(), paste.getText());
         await this.cacheProvider.clear();
     }
 
@@ -119,7 +111,6 @@ class PasteRepository {
 
     async delete(id) {
         await this.dbProvider.execute(`update paste set deleted_at=current_timestamp where id='${id}';`);
-        await this.textStorage.deleteText(id);
         await this.cacheProvider.clear();
     }
 }
