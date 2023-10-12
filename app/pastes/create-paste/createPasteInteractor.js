@@ -43,7 +43,7 @@ class CreatePasteInteractor {
         const user = await this.userRepository.findByID({ id: request.userId });
         user.increasePastesCreatedCount();
         await this.userRepository.save(user);
-        await this.textStorage.saveText(paste.getId(), paste.getText());
+        await this.textStorage.saveText(paste.getId(), request.text);
 
         this.presenter.presentSuccess();
     }
