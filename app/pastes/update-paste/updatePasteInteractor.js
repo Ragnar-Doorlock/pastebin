@@ -34,10 +34,9 @@ class UpdatePasteInteractor {
         }
 
         paste.changeName(request.name);
-        paste.changeText(request.text);
         paste.changeVisibility(request.visibility);
         await this.pasteRepository.save(paste);
-        await this.textStorage.saveText(paste.getId(), paste.getText());
+        await this.textStorage.saveText(paste.getId(), request.text);
         this.presenter.presentSuccess();
     }
 }
