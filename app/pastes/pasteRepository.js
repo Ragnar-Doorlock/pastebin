@@ -6,6 +6,7 @@ class PasteRepository {
     }
 
     async findById({ id }) {
+        //await this.cacheProvider.clear();
         const isPasteCached = await this.cacheProvider.exists(this._createCachedId(id));
         if (isPasteCached) {
             const cachedData = await this.cacheProvider.get(`cached_${id}`);
@@ -15,7 +16,6 @@ class PasteRepository {
         }
 
         const result = await this.findOne({ id });
-
         await this.cacheProvider.set(this._createCachedId(id), JSON.stringify(result));
         return result;
     }
@@ -92,17 +92,15 @@ class PasteRepository {
         const expiration = new Date(paste.getExpiration()).toUTCString();
 
         const query = `
-        insert into paste (id, name, text, expires_after, visibility, author_id, created_at, total_views) 
-        values ('${paste.getId()}', '${paste.getName()}', '${paste.getText()}', '${expiration}', '${paste.getVisibility()}',
+        insert into paste (id, name, expires_after, visibility, author_id, created_at, total_views) 
+        values ('${paste.getId()}', '${paste.getName()}', '${expiration}', '${paste.getVisibility()}',
         '${paste.getAuthorId()}', current_timestamp, '${paste.getTotalViews()}') 
         ON conflict (id) DO update set name='${paste.getName()}', 
-        text='${paste.getText()}', 
         visibility='${paste.getVisibility()}', 
         updated_at=current_timestamp,
         total_views='${paste.getTotalViews()}'`;
 
         await this.dbProvider.execute(query);
-
         await this.cacheProvider.clear();
     }
 

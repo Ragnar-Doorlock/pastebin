@@ -4,7 +4,6 @@ class Paste {
     constructor(data) {
         this._id = data.id;
         this._name = data.name;
-        this._text = data.text;
         this._expiresAfter = data.expiresAfter;
         this._visibility = data.visibility;
         this._authorId = data.authorId;
@@ -20,10 +19,6 @@ class Paste {
 
     getName() {
         return this._name;
-    }
-
-    getText() {
-        return this._text;
     }
 
     getExpiration() {
@@ -68,10 +63,6 @@ class Paste {
 
     changeName(newValue) {
         this._name = newValue;
-    }
-
-    changeText(newValue) {
-        this._text = newValue;
     }
 
     increaseTotalViewsCount() {

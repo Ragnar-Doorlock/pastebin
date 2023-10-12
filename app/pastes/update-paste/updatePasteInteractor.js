@@ -3,12 +3,13 @@ const ValidationError = require('../../errors/validationError');
 const ForbiddenError = require('../../errors/forbidden');
 
 class UpdatePasteInteractor {
-    constructor({ presenter, validator, pasteFactory, pasteRepository, loggerProvider }) {
+    constructor({ presenter, validator, pasteFactory, pasteRepository, loggerProvider, pasteTextStorage }) {
         this.presenter = presenter;
         this.validator = validator;
         this.pasteFactory = pasteFactory;
         this.pasteRepository = pasteRepository;
         this.logger = loggerProvider.create(UpdatePasteInteractor.name);
+        this.textStorage = pasteTextStorage;
     }
 
     async execute(request) {
@@ -33,9 +34,9 @@ class UpdatePasteInteractor {
         }
 
         paste.changeName(request.name);
-        paste.changeText(request.text);
         paste.changeVisibility(request.visibility);
         await this.pasteRepository.save(paste);
+        await this.textStorage.saveText(paste.getId(), request.text);
         this.presenter.presentSuccess();
     }
 }

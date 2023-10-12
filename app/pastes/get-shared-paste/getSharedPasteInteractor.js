@@ -11,7 +11,8 @@ class GetSharedPasteInteractor {
         pasteFactory,
         authTokenService,
         loggerProvider,
-        pasteStatisticsService
+        pasteStatisticsService,
+        pasteTextStorage
     }) {
         this.presenter = presenter;
         this.validator = validator;
@@ -22,6 +23,7 @@ class GetSharedPasteInteractor {
         this.authTokenService = authTokenService;
         this.logger = loggerProvider.create(GetSharedPasteInteractor.name);
         this.pasteStatisticsService = pasteStatisticsService;
+        this.textStorage = pasteTextStorage;
     }
 
     async execute(request) {
@@ -52,7 +54,8 @@ class GetSharedPasteInteractor {
         paste.increaseTotalViewsCount();
         await this.pasteStatisticsService.increaseViews(paste.getId());
 
-        this.presenter.presentSuccess(this.responseBuilder.build(paste));
+        const text = await this.textStorage.getText(paste.getId());
+        this.presenter.presentSuccess(this.responseBuilder.build({ entity: paste, text }));
     }
 }
 

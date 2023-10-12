@@ -10,7 +10,8 @@ class GetPasteInteractor {
         responseBuilder,
         loggerProvider,
         pasteFactory,
-        pasteStatisticsService
+        pasteStatisticsService,
+        pasteTextStorage
     }) {
         this.presenter = presenter;
         this.validator = validator;
@@ -19,6 +20,7 @@ class GetPasteInteractor {
         this.logger = loggerProvider.create(GetPasteInteractor.name);
         this.pasteFactory = pasteFactory;
         this.pasteStatisticsService = pasteStatisticsService;
+        this.textStorage = pasteTextStorage;
     }
 
     async execute(request) {
@@ -40,7 +42,8 @@ class GetPasteInteractor {
         if (paste.isPublic()) {
             paste.increaseTotalViewsCount();
             await this.pasteStatisticsService.increaseViews(paste.getId());
-            this.presenter.presentSuccess(this.responseBuilder.build(paste));
+            const text = await this.textStorage.getText(paste.getId());
+            this.presenter.presentSuccess(this.responseBuilder.build({ entity: paste, text }));
             return;
         }
 
@@ -52,6 +55,8 @@ class GetPasteInteractor {
         paste.increaseTotalViewsCount();
         await this.pasteStatisticsService.increaseViews(paste.getId());
 
+        const text = await this.textStorage.getText(paste.getId());
+        paste.changeText(text);
         this.presenter.presentSuccess(this.responseBuilder.build(paste));
     }
 }

@@ -1,9 +1,9 @@
 class GetPasteResponseBuilder {
-    build(entity) {
+    build({ entity, text }) {
         return {
             id: entity.getId(),
             name: entity.getName(),
-            text: entity.getText(),
+            text,
             expiresAfter: entity.getExpiration(),
             visibility: entity.getVisibility(),
             authorId: entity.getAuthorId(),

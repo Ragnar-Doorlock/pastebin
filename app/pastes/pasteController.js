@@ -34,7 +34,8 @@ class PasteRouterBuilder {
         loggerProvider,
         userRepository,
         userFactory,
-        pasteStatisticsService
+        pasteStatisticsService,
+        pasteTextStorage
     }) {
         this.router = express.Router();
         this.pasteRepository = pasteRepository;
@@ -49,6 +50,7 @@ class PasteRouterBuilder {
         this.userRepository = userRepository;
         this.userFactory = userFactory;
         this.pasteStatisticsService = pasteStatisticsService;
+        this.pasteTextStorage = pasteTextStorage;
     }
 
     createRoutes() {
@@ -64,7 +66,8 @@ class PasteRouterBuilder {
                 pasteFactory: this.pasteFactory,
                 authTokenService: this.authTokenService,
                 loggerProvider: this.loggerProvider,
-                pasteStatisticsService: this.pasteStatisticsService
+                pasteStatisticsService: this.pasteStatisticsService,
+                pasteTextStorage: this.pasteTextStorage
             });
 
             try {
@@ -84,7 +87,8 @@ class PasteRouterBuilder {
                 responseBuilder: this.getPasteResponseBuilder,
                 loggerProvider: this.loggerProvider,
                 pasteFactory: this.pasteFactory,
-                pasteStatisticsService: this.pasteStatisticsService
+                pasteStatisticsService: this.pasteStatisticsService,
+                pasteTextStorage: this.pasteTextStorage
             });
 
             try {
@@ -104,7 +108,8 @@ class PasteRouterBuilder {
                 pasteRepository: this.pasteRepository,
                 idGenerator: this.idGenerator,
                 userFactory: this.userFactory,
-                userRepository: this.userRepository
+                userRepository: this.userRepository,
+                pasteTextStorage: this.pasteTextStorage
             });
 
             try {
@@ -139,7 +144,8 @@ class PasteRouterBuilder {
                 presenter,
                 pasteFactory: this.pasteFactory,
                 pasteRepository: this.pasteRepository,
-                loggerProvider: this.loggerProvider
+                loggerProvider: this.loggerProvider,
+                pasteTextStorage: this.pasteTextStorage
             });
 
             try {
@@ -156,7 +162,8 @@ class PasteRouterBuilder {
                 validator,
                 presenter,
                 pasteRepository: this.pasteRepository,
-                loggerProvider: this.loggerProvider
+                loggerProvider: this.loggerProvider,
+                pasteTextStorage: this.pasteTextStorage
             });
 
             try {

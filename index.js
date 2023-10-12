@@ -11,6 +11,7 @@ const IdGenerator = require('./app/idGenerator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const log4js = require('log4js');
+const AWS = require('@aws-sdk/client-s3');
 log4js.configure({
     appenders: {
         console: { type: 'console' }
@@ -23,6 +24,16 @@ const redis = require('redis');
 const redisClient = redis.createClient({
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT
+});
+const s3  = new AWS.S3({
+    region: 'us-east-1',
+    credentials: {
+        accessKeyId: process.env.MINIO_ACCESS_KEY,
+        secretAccessKey: process.env.MINIO_ACCESS_PASSWORD
+    },
+    endpoint: process.env.MINIO_ENDPOINT,
+    s3ForcePathStyle: true,
+    signatureVersion: 'v4'
 });
 
 const DBProvider = require('./db/dbProvider');
@@ -38,6 +49,8 @@ const PasswordHashService = require('./app/passwordHashService');
 const RedisProvider = require('./app/redis-provider/redisProvider');
 const CacheProvider = require('./app/cache-provider/cacheProvider');
 const PasteStatisticsService = require('./app/pastes/pasteStatisticsService');
+const S3Provider = require('./app/s3-provider/s3Provider');
+const PasteTextStorage = require('./app/paste-text-storage/pasteTextStorage');
 
 const GetUserResponseBuilder = require('./app/users/get-user/getUserResponseBuilder');
 const SearchUserResponseBuilder = require('./app/users/search-users/searchUserResponseBuilder');
@@ -49,6 +62,10 @@ const LoginResponseBuilder = require('./app/users/login/loginResponseBuilder');
 const RegisterResponseBuilder = require('./app/users/register-user/registerUserResponseBuilder');
 
 (async () => {
+    const loggerProvider = new LoggerProvider(log4js);
+    const s3Provider = new S3Provider(s3, loggerProvider);
+    const pasteTextStorage = new PasteTextStorage(s3Provider);
+
     const userFactory = new UserFactory();
     const pasteFactory = new PasteFactory();
     const redisProvider = new RedisProvider(redisClient);
@@ -71,7 +88,6 @@ const RegisterResponseBuilder = require('./app/users/register-user/registerUserR
     const passwordHashService = new PasswordHashService(bcrypt);
     const pasteStatisticsService = new PasteStatisticsService(pasteRepository);
 
-    const loggerProvider = new LoggerProvider(log4js);
     const logger = loggerProvider.create('Logger');
     await redisClient.connect();
 
@@ -101,7 +117,8 @@ const RegisterResponseBuilder = require('./app/users/register-user/registerUserR
         loggerProvider,
         userFactory,
         userRepository,
-        pasteStatisticsService
+        pasteStatisticsService,
+        pasteTextStorage
     });
     const urlRoutes = new UrlRouterBuilder({
         express,
@@ -121,15 +138,4 @@ const RegisterResponseBuilder = require('./app/users/register-user/registerUserR
     app.use('/url', urlRoutes.createRoutes());
 
     app.listen(3000, logger.info('App is running.'));
-
-    /* await redisClient.connect();
-
-    await redisClient.set('key1', 'zalupa');
-
-    console.log(await redisClient.get('key1'));
-    await redisClient.quit(); */
-
-    //console.log(await pasteRepository.findOne({ id: 'paste-1' }));
-    //console.log(await userRepository.findOne({login: 'Ledenec'}));
-    //console.log(await urlRepository.findOne({pasteId: 'paste-56d7d275-d21b-471a-8343-5c001c6fe0a2'}));
 })();
