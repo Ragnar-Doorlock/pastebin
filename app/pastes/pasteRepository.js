@@ -26,10 +26,10 @@ class PasteRepository {
         return result.length > 0 ? result[0] : null;
     }
 
-    async findAll({ ids, name, authorId }) {
+    async findAll({ ids, name, authorId, visibility }) {
         const itemsToFind = [];
 
-        if ( ids ) {
+        if ( ids[0] ) {
             const stringIds = ids.map(x => `'${x}'`);
             itemsToFind.push(`id in (${stringIds.join(', ')})`);
         }
@@ -40,6 +40,10 @@ class PasteRepository {
 
         if ( authorId ) {
             itemsToFind.push(`author_id='${authorId}'`);
+        }
+
+        if ( visibility ) {
+            itemsToFind.push('visibility=\'public\'');
         }
 
         //console.log(`SELECT * FROM paste WHERE ${itemsToFind.join(' AND ')} AND deleted_at is null`);

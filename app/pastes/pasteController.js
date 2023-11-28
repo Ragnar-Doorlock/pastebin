@@ -18,6 +18,7 @@ const GetSharedPasteHttpRequest = require('./get-shared-paste/getSharedPasteHttp
 const GetSharedPasteValidator = require('./get-shared-paste/getSharedPasteValidator');
 const GetSharedPasteInteractor = require('./get-shared-paste/getSharedPasteInteractor');
 const auth = require('../authProvider');
+const tokenDecoder = require('../tokenDecoder');
 const ApiError = require('../errors/apiError');
 
 class PasteRouterBuilder {
@@ -119,7 +120,7 @@ class PasteRouterBuilder {
             }
         });
 
-        this.router.post('/search-pastes', async (request, response) => {
+        this.router.post('/search-pastes', tokenDecoder, async (request, response) => {
             const validator = new SearchPasteValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new SearchPasteInteractor({

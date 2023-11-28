@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const UserRouterBuilder = require('./app/users/userController');
 const PasteRouterBuilder = require('./app/pastes/pasteController');
 const UrlRouterBuilder = require('./app/url/urlController');
@@ -133,6 +134,7 @@ const RegisterResponseBuilder = require('./app/users/register-user/registerUserR
     });
 
     app.use(express.json());
+    app.use(cors());
     app.use('/user', userRoutes.createRoutes());
     app.use('/paste', pasteRoutes.createRoutes());
     app.use('/url', urlRoutes.createRoutes());

@@ -40,7 +40,6 @@ class RegisterUserInteractor {
         }
 
         const securedPass = await this.passwordHashService.hash(request.password);
-
         const generatedId = this.idGenerator.generate('user');
         const user = this.userFactory.create({
             id: generatedId,

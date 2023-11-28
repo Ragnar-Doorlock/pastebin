@@ -56,7 +56,7 @@ class CreateUrlInteractor {
         });
         await this.urlRepository.save(url);
 
-        this.presenter.presentSuccess(this.responseBuilder.build(hash));
+        this.presenter.presentSuccess(this.responseBuilder.build(hash.accessToken));
     }
 }
 
