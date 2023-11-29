@@ -12,7 +12,7 @@ class AuthTokenService {
             }
         );
 
-        return { accessToken: token };
+        return token;
     }
 
     async verify(token) {

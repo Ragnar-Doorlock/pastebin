@@ -1,6 +1,6 @@
 class RegisterUserResponseBuilder {
     build(token) {
-        return token;
+        return { accessToken: token };
     }
 }
 
