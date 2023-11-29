@@ -1,5 +1,6 @@
 const NotFound = require('../../errors/notFound');
 const ValidationError = require('../../errors/validationError');
+const ForbiddenError = require('../../errors/forbidden');
 const visibility = require('../../entities/paste-entity/visibility');
 
 class CreateUrlInteractor {
@@ -30,6 +31,8 @@ class CreateUrlInteractor {
     async execute(request) {
         const errors = this.validator.validate(request);
 
+        // create validation so only paste author can create url's
+
         if (errors.length > 0) {
             this.presenter.presentFailure(new ValidationError(errors));
             return;
@@ -40,6 +43,11 @@ class CreateUrlInteractor {
         if (!paste) {
             this.presenter.presentFailure(new NotFound(`Paste with id ${request.pasteId} doesn't exist`));
             this.logger.error(`Not found: Paste with ID ${request.pasteId} was not found.`);
+            return;
+        }
+
+        if (request.userId !== paste.getAuthorId()) {
+            this.presenter.presentFailure( new ForbiddenError('You don\'t have access to this paste.'));
             return;
         }
 

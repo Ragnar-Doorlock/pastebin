@@ -12,7 +12,6 @@ module.exports = async (request, response, next) => {
             response.status(403).send('Access denied.');
             return;
         }
-        //console.log(await jwt.decode(token, process.env.SECRET_KEY));
         request.body.authorId = await jwt.decode(token, process.env.SECRET_KEY).id;
         next();
     } catch (error) {

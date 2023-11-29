@@ -1,6 +1,8 @@
 class CreateUrlResponseBuilder {
     build(hash) {
-        return `${process.env.BASE_URL}paste/shared?t=${hash}`;
+        return {
+            publicUrl: `${process.env.BASE_URL}paste/shared?t=${hash}`
+        };
     }
 }
 
