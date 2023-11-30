@@ -1,6 +1,9 @@
 class RegisterUserResponseBuilder {
-    build(token) {
-        return { accessToken: token };
+    build(user) {
+        return {
+            userId: user.getId(),
+            accessToken: user.getToken()
+        };
     }
 }
 

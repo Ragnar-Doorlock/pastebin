@@ -5,6 +5,7 @@ class User {
         this._login = data.login;
         this._password = data.password;
         this._pastesCreatedCount = data.pastesCreatedCount;
+        this._accessToken = data._accessToken;
     }
 
     getId() {
@@ -33,6 +34,14 @@ class User {
 
     changeName(newName) {
         this._name = newName;
+    }
+
+    setToken(token) {
+        this._accessToken = token;
+    }
+
+    getToken() {
+        return this._accessToken;
     }
 }
 
