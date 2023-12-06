@@ -42,9 +42,8 @@ class LoginInteractor {
         }
 
         const token = await this.authTokenService.sign({ id: user.getId() });
-        user.setToken(token);
 
-        this.presenter.presentSuccess(this.responseBuilder.build(user));
+        this.presenter.presentSuccess(this.responseBuilder.build(token));
     }
 }
 

@@ -51,9 +51,8 @@ class RegisterUserInteractor {
         await this.userRepository.save(user);
 
         const token = await this.authTokenService.sign({ id: generatedId });
-        user.setToken(token);
 
-        this.presenter.presentSuccess(this.responseBuilder.build(user));
+        this.presenter.presentSuccess(this.responseBuilder.build(token));
     }
 }
 
