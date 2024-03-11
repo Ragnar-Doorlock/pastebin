@@ -20,7 +20,8 @@ class SearchPasteInteractor {
         const pastes = await this.pasteRepository.findAll({
             ids: pasteId,
             name: request.name,
-            authorId: request.authorId
+            authorId: request.authorId,
+            visibility: request.visibility
         });
 
         this.presenter.presentSuccess(this.responseBuilder.build(pastes));

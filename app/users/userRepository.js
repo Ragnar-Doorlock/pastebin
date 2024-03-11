@@ -46,10 +46,14 @@ class UserRepository {
     }
 
     async save(user) {
+        let createdPastesCount = user.getPastesCreatedCount();
+        if (!user.getPastesCreatedCount()) createdPastesCount = 0;
+
         const query = `
         insert into users (id, name, login, password) 
         values ('${user.getId()}', '${user.getName()}', '${user.getLogin()}', '${user.getPassword()}') 
-        ON CONFLICT (id) DO UPDATE set name='${user.getName()}', password='${user.getPassword()}', pastes_created_count='${user.getPastesCreatedCount()}'`;
+        ON CONFLICT (id) DO UPDATE set name='${user.getName()}', password='${user.getPassword()}', pastes_created_count='${createdPastesCount}'`;
+        //console.log(query);
         await this.dbProvider.execute(query);
     }
 

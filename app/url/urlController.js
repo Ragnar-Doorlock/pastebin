@@ -3,6 +3,7 @@ const CreateUrlValidator = require('./create-url/createUrlValidator');
 const CreateUrlInteractor = require('./create-url/createUrlInteractor');
 const CreateUrlHttpRequest = require('./create-url/createUrlHttpRequest');
 const ApiError = require('../errors/apiError');
+const auth = require('../authProvider');
 
 class UrlRouterBuilder {
     constructor({
@@ -28,7 +29,7 @@ class UrlRouterBuilder {
     }
 
     createRoutes() {
-        this.router.post('/', async (request, response) => {
+        this.router.post('/', auth, async (request, response) => {
             const validator = new CreateUrlValidator();
             const presenter = new HttpPresenter(request, response);
             const interactor = new CreateUrlInteractor({

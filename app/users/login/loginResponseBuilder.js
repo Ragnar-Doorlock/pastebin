@@ -1,6 +1,6 @@
 class LoginResponseBuilder {
     build(token) {
-        return token;
+        return { accessToken: token };
     }
 }
 

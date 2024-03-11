@@ -56,8 +56,7 @@ class GetPasteInteractor {
         await this.pasteStatisticsService.increaseViews(paste.getId());
 
         const text = await this.textStorage.getText(paste.getId());
-        paste.changeText(text);
-        this.presenter.presentSuccess(this.responseBuilder.build(paste));
+        this.presenter.presentSuccess(this.responseBuilder.build({ entity: paste, text }));
     }
 }
 

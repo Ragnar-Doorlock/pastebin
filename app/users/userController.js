@@ -48,9 +48,9 @@ class UserRouterBuilder {
     }
 
     createRoutes() {
-        this.router.get('/:userId', auth, async (request, respone) => {
+        this.router.get('/:userId', auth, async (request, response) => {
             const validator = new GetUserValidator();
-            const presenter = new HttpPresenter(request, respone);
+            const presenter = new HttpPresenter(request, response);
             const interactor = new GetUserInteractor({
                 presenter,
                 validator,
@@ -66,9 +66,9 @@ class UserRouterBuilder {
             }
         });
 
-        this.router.post('/search-users', async (request, respone) => {
+        this.router.post('/search-users', async (request, response) => {
             const validator = new SearchUserValidator();
-            const presenter = new HttpPresenter(request, respone);
+            const presenter = new HttpPresenter(request, response);
             const interactor = new SearchUserInteractor({
                 validator,
                 userRepository: this.userRepository,
@@ -83,9 +83,9 @@ class UserRouterBuilder {
             }
         });
 
-        this.router.put('/:userId', auth, async (request, respone) => {
+        this.router.put('/:userId', auth, async (request, response) => {
             const validator = new UpdateUserValidator();
-            const presenter = new HttpPresenter(request, respone);
+            const presenter = new HttpPresenter(request, response);
             const interactor = new UpdateUserInteractor({
                 validator,
                 presenter,
@@ -101,9 +101,9 @@ class UserRouterBuilder {
             }
         });
 
-        this.router.delete('/:userId', auth, async (request, respone) => {
+        this.router.delete('/:userId', auth, async (request, response) => {
             const validator = new DeleteUserValidator();
-            const presenter = new HttpPresenter(request, respone);
+            const presenter = new HttpPresenter(request, response);
             const interactor = new DeleteUserInteractor({
                 validator,
                 presenter,
