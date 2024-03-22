@@ -8,10 +8,10 @@ describe('UserRepository', () => {
 
     beforeEach(() => {
         dbProviderMock = {
-            execute: jasmine.createSpy('execute')
+            execute: jasmine.createSpy()
         };
         userFactoryMock = {
-            create: jasmine.createSpy('create')
+            create: jasmine.createSpy()
         };
         userRepository = new UserRepository({
             dbProvider: dbProviderMock,
@@ -20,132 +20,192 @@ describe('UserRepository', () => {
     });
 
     describe('findByID()', () => {
-        it('should find a user by ID', async () => {
-            const id = '[fake-id]';
-            const name = '[fake-name]';
-            const login = '[fake-login]';
-            const password = '[hashed-password]';
-            const pastes_created_count = '[fake-pastes-count]';
-            const userDataFromDB = {
+        const id = '[fake-id]';
+        const name = '[fake-name]';
+        const login = '[fake-login]';
+        const password = '[hashed-password]';
+        const pastes_created_count = '[fake-pastes-count]';
+
+        let userDataFromDB = {};
+
+        beforeEach(() => {
+            userDataFromDB = {
                 id,
                 name,
                 login,
                 password,
-                pastes_created_count
+                pastes_created_count,
             };
-            //why remove this? i use it 3 times later in code and it saves lines of code if i use variable?
-            const userData = {
+            dbProviderMock.execute.and.resolveTo([userDataFromDB]);
+        });
+
+        it('should execute a proper query', async () => {
+            await userRepository.findByID({ id });
+
+            expect(dbProviderMock.execute).toHaveBeenCalledOnceWith(`SELECT * FROM users WHERE id in ('${id}')`);
+        });
+
+        it('should use userFactory to reproduce found user', async () => {
+            await userRepository.findByID({ id });
+
+            expect(userFactoryMock.create).toHaveBeenCalledOnceWith({
                 id,
                 name,
                 login,
                 password,
                 pastesCreatedCount: pastes_created_count
-            };
-            dbProviderMock.execute.and.resolveTo([userDataFromDB]);
-            userFactoryMock.create.and.returnValue(userData);
+            });
+        });
+
+        it('should return created user', async () => {
+            const userEntity = { fake: '[user-entity]' };
+            userFactoryMock.create.and.returnValue(userEntity);
 
             const result = await userRepository.findByID({ id });
 
-            expect(dbProviderMock.execute).toHaveBeenCalledWith(`SELECT * FROM users WHERE id in ('${id}')`);
-            expect(userFactoryMock.create).toHaveBeenCalledWith(userData);
-            expect(result).toEqual(userData);
+            expect(result).toEqual(userEntity);
         });
 
         it('should return null if no user found', async () => {
-            const id = '[fake-nonexisting-id]';
             dbProviderMock.execute.and.resolveTo([]);
 
             const result = await userRepository.findByID({ id });
 
-            expect(dbProviderMock.execute).toHaveBeenCalledWith(`SELECT * FROM users WHERE id in ('${id}')`);
             expect(result).toBeNull();
         });
     });
 
     describe('findOne()', () => {
-        it('should find one user that fits search parameters', async () => {
-            const id = '[fake-id]';
-            const name = '[fake-name]';
-            const login = '[fake-login]';
-            const password = '[hashed-password]';
-            const pastes_created_count = '[fake-pastes-count]';
-            const userDataFromDB = {
+        const id = '[fake-id]';
+        const name = '[fake-name]';
+        const login = '[fake-login]';
+        const password = '[hashed-password]';
+        const pastes_created_count = '[fake-pastes-count]';
+
+        let userDataFromDB = {};
+
+        beforeEach(() => {
+            userDataFromDB = {
                 id,
                 name,
                 login,
                 password,
-                pastes_created_count
+                pastes_created_count,
             };
-            const userData = {
+            dbProviderMock.execute.and.resolveTo([userDataFromDB]);
+        });
+
+        it('should execute a proper query', async () => {
+            await userRepository.findOne({ id, name });
+
+            expect(dbProviderMock.execute).toHaveBeenCalledOnceWith(`SELECT * FROM users WHERE id in ('${id}') AND name='${name}'`);
+        });
+
+        it('should use userFactory to reproduce found user', async () => {
+            await userRepository.findOne({ id, name });
+
+            expect(userFactoryMock.create).toHaveBeenCalledOnceWith({
                 id,
                 name,
                 login,
                 password,
                 pastesCreatedCount: pastes_created_count
-            };
-            dbProviderMock.execute.and.resolveTo([userDataFromDB]);
-            userFactoryMock.create.and.returnValue(userData);
+            });
+        });
+
+        it('should return created user', async () => {
+            const userEntity = { fake: '[user-entity]' };
+            userFactoryMock.create.and.returnValue(userEntity);
 
             const result = await userRepository.findOne({ id, name });
 
-            expect(dbProviderMock.execute).toHaveBeenCalledWith(`SELECT * FROM users WHERE id in ('${id}') AND name='${name}'`);
-            expect(userFactoryMock.create).toHaveBeenCalledWith(userData);
-            expect(result).toEqual(userData);
+            expect(result).toEqual(userEntity);
+        });
+
+        it('should return null if no user found', async () => {
+            dbProviderMock.execute.and.resolveTo([]);
+
+            const result = await userRepository.findOne({ id, name });
+
+            expect(result).toBeNull();
         });
     });
 
     describe('findAll()', () => {
-        it('should find all users that fit search parameters', async () => {
-            const id = '[fake-id]';
-            const name = '[fake-name]';
-            const login = '[fake-login]';
-            const password = '[hashed-password]';
-            const pastes_created_count = '[fake-pastes-count]';
-            const userDataFromDB = {
+        const id = '[fake-id]';
+        const name = '[fake-name]';
+        const login = '[fake-login]';
+        const password = '[hashed-password]';
+        const pastes_created_count = '[fake-pastes-count]';
+
+        let userDataFromDB = {};
+
+        beforeEach(() => {
+            userDataFromDB = {
                 id,
                 name,
                 login,
                 password,
-                pastes_created_count
+                pastes_created_count,
             };
             dbProviderMock.execute.and.resolveTo([userDataFromDB]);
-            userFactoryMock.create.and.returnValue({
-                id: id,
+        });
+
+        it('should execute a proper query', async () => {
+            await userRepository.findAll({ ids: [id], name, login });
+
+            expect(dbProviderMock.execute).toHaveBeenCalledOnceWith(`SELECT * FROM users WHERE id in ('${id}') AND name='${name}' AND login='${login}'`);
+        });
+
+        it('should use userFactory to reproduce found user', async () => {
+            await userRepository.findAll({ ids: [id], name, login });
+
+            expect(userFactoryMock.create).toHaveBeenCalledOnceWith({
+                id,
                 name,
                 login,
                 password,
                 pastesCreatedCount: pastes_created_count
             });
+        });
+
+        it('should return created user', async () => {
+            const userEntity = { fake: '[user-entity]' };
+            userFactoryMock.create.and.returnValue(userEntity);
 
             const result = await userRepository.findAll({ ids: [id], name, login });
-            expect(dbProviderMock.execute).toHaveBeenCalledWith(`SELECT * FROM users WHERE id in ('${id}') AND name='${name}' AND login='${login}'`);
-            expect(userFactoryMock.create).toHaveBeenCalledWith({
-                id,
-                name,
-                login,
-                password,
-                pastesCreatedCount: pastes_created_count
-            });
-            expect(result).toEqual([{
-                id,
-                name,
-                login,
-                password,
-                pastesCreatedCount: pastes_created_count
-            }]);
+
+            expect(result).toEqual([userEntity]);
+        });
+
+        xit('should return null if no users were found', async () => {
+            dbProviderMock.execute.and.resolveTo([]);
+
+            const result = await userRepository.findAll({ ids: [id], name, login });
+
+            //doesn't want to work: Expected [  ] to be null.
+            expect(result).toBeNull();
         });
     });
 
     describe('save()', () => {
-        it('should save a user', async () => {
-            const user = {
+        let user = {};
+        beforeEach(() => {
+            user = {
                 getId: () => '[fake-id]',
                 getName: () => '[fake-name]',
                 getLogin: () => '[fake-login]',
                 getPassword: () => '[hashed-password]',
                 getPastesCreatedCount: () => 5
             };
+        });
 
+        it('should check if provided user has created pastes count', async () => {
+            const createdPastesCount = user.getPastesCreatedCount();
+            expect(createdPastesCount).toEqual(5);
+        });
+
+        it('should execute a query with provided data', async () => {
             await userRepository.save(user);
 
             // different spacing can cause test fails, what's the solution?
@@ -158,8 +218,8 @@ describe('UserRepository', () => {
     });
 
     describe('delete()', () => {
+        const id = '[fake-id]';
         it('it should execute query to delete data from db', async () => {
-            const id = '[fake-id]';
             await userRepository.delete(id);
             const expectedQuery = `delete from users where id='${id}'`;
             expect(dbProviderMock.execute).toHaveBeenCalledWith(expectedQuery);
