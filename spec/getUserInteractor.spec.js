@@ -1,4 +1,6 @@
 const GetUserInteractor = require('../app/users/get-user/getUserInteractor');
+const ValidationError = require('../app/errors/validationError');
+const NotFound = require('../app/errors/notFound');
 
 describe('getUserInteractor()', () => {
     let presenterMock, validatorMock, userRepositoryMock, responseBuilderMock, loggerProviderMock;
@@ -30,19 +32,33 @@ describe('getUserInteractor()', () => {
             request = {
                 id
             };
+            validatorMock.validate.and.returnValue([]);
+            userRepositoryMock.findByID.and.resolveTo(user);
             user = {
                 name,
                 pastesCreated
             };
         });
 
-        it('should validate id', () => {
-            validatorMock.validate.and.returnValue([]);
+        it('should throw error if validation failed', async () => {
+            await getUserInteractor.execute(request);
+            validatorMock.validate.and.returnValue(['fake-error']);
+            expect(presenterMock.presentFailure).toHaveBeenCalledWith(new ValidationError('[fake-error]'));
+        });
+
+        it('should find user by id', async () => {
+            await getUserInteractor.execute(request);
+            expect(userRepositoryMock.findByID).toHaveBeenCalledWith(request);
+        });
+
+        xit('should throw error if user was not found', async () => {
+            await getUserInteractor.execute(request);
+            expect(userRepositoryMock.findByID).toHaveBeenCalledWith(request);
+            userRepositoryMock.findByID.and.resolveTo(null);
+            expect(presenterMock.presentFailure).toHaveBeenCalledWith(new NotFound('User with [fake-id] was not found'));
         });
 
         it('should response with found user', async () => {
-            //validatorMock.validate.and.returnValue([]);
-            userRepositoryMock.findByID.and.resolveTo(user);
             await getUserInteractor.execute(request);
             expect(presenterMock.presentSuccess).toHaveBeenCalledWith(responseBuilderMock.build(user));
         });
