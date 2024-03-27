@@ -30,11 +30,9 @@ class UserRepository {
 
         //console.log(`SELECT * FROM users WHERE ${itemsToFind.join(' AND ')}`);
         const queryResult = await this.dbProvider.execute(`SELECT * FROM users WHERE ${itemsToFind.join(' AND ')}`);
-
         if (!queryResult) {
             return null;
         }
-
         const result = queryResult.map(x => this.userFactory.create({
             id: x.id,
             name: x.name,
@@ -50,9 +48,9 @@ class UserRepository {
         if (!user.getPastesCreatedCount()) createdPastesCount = 0;
 
         const query = `
-        insert into users (id, name, login, password) 
-        values ('${user.getId()}', '${user.getName()}', '${user.getLogin()}', '${user.getPassword()}') 
-        ON CONFLICT (id) DO UPDATE set name='${user.getName()}', password='${user.getPassword()}', pastes_created_count='${createdPastesCount}'`;
+            insert into users (id, name, login, password) 
+            values ('${user.getId()}', '${user.getName()}', '${user.getLogin()}', '${user.getPassword()}') 
+            ON CONFLICT (id) DO UPDATE set name='${user.getName()}', password='${user.getPassword()}', pastes_created_count='${createdPastesCount}'`;
         //console.log(query);
         await this.dbProvider.execute(query);
     }
