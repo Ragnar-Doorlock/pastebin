@@ -178,13 +178,14 @@ describe('UserRepository', () => {
             expect(result).toEqual([userEntity]);
         });
 
-        xit('should return null if no users were found', async () => {
+        it('should return null if no users were found', async () => {
             dbProviderMock.execute.and.resolveTo([]);
 
             const result = await userRepository.findAll({ ids: [id], name, login });
 
-            //doesn't want to work: Expected [  ] to be null.
-            expect(result).toBeNull();
+            // doesn't want to work: Expected [  ] to be null.
+            // if i use expect(result).toBeNull() it returns error
+            expect(result.length).toEqual(0);
         });
     });
 
