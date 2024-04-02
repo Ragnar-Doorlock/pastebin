@@ -47,7 +47,6 @@ class RegisterUserInteractor {
             login: request.login,
             password: securedPass
         });
-
         await this.userRepository.save(user);
 
         const token = await this.authTokenService.sign({ id: generatedId });

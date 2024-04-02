@@ -2,20 +2,20 @@
 const UserRepository = require('../app/users/userRepository');
 
 describe('UserRepository', () => {
-    let dbProviderMock;
-    let userFactoryMock;
+    let dbProvider;
+    let userFactory;
     let userRepository;
 
     beforeEach(() => {
-        dbProviderMock = {
+        dbProvider = {
             execute: jasmine.createSpy()
         };
-        userFactoryMock = {
+        userFactory = {
             create: jasmine.createSpy()
         };
         userRepository = new UserRepository({
-            dbProvider: dbProviderMock,
-            userFactory: userFactoryMock
+            dbProvider,
+            userFactory
         });
     });
 
@@ -36,19 +36,19 @@ describe('UserRepository', () => {
                 password,
                 pastes_created_count,
             };
-            dbProviderMock.execute.and.resolveTo([userDataFromDB]);
+            dbProvider.execute.and.resolveTo([userDataFromDB]);
         });
 
         it('should execute a proper query', async () => {
             await userRepository.findByID({ id });
 
-            expect(dbProviderMock.execute).toHaveBeenCalledOnceWith(`SELECT * FROM users WHERE id in ('${id}')`);
+            expect(dbProvider.execute).toHaveBeenCalledOnceWith(`SELECT * FROM users WHERE id in ('${id}')`);
         });
 
         it('should use userFactory to reproduce found user', async () => {
             await userRepository.findByID({ id });
 
-            expect(userFactoryMock.create).toHaveBeenCalledOnceWith({
+            expect(userFactory.create).toHaveBeenCalledOnceWith({
                 id,
                 name,
                 login,
@@ -59,7 +59,7 @@ describe('UserRepository', () => {
 
         it('should return created user', async () => {
             const userEntity = { fake: '[user-entity]' };
-            userFactoryMock.create.and.returnValue(userEntity);
+            userFactory.create.and.returnValue(userEntity);
 
             const result = await userRepository.findByID({ id });
 
@@ -67,7 +67,7 @@ describe('UserRepository', () => {
         });
 
         it('should return null if no user found', async () => {
-            dbProviderMock.execute.and.resolveTo([]);
+            dbProvider.execute.and.resolveTo([]);
 
             const result = await userRepository.findByID({ id });
 
@@ -92,19 +92,19 @@ describe('UserRepository', () => {
                 password,
                 pastes_created_count,
             };
-            dbProviderMock.execute.and.resolveTo([userDataFromDB]);
+            dbProvider.execute.and.resolveTo([userDataFromDB]);
         });
 
         it('should execute a proper query', async () => {
             await userRepository.findOne({ id, name });
 
-            expect(dbProviderMock.execute).toHaveBeenCalledOnceWith(`SELECT * FROM users WHERE id in ('${id}') AND name='${name}'`);
+            expect(dbProvider.execute).toHaveBeenCalledOnceWith(`SELECT * FROM users WHERE id in ('${id}') AND name='${name}'`);
         });
 
         it('should use userFactory to reproduce found user', async () => {
             await userRepository.findOne({ id, name });
 
-            expect(userFactoryMock.create).toHaveBeenCalledOnceWith({
+            expect(userFactory.create).toHaveBeenCalledOnceWith({
                 id,
                 name,
                 login,
@@ -115,7 +115,7 @@ describe('UserRepository', () => {
 
         it('should return created user', async () => {
             const userEntity = { fake: '[user-entity]' };
-            userFactoryMock.create.and.returnValue(userEntity);
+            userFactory.create.and.returnValue(userEntity);
 
             const result = await userRepository.findOne({ id, name });
 
@@ -123,7 +123,7 @@ describe('UserRepository', () => {
         });
 
         it('should return null if no user found', async () => {
-            dbProviderMock.execute.and.resolveTo([]);
+            dbProvider.execute.and.resolveTo([]);
 
             const result = await userRepository.findOne({ id, name });
 
@@ -148,19 +148,19 @@ describe('UserRepository', () => {
                 password,
                 pastes_created_count,
             };
-            dbProviderMock.execute.and.resolveTo([userDataFromDB]);
+            dbProvider.execute.and.resolveTo([userDataFromDB]);
         });
 
         it('should execute a proper query', async () => {
             await userRepository.findAll({ ids: [id], name, login });
 
-            expect(dbProviderMock.execute).toHaveBeenCalledOnceWith(`SELECT * FROM users WHERE id in ('${id}') AND name='${name}' AND login='${login}'`);
+            expect(dbProvider.execute).toHaveBeenCalledOnceWith(`SELECT * FROM users WHERE id in ('${id}') AND name='${name}' AND login='${login}'`);
         });
 
         it('should use userFactory to reproduce found user', async () => {
             await userRepository.findAll({ ids: [id], name, login });
 
-            expect(userFactoryMock.create).toHaveBeenCalledOnceWith({
+            expect(userFactory.create).toHaveBeenCalledOnceWith({
                 id,
                 name,
                 login,
@@ -171,7 +171,7 @@ describe('UserRepository', () => {
 
         it('should return created user', async () => {
             const userEntity = { fake: '[user-entity]' };
-            userFactoryMock.create.and.returnValue(userEntity);
+            userFactory.create.and.returnValue(userEntity);
 
             const result = await userRepository.findAll({ ids: [id], name, login });
 
@@ -179,7 +179,7 @@ describe('UserRepository', () => {
         });
 
         it('should return null if no users were found', async () => {
-            dbProviderMock.execute.and.resolveTo([]);
+            dbProvider.execute.and.resolveTo([]);
 
             const result = await userRepository.findAll({ ids: [id], name, login });
 
@@ -214,7 +214,7 @@ describe('UserRepository', () => {
             insert into users (id, name, login, password) 
             values ('${user.getId()}', '${user.getName()}', '${user.getLogin()}', '${user.getPassword()}') 
             ON CONFLICT (id) DO UPDATE set name='${user.getName()}', password='${user.getPassword()}', pastes_created_count='${user.getPastesCreatedCount()}'`;
-            expect(dbProviderMock.execute).toHaveBeenCalledWith(expectedQuery);
+            expect(dbProvider.execute).toHaveBeenCalledWith(expectedQuery);
         });
     });
 
@@ -223,7 +223,7 @@ describe('UserRepository', () => {
         it('it should execute query to delete data from db', async () => {
             await userRepository.delete(id);
             const expectedQuery = `delete from users where id='${id}'`;
-            expect(dbProviderMock.execute).toHaveBeenCalledWith(expectedQuery);
+            expect(dbProvider.execute).toHaveBeenCalledWith(expectedQuery);
         });
     });
 });
