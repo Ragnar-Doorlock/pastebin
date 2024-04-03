@@ -80,8 +80,6 @@ describe('RegisterUserInteractor', () => {
         });
 
         it('should create user using userFactory', async () => {
-            //idGenerator.generate.and.returnValue(generatedId);
-            //passwordHashService.hash.and.returnValue(securedPass);
             await registerUserInteractor.execute(request);
             expect(userFactory.create).toHaveBeenCalledOnceWith({
                 id: generatedId,
