@@ -33,5 +33,14 @@ describe('SearchUserValidator', () => {
             const errors = searchUserValidator.validate(request);
             expect(errors).toContain('Invalid ID format.');
         });
+
+        it('should return no errors if data is valid', () => {
+            request = {
+                id: 'user-11121243243424324234423',
+                name: '[fake-name]'
+            };
+            const errors = searchUserValidator.validate(request);
+            expect(errors.length).toEqual(0);
+        });
     });
 });

@@ -44,7 +44,7 @@ describe('RegisterValidator', () => {
                 login: '[fake-login]'
             };
             const errors = registerValidator.validate(request);
-            expect(errors).toContain('Minimum password length is 8 characers.');
+            expect(errors).toContain('Minimum password length is 8 characters.');
         });
 
         it('should validate minimum login length', () => {
@@ -85,6 +85,16 @@ describe('RegisterValidator', () => {
             };
             const errors = registerValidator.validate(request);
             expect(errors).toContain('The password must contain upper case, lower case letters, number and special character.');
+        });
+
+        it('should return no errors if data is valid', () => {
+            request = {
+                name: '[fake-name]',
+                login: '[fake-login]',
+                password: '20072007Aa!'
+            };
+            const errors = registerValidator.validate(request);
+            expect(errors.length).toEqual(0);
         });
     });
 });
