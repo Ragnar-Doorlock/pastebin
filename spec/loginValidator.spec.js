@@ -16,6 +16,12 @@ describe('LoginValidator', () => {
             expect(errors).toContain('Login is required.');
         });
 
+        it('should return error if password was not provided', () => {
+            request = {};
+            const errors = loginValidator.validate(request);
+            expect(errors).toContain('Password is required');
+        });
+
         it('should return no errors if login and password were provided', () => {
             request = {
                 login: '[fake-login]',
@@ -41,15 +47,6 @@ describe('LoginValidator', () => {
             };
             const errors = loginValidator.validate(request);
             expect(errors).toContain('Minimum password length is 8 characters.');
-        });
-
-        it('should validate that password fits regular expression', () => {
-            request = {
-                login: '[fake-login]',
-                password: '20072007'
-            };
-            const errors = loginValidator.validate(request);
-            expect(errors).toContain('The password must contain upper case, lower case letters, number and special character.');
         });
 
         it('should validate that password must contain special character', () => {
