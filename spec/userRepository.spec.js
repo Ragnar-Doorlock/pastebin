@@ -180,11 +180,7 @@ describe('UserRepository', () => {
 
         it('should return null if no users were found', async () => {
             dbProvider.execute.and.resolveTo([]);
-
             const result = await userRepository.findAll({ ids: [id], name, login });
-
-            // doesn't want to work: Expected [  ] to be null.
-            // if i use expect(result).toBeNull() it returns error
             expect(result.length).toEqual(0);
         });
     });
@@ -209,7 +205,6 @@ describe('UserRepository', () => {
         it('should execute a query with provided data', async () => {
             await userRepository.save(user);
 
-            // different spacing can cause test fails, what's the solution?
             const expectedQuery = `
             insert into users (id, name, login, password) 
             values ('${user.getId()}', '${user.getName()}', '${user.getLogin()}', '${user.getPassword()}') 

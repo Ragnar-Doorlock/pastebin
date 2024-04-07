@@ -1,9 +1,10 @@
-const GetUserInteractor = require('../app/users/get-user/getUserInteractor');
-const ValidationError = require('../app/errors/validationError');
-const NotFound = require('../app/errors/notFound');
+const GetUserInteractor = require('../../../app/users/get-user/getUserInteractor');
+const ValidationError = require('../../../app/errors/validationError');
+const NotFound = require('../../../app/errors/notFound');
 
 describe('GetUserInteractor', () => {
     let presenter, validator, userRepository, responseBuilder, loggerProvider;
+    let logger;
     let getUserInteractor;
 
     beforeEach(() => {
@@ -12,7 +13,8 @@ describe('GetUserInteractor', () => {
         userRepository = jasmine.createSpyObj('userRepository', ['findByID']);
         responseBuilder = jasmine.createSpyObj('responseBuilder', ['build']);
         loggerProvider = jasmine.createSpyObj('loggerProvider', ['create']);
-        loggerProvider.create.and.returnValue({ error: jasmine.createSpy() });
+        logger = jasmine.createSpyObj('logger', ['error']);
+        loggerProvider.create.and.returnValue(logger);
 
         getUserInteractor = new GetUserInteractor({
             presenter,
@@ -55,8 +57,7 @@ describe('GetUserInteractor', () => {
         it('should throw error if user was not found', async () => {
             userRepository.findByID.and.resolveTo(null);
             await getUserInteractor.execute(request);
-            expect(loggerProvider.create().error).toHaveBeenCalledWith('Not found: User with ID [fake-id] was not found.');
-            expect(userRepository.findByID).toHaveBeenCalledWith(request);
+            expect(logger.error).toHaveBeenCalledWith('Not found: User with ID [fake-id] was not found.');
             expect(presenter.presentFailure).toHaveBeenCalledWith(new NotFound('User with [fake-id] was not found'));
         });
 

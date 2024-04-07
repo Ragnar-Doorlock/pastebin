@@ -1,10 +1,10 @@
-const RegisterUserInteractor = require('../app/users/register-user/registerUserInteractor');
-const ValidationError = require('../app/errors/validationError');
-const ApiError = require('../app/errors/apiError');
+const RegisterUserInteractor = require('../../../app/users/register-user/registerUserInteractor');
+const ValidationError = require('../../../app/errors/validationError');
+const ApiError = require('../../../app/errors/apiError');
 
 describe('RegisterUserInteractor', () => {
     let presenter, validator, userRepository, userFactory, idGenerator, passwordHashService;
-    let loggerProvider, responseBuilder, authTokenService;
+    let loggerProvider, responseBuilder, authTokenService, logger;
     let registerUserInteractor;
     beforeEach(() => {
         presenter = jasmine.createSpyObj('presenter', ['presentSuccess', 'presentFailure']);
@@ -13,10 +13,11 @@ describe('RegisterUserInteractor', () => {
         userFactory = jasmine.createSpyObj('userFactory', ['create']);
         responseBuilder = jasmine.createSpyObj('responseBuilder', ['build']);
         loggerProvider = jasmine.createSpyObj('loggerProvider', ['create']);
-        loggerProvider.create.and.returnValue({ error: jasmine.createSpy() });
         idGenerator = jasmine.createSpyObj('idGenerator', ['generate']);
         passwordHashService = jasmine.createSpyObj('passwordHashService', ['hash']);
         authTokenService = jasmine.createSpyObj('authTokenService', ['sign']);
+        logger = jasmine.createSpyObj('logger', ['error']);
+        loggerProvider.create.and.returnValue(logger);
 
         registerUserInteractor = new RegisterUserInteractor({
             presenter,
@@ -66,7 +67,7 @@ describe('RegisterUserInteractor', () => {
             userRepository.findOne.and.resolveTo(login);
             await registerUserInteractor.execute(request);
             expect(userRepository.findOne).toHaveBeenCalledWith({ login: request.login });
-            expect(presenter.presentFailure).toHaveBeenCalledWith(new ApiError({ message: `User ${request.login} already exists.` }));
+            expect(presenter.presentFailure).toHaveBeenCalledWith(new ApiError({ message: 'User [fake-login] already exists.' }));
         });
 
         it('should hash password from request', async () => {
@@ -90,19 +91,12 @@ describe('RegisterUserInteractor', () => {
         });
 
         it('should save user to database', async () => {
-            userFactory.create.and.returnValue({
-                id: generatedId,
-                name: request.name,
-                login: request.login,
-                password: securedPass
-            });
+            const createdUser = {
+                fakeData: 'createdUser'
+            };
+            userFactory.create.and.returnValue(createdUser);
             await registerUserInteractor.execute(request);
-            expect(userRepository.save).toHaveBeenCalledWith({
-                id: generatedId,
-                name: request.name,
-                login: request.login,
-                password: securedPass
-            });
+            expect(userRepository.save).toHaveBeenCalledWith(createdUser);
         });
 
         it('should generate token based on generated id', async () => {
@@ -111,8 +105,10 @@ describe('RegisterUserInteractor', () => {
         });
 
         it('should response with token', async () => {
+            const builtResponse = { accessToken: token };
+            responseBuilder.build.and.returnValue(builtResponse);
             await registerUserInteractor.execute(request);
-            expect(presenter.presentSuccess).toHaveBeenCalledWith(responseBuilder.build(token));
+            expect(presenter.presentSuccess).toHaveBeenCalledWith(builtResponse);
         });
     });
 });

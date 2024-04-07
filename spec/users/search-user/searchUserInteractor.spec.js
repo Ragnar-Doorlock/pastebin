@@ -1,5 +1,5 @@
-const SearchUserInteractor = require('../app/users/search-users/searchUserInteractor');
-const ValidationError = require('../app/errors/validationError');
+const SearchUserInteractor = require('../../../app/users/search-users/searchUserInteractor');
+const ValidationError = require('../../../app/errors/validationError');
 
 describe('SearchUserInteractor', () => {
     let userRepository, presenter, validator, responseBuilder;
@@ -29,11 +29,11 @@ describe('SearchUserInteractor', () => {
                 name
             };
             validator.validate.and.returnValue([]);
-            userRepository.findAll.and.resolveTo({
+            userRepository.findAll.and.resolveTo([{
                 id,
                 name,
                 login
-            });
+            }]);
         });
 
         it('should return error if validation failed', async () => {
@@ -72,13 +72,20 @@ describe('SearchUserInteractor', () => {
             expect(userRepository.findAll).toHaveBeenCalledWith({ ids: [undefined], name: request.name });
         });
 
-        it('should response with found user', async () => {
+        it('should build response', async () => {
             await searchUserInteractor.execute(request);
-            expect(presenter.presentSuccess).toHaveBeenCalledWith(responseBuilder.build([{
+            expect(responseBuilder.build).toHaveBeenCalledWith([{
                 id,
                 name,
                 login
-            }]));
+            }]);
+        });
+
+        it('should response with found user', async () => {
+            const builtResponse = { fake: 'response' };
+            responseBuilder.build.and.returnValue(builtResponse);
+            await searchUserInteractor.execute(request);
+            expect(presenter.presentSuccess).toHaveBeenCalledWith(builtResponse);
         });
 
         it('should response with empty array if no user was found', async () => {

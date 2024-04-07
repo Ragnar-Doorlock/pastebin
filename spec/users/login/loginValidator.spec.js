@@ -1,4 +1,4 @@
-const LoginValidator = require('../app/users/login/loginValidator');
+const LoginValidator = require('../../../app/users/login/loginValidator');
 
 describe('LoginValidator', () => {
     const validPassword = '2822281337Aa!';

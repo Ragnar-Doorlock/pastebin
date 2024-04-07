@@ -1,7 +1,7 @@
-const LoginInteractor = require('../app/users/login/loginInteractor');
-const ValidationError = require('../app//errors/validationError');
-const ApiError = require('../app/errors/apiError');
-const NotFound = require('../app/errors/notFound');
+const LoginInteractor = require('../../../app/users/login/loginInteractor');
+const ValidationError = require('../../../app/errors/validationError');
+const ApiError = require('../../../app/errors/apiError');
+const NotFound = require('../../../app/errors/notFound');
 
 describe('LoginInteractor', () => {
     let presenter, validator, userRepository, passwordHashService, responseBuilder, authTokenService;
@@ -33,18 +33,18 @@ describe('LoginInteractor', () => {
         let request = {};
         let user = {};
         beforeEach(() => {
+            user = jasmine.createSpyObj('user', ['getId', 'getPassword']);
             request = {
                 login,
                 password
             };
             validator.validate.and.returnValue([]);
-            user = {
-                getLogin: () => login,
-                getPassword: () => hashedPassword,
-                getId: () => id
-            };
+            user.getPassword.and.returnValue(hashedPassword);
+            user.getId.and.returnValue(id);
             userRepository.findOne.and.resolveTo(user);
             passwordHashService.compare.and.resolveTo(true);
+            authTokenService.sign.and.resolveTo(token);
+            responseBuilder.build.and.returnValue({ accessToken: token });
         });
 
         it('should return error if validation failed', async () => {
@@ -66,7 +66,8 @@ describe('LoginInteractor', () => {
 
         it('should check if request password matches with hashed password', async () => {
             await loginInteractor.execute(request);
-            expect(passwordHashService.compare).toHaveBeenCalledWith(password, user.getPassword());
+            expect(user.getPassword).toHaveBeenCalled();
+            expect(passwordHashService.compare).toHaveBeenCalledWith(password, hashedPassword);
         });
 
         it('should return error if passwords do not match', async () => {
@@ -77,12 +78,20 @@ describe('LoginInteractor', () => {
 
         it('should generate token', async () => {
             await loginInteractor.execute(request);
-            expect(authTokenService.sign).toHaveBeenCalledWith({ id: user.getId() });
+            expect(user.getId).toHaveBeenCalled();
+            expect(authTokenService.sign).toHaveBeenCalledWith({ id });
         });
 
-        it('should response with generated token', async () => {
+        it('should build response', async () => {
             await loginInteractor.execute(request);
-            expect(presenter.presentSuccess).toHaveBeenCalledWith(responseBuilder.build(token));
+            expect(responseBuilder.build).toHaveBeenCalledWith(token);
+        });
+
+        it('should return built response', async () => {
+            const builtResponse = { accessToken: token };
+            responseBuilder.build.and.returnValue(builtResponse);
+            await loginInteractor.execute(request);
+            expect(presenter.presentSuccess).toHaveBeenCalledWith(builtResponse);
         });
     });
 });

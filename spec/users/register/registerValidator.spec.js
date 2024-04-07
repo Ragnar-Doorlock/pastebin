@@ -1,4 +1,4 @@
-const RegisterUserValidator = require('../app/users/register-user/registerUserValidator');
+const RegisterUserValidator = require('../../../app/users/register-user/registerUserValidator');
 
 describe('RegisterValidator', () => {
     let registerValidator;

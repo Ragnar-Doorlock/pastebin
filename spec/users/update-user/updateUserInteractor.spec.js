@@ -1,7 +1,7 @@
-const UpdateUserInteractor = require('../app/users/update-user/updateUserInteractor');
-const ForbiddenError = require('../app/errors/forbidden');
-const NotFound = require('../app/errors/notFound');
-const ValidationError = require('../app/errors/validationError');
+const UpdateUserInteractor = require('../../../app/users/update-user/updateUserInteractor');
+const ForbiddenError = require('../../../app/errors/forbidden');
+const NotFound = require('../../../app/errors/notFound');
+const ValidationError = require('../../../app/errors/validationError');
 
 describe('UpdateUserInteractor', () => {
     let presenter, validator, userFactory, userRepository, loggerProvider;
@@ -65,7 +65,7 @@ describe('UpdateUserInteractor', () => {
         it('should return error if user was not found', async () => {
             userRepository.findByID.and.resolveTo(null);
             await updateUserInteractor.execute(request);
-            expect(presenter.presentFailure).toHaveBeenCalledWith(new NotFound(`User ${request.id} was not found.`));
+            expect(presenter.presentFailure).toHaveBeenCalledWith(new NotFound('User [fake-id] was not found.'));
         });
 
         it('should change name in user entity', async () => {

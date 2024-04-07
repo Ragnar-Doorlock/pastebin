@@ -1,4 +1,4 @@
-const GetUserValidator = require('../app/users/get-user/getUserValidator');
+const GetUserValidator = require('../../../app/users/get-user/getUserValidator');
 
 describe('GetUserValidator', () => {
     let getUserValidator;

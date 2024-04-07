@@ -1,4 +1,4 @@
-const UpdateUserValidator = require('../app/users/update-user/updateUserValidator');
+const UpdateUserValidator = require('../../../app/users/update-user/updateUserValidator');
 
 describe('UpdateUserValidator', () => {
     let updateUserValidator;

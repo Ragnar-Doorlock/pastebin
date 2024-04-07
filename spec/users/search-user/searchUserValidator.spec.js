@@ -1,4 +1,4 @@
-const SearchUserValidator = require('../app/users/search-users/searchUserValidator');
+const SearchUserValidator = require('../../../app/users/search-users/searchUserValidator');
 
 describe('SearchUserValidator', () => {
     let searchUserValidator;
