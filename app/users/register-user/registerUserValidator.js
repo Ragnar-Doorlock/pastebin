@@ -14,7 +14,7 @@ class RegisterUserValidator {
             errors.push('Password is required');
         } else {
             if (request.password.length < 8) {
-                errors.push('Minimum password length is 8 characers.');
+                errors.push('Minimum password length is 8 characters.');
             }
 
             if (!PASSWORD_VALIDATION_REGEXP.test(request.password)) {

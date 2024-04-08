@@ -29,6 +29,7 @@ class RegisterUserInteractor {
 
         if (errors.length > 0) {
             this.presenter.presentFailure(new ValidationError(errors));
+            this.logger.error(new ValidationError(errors));
             return;
         }
 
@@ -36,6 +37,7 @@ class RegisterUserInteractor {
 
         if (login) {
             this.presenter.presentFailure(new ApiError({ message: `User ${request.login} already exists.` }));
+            this.logger.error(new ApiError({ message: `User ${request.login} already exists.` }));
             return;
         }
 
@@ -47,7 +49,6 @@ class RegisterUserInteractor {
             login: request.login,
             password: securedPass
         });
-
         await this.userRepository.save(user);
 
         const token = await this.authTokenService.sign({ id: generatedId });

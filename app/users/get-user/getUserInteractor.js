@@ -12,7 +12,6 @@ class GetUserInteractor {
 
     async execute(request) {
         const errors = this.validator.validate(request);
-
         if (errors.length > 0) {
             this.presenter.presentFailure( new ValidationError(errors) );
             return;

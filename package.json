@@ -9,6 +9,7 @@
     "jsonwebtoken": "^9.0.1",
     "log4js": "^6.9.1",
     "minio": "^7.1.3",
+    "nodemon": "^3.1.0",
     "pg": "^8.11.1",
     "redis": "^4.6.8",
     "sequelize": "^6.32.0",
@@ -23,7 +24,8 @@
     "migrateup": "cd e:/pastebin/db/migrations && node migrate up",
     "migratedown": "cd e:/pastebin/db/migrations && node migrate down",
     "migratecreate": "cd e:/pastebin/db/migrations && node migrate create --name ",
-    "lint": "eslint --fix --ext .js,.jsx ."
+    "lint": "eslint --fix --ext .js,.jsx .",
+    "test": "nodemon --exec jasmine --watch"
   },
   "author": "",
   "license": "ISC",
